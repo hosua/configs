@@ -24,15 +24,16 @@ return {
       vim.g.vimtex_compiler_method = 'latexmk'  -- Set the compiler
     end
   },
-  -- {
-  -- 	"williamboman/mason.nvim",
-  -- 	opts = {
-  -- 		ensure_installed = {
-  -- 			"lua-language-server", "stylua",
-  -- 			"html-lsp", "css-lsp" , "prettier"
-  -- 		},
-  -- 	},
-  -- },
+  {
+  	"williamboman/mason.nvim",
+  	opts = {
+  		ensure_installed = {
+  			"lua-language-server", "stylua",
+  			"html-lsp", "css-lsp" , "prettier",
+  			"rust-analyzer"
+  		},
+  	},
+  },
   --
   -- {
   -- 	"nvim-treesitter/nvim-treesitter",

@@ -56,4 +56,17 @@ lspconfig.kotlin_language_server.setup({
   root_dir = lspconfig.util.root_pattern("settings.gradle", "settings.gradle.kts", "build.gradle", ".git"),
 })
 
+lspconfig.rust_analyzer.setup({
+  settings = {
+    ["rust-analyzer"] = {
+      cargo = {
+        allFeatures = true,
+      },
+      checkOnSave = {
+        command = "clippy",
+      },
+    },
+  },
+})
+
 return lspconfig
