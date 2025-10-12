@@ -1,7 +1,5 @@
 #!/bin/bash
 
-CONF=~/.config
-
 CONF="$HOME/.config"
 DEST_CONF=".config"
 
