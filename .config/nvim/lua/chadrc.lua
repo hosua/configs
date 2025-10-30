@@ -5,12 +5,19 @@
 local M = {}
 
 M.ui = {
-	theme = "onedark",
+	theme = "bearded-arc",
 
 	-- hl_override = {
 	-- 	Comment = { italic = true },
 	-- 	["@comment"] = { italic = true },
 	-- },
+}
+
+M.base46 = {
+	-- Base46 is the theme engine; newer versions expect this table
+	theme = "bearded-arc",
+	theme_toggle = { "bearded-arc" },
+	transparency = false,
 }
 
 return M
