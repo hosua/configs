@@ -51,3 +51,5 @@ alias rustdocs="rustup docs --book"
 alias rbtree="eval $HOME/Desktop/Programming/ruby/rbtree/rbtree"
 
 alias krestart="kquitapp5 plasmashell && kstart plasmashell"
+
+alias aws-venv="source $HOME/python-venvs/aws/bin/activate"
