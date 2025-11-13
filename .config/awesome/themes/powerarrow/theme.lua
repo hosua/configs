@@ -394,20 +394,9 @@ function theme.at_screen_connect(s)
 			-- arrow(theme.bg_normal, "#343434"),
 			-- wibox.container.background(wibox.container.margin(task, dpi(3), dpi(7)), "#343434"),
 			arrow("", "#343434"),
-			-- markup.font(theme.font, string.format("MEM: %.1f/%.0fGB", mem_now.used / 1000, mem_now.total / 1000))
-			wibox.container.background(
-				wibox.container.margin(
-					wibox.widget.textbox(string.format("RAM: %.1f/%.0fGB", mem_now.used / 1000, mem_now.total / 1000)),
-					dpi(2),
-					dpi(3)
-				),
-				"#343434"
-			),
+			wibox.container.background(cpu.widget, "#343434"),
 			arrow("#343434", "#4B696D"),
-			wibox.container.background(
-				wibox.container.margin(wibox.widget.textbox(string.format("CPU: %d%%", cpu_now.usage)), dpi(3), dpi(4)),
-				"#4B696D"
-			),
+			wibox.container.background(mem.widget, "#4B696D"),
 			arrow("#4B696D", "#343434"),
 			-- wibox.container.background(wibox.container.margin(wibox.widget {
 			-- layout = wibox.layout.align.horizontal },

@@ -15,7 +15,6 @@ alias vi="nvim -p"
 alias vim="nvim -p" # vertical split if opening multiple files
 alias nvim="nvim -p"
 alias py="python"
-alias anki="cd ~/Desktop/git/Clones/anki; ./run"
 
 # Easy clipboard
 alias c="xclip"
@@ -53,3 +52,20 @@ alias rbtree="eval $HOME/Desktop/Programming/ruby/rbtree/rbtree"
 alias krestart="kquitapp5 plasmashell && kstart plasmashell"
 
 alias aws-venv="source $HOME/python-venvs/aws/bin/activate"
+
+kill_port_process() {
+    if [ -z "$1" ]; then
+        echo "Usage: kill_port_process <port>"
+        return 1
+    fi
+
+    PIDS=$(sudo lsof -t -i :"$1")
+    
+    if [ -z "$PIDS" ]; then
+        echo "No process found on port $1"
+        return 0
+    fi
+
+    echo "Killing process(es) on port $1: $PIDS"
+    sudo kill -9 $PIDS
+}
