@@ -47,49 +47,12 @@ vim.api.nvim_create_autocmd("FileType", {
 vim.api.nvim_create_autocmd("FileType", {
   pattern = { "javascript", "javascriptreact", "typescript", "typescriptreact" },
   callback = function()
-    local root_dir = make_root_finder({
-      "eslint.config.js",
-      "eslint.config.mjs",
-      "eslint.config.cjs",
-      "automation/eslint.config.mjs",
-      "package.json",
-      ".git",
-    })(buf_path())
-
-    local joinpath = vim.fs.joinpath
-    -- Try to locate repo root via .git to resolve shared config path
-    local repo_root = (function()
-      local gitdir = vim.fs.find({ ".git" }, { upward = true, path = root_dir })[1]
-      return gitdir and vim.fs.dirname(gitdir) or root_dir
-    end)()
-
-    local config_abs = joinpath(repo_root, "automation", "eslint.config.mjs")
-    local uv = vim.uv or vim.loop
-    local has_config = uv.fs_stat(config_abs) ~= nil
-    local env = {}
-    if has_config then
-      env.ESLINT_USE_FLAT_CONFIG = "true"
-      env.ESLINT_CONFIG_PATH = config_abs
-    end
-
     start_lsp("eslint", {
       cmd = { "vscode-eslint-language-server", "--stdio" },
-      root_dir = root_dir,
-      cmd_cwd = root_dir,
-      cmd_env = env,
-      settings = {
-        -- Match vscode-eslint expected settings keys
-        -- Enable diagnostics and support flat config
-        validate = "on",
-        run = "onType",
-        format = false,
-        workingDirectory = { mode = "auto" },
-        codeAction = {
-          disableRuleComment = { enable = true },
-          showDocumentation = { enable = true },
-        },
-        experimental = has_config and { useFlatConfig = true } or nil,
-      },
+      root_dir = make_root_finder({ "package.json", ".eslintrc.js", ".eslintrc.cjs", ".eslintrc.json", ".git" })(buf_path()),
+      on_attach = function(_, bufnr)
+        vim.api.nvim_create_autocmd("BufWritePre", { buffer = bufnr, command = "EslintFixAll" })
+      end,
     })
   end,
 })
@@ -150,6 +113,17 @@ vim.api.nvim_create_autocmd("FileType", {
           checkOnSave = { command = "clippy" },
         },
       },
+    })
+  end,
+})
+
+-- PHP (phpactor)
+vim.api.nvim_create_autocmd("FileType", {
+  pattern = { "php" },
+  callback = function()
+    start_lsp("phpactor", {
+      cmd = { "phpactor", "language-server" },
+      root_dir = make_root_finder({ "composer.json", ".git" })(buf_path()),
     })
   end,
 })
