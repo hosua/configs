@@ -11,9 +11,22 @@ local awful = require("awful")
 local wibox = require("wibox")
 local dpi = require("beautiful.xresources").apply_dpi
 local ram_widget = require("awesome-wm-widgets.ram-widget.ram-widget")
+local volume_widget = require("awesome-wm-widgets.volume-widget.volume")
 
 local math, string, os = math, string, os
 local my_table = awful.util.table or gears.table -- 4.{0,1} compatibility
+
+local color = {
+	primary = "#27374D",
+	secondary = "#526D82",
+	focus = "#2F435E",
+	window_unfocused = "#2f2f2f",
+	extra1 = "#9DB2BF",
+	extra2 = "#DDE6ED",
+	text_light = "#EAEFEF",
+	text_dark = "#333446",
+	text_focus = "#50589C",
+}
 
 local theme = {}
 theme.dir = os.getenv("HOME") .. "/.config/awesome/themes/powerarrow"
@@ -22,20 +35,18 @@ theme.font = "Terminus 12"
 theme.fg_normal = "#FEFEFE"
 theme.fg_focus = "#32D6FF"
 theme.fg_urgent = "#C83F11"
-theme.bg_normal = "#222222"
-theme.bg_focus = "#1E2320"
-theme.bg_urgent = "#3F3F3F"
-theme.taglist_fg_focus = "#00CCFF"
-theme.tasklist_bg_focus = "#222222"
+theme.bg_normal = color.primary
+theme.bg_focus = color.focus
+theme.bg_urgent = color.primary
+theme.taglist_fg_focus = color.focus
+theme.tasklist_bg_focus = color.focus
 theme.tasklist_fg_focus = "#00CCFF"
 theme.border_width = dpi(2)
-theme.border_normal = "#3F3F3F"
+theme.border_normal = color.primary
 theme.border_focus = "#6F6F6F"
 theme.border_marked = "#CC9393"
-theme.titlebar_bg_focus = "#3F3F3F"
-theme.titlebar_bg_normal = "#3F3F3F"
-theme.titlebar_bg_focus = theme.bg_focus
-theme.titlebar_bg_normal = theme.bg_normal
+theme.titlebar_bg_focus = color.focus
+theme.titlebar_bg_normal = theme.window_unfocused
 theme.titlebar_fg_focus = theme.fg_focus
 theme.menu_height = dpi(32)
 theme.menu_width = dpi(140)
@@ -108,17 +119,6 @@ local binclock = require("themes.powerarrow.binclock")({
 	show_seconds = true,
 	color_active = theme.fg_normal,
 	color_inactive = theme.bg_focus,
-})
-
--- Calendar
-theme.cal = lain.widget.cal({
-	--cal = "cal --color=always",
-	attach_to = { binclock.widget },
-	notification_preset = {
-		font = "Terminus 10",
-		fg = theme.fg_normal,
-		bg = theme.bg_normal,
-	},
 })
 
 -- Clock
@@ -236,15 +236,6 @@ local tempicon = wibox.widget.imagebox(theme.widget_temp)
 
 -- / fs
 local fsicon = wibox.widget.imagebox(theme.widget_hdd)
---[[ commented because it needs Gio/Glib >= 2.54
-theme.fs = lain.widget.fs({
-    notification_preset = { fg = theme.fg_normal, bg = theme.bg_normal, font = "Terminus 10" },
-    settings = function()
-        local fsp = string.format(" %3.2f %s ", fs_now["/"].free, fs_now["/"].units)
-        widget:set_markup(markup.font(theme.font, fsp))
-    end
-})
---]]
 
 -- Battery
 local baticon = wibox.widget.imagebox(theme.widget_battery)
@@ -374,55 +365,25 @@ function theme.at_screen_connect(s)
 		s.mytasklist, -- Middle widget
 		{ -- Right widgets
 			layout = wibox.layout.fixed.horizontal,
+			arrow(color.primary, color.primary),
 			wibox.widget.systray(),
-			-- wibox.container.margin(scissors, dpi(4), dpi(8)),
-			-- pl(wibox.widget { mpdicon, theme.mpd.widget, layout = wibox.layout.align.horizontal }, "#343434"),
-			-- pl(task, "#343434"),
-			--pl(wibox.widget { mailicon, mail and theme.mail.widget, layout = wibox.layout.align.horizontal }, "#343434"),
-			-- pl(wibox.widget { memicon, mem.widget, layout = wibox.layout.align.horizontal }, "#777E76"),
-			-- pl(wibox.widget { cpuicon, cpu.widget, layout = wibox.layout.align.horizontal }, "#4B696D"),
-			-- pl(wibox.widget { tempicon, temp.widget, layout = wibox.layout.align.horizontal }, "#4B3B51"),
-			--pl(wibox.widget { fsicon, theme.fs and theme.fs.widget, layout = wibox.layout.align.horizontal }, "#CB755B"),
-			-- pl(wibox.widget { baticon, bat.widget, layout = wibox.layout.align.horizontal }, "#8DAA9A"),
-			-- pl(binclock.widget, "#777E76"),
-			--]]
-			-- using separators
-			-- arrow(theme.bg_normal, "#343434"),
-			-- wibox.container.background(wibox.container.margin(wibox.widget { mailicon, theme.mail and theme.mail.widget, layout = wibox.layout.align.horizontal }, dpi(4), dpi(7)), "#343434"),
-			-- arrow("#343434", theme.bg_normal),
-			-- wibox.container.background(wibox.container.margin(wibox.widget { mpdicon, theme.mpd.widget, layout = wibox.layout.align.horizontal }, dpi(3), dpi(6)), theme.bg_focus),
-			-- arrow(theme.bg_normal, "#343434"),
-			-- wibox.container.background(wibox.container.margin(task, dpi(3), dpi(7)), "#343434"),
-			arrow("", "#343434"),
-			wibox.container.background(cpu.widget, "#343434"),
-			arrow("#343434", "#4B696D"),
-			wibox.container.background(mem.widget, "#4B696D"),
-			arrow("#4B696D", "#343434"),
-			-- wibox.container.background(wibox.container.margin(wibox.widget {
-			-- layout = wibox.layout.align.horizontal },
-			-- weather_curl_widget({
-			--     api_key=WEATHER_API_KEY,
-			--     coordinates = {40.8843, -74.3818},
-			--     time_format_12h = true,
-			--     units = 'imperial',
-			--     both_units_widget = true,
-			--     font_name = 'Carter One',
-			--     icons = 'VitalyGorbachev',
-			--     icons_extension = '.svg',
-			--     show_hourly_forecast = true,
-			--     show_daily_forecast = true,
-			-- }),
-			-- dpi(3), dpi(4)), "#4B696D"),
-			arrow("#343434", "#343434"),
-			wibox.container.background(wibox.container.margin(textclock, dpi(4), dpi(8)), "#343434"),
-			arrow("#343434", "#4B696D"),
+			arrow(color.primary, color.primary),
+			arrow(color.primary, color.secondary),
+			wibox.container.background(cpu.widget, color.secondary),
+			arrow(color.secondary, color.primary),
+			wibox.container.background(mem.widget, color.primary),
+			arrow(color.primary, color.secondary),
+			wibox.container.background(wibox.container.margin(textclock, dpi(4), dpi(8)), color.secondary),
+			arrow(color.secondary, color.primary),
+			wibox.container.background(volume_widget({ widget_type = "arc" }), color.primary),
+			arrow(color.primary, color.secondary),
 			wibox.container.background(
 				wibox.container.margin(
 					wibox.widget({ nil, neticon, net.widget, layout = wibox.layout.align.horizontal }),
 					dpi(3),
 					dpi(3)
 				),
-				"#4B696D"
+				color.secondary
 			),
 			s.mylayoutbox,
 		},
