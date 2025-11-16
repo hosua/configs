@@ -22,7 +22,7 @@ return {
     dependencies = { "mason.nvim" },
     opts = {
       automatic_installation = true,
-      ensure_installed = { "eslint" },
+      ensure_installed = { "eslint", "ts_ls" },
     },
   },
 

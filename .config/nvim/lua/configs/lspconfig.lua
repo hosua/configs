@@ -9,7 +9,7 @@ vim.diagnostic.config({
   severity_sort = true,  -- Sort by error severity
 })
 
-local servers = { "html", "cssls", "eslint", "tsserver", "clangd" }
+local servers = { "html", "cssls", "eslint", "ts_ls", "clangd" }
 vim.lsp.enable(servers)
 
 vim.lsp.config("eslint", {
@@ -26,6 +26,42 @@ vim.lsp.config("eslint", {
     },
   },
   filetypes = { "javascript", "javascriptreact", "typescript", "typescriptreact" },
+})
+
+-- Configure typescript-language-server for library imports
+vim.lsp.config("ts_ls", {
+  root_dir = function(fname)
+    local util = require("lspconfig.util")
+    return util.root_pattern("package.json", "tsconfig.json", "jsconfig.json", ".git")(fname) or vim.fs.dirname(fname)
+  end,
+  settings = {
+    typescript = {
+      preferences = {
+        includePackageJsonAutoImports = "on",
+        importModuleSpecifier = "auto",
+        importModuleSpecifierEnding = "minimal",
+      },
+      suggest = {
+        autoImports = true,
+        includeCompletionsForModuleExports = true,
+      },
+    },
+    javascript = {
+      preferences = {
+        includePackageJsonAutoImports = "on",
+        importModuleSpecifier = "auto",
+        importModuleSpecifierEnding = "minimal",
+      },
+      suggest = {
+        autoImports = true,
+        includeCompletionsForModuleExports = true,
+      },
+    },
+  },
+  -- Disable formatting if using ESLint/prettier (like your old config)
+  on_attach = function(client, bufnr)
+    client.server_capabilities.documentFormattingProvider = false
+  end,
 })
 
 -- read :h vim.lsp.config for changing options of lsp servers 
