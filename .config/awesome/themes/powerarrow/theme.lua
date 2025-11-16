@@ -20,7 +20,7 @@ local color = {
 	primary = "#27374D",
 	secondary = "#526D82",
 	focus = "#2F435E",
-	window_unfocused = "#2f2f2f",
+	dark_gray = "#2f2f2f",
 	extra1 = "#9DB2BF",
 	extra2 = "#DDE6ED",
 	text_light = "#EAEFEF",
@@ -33,20 +33,20 @@ theme.dir = os.getenv("HOME") .. "/.config/awesome/themes/powerarrow"
 theme.wallpaper = os.getenv("HOME") .. "/Pictures/Wallpapers/aurian.jpg"
 theme.font = "Terminus 12"
 theme.fg_normal = "#FEFEFE"
-theme.fg_focus = "#32D6FF"
+theme.fg_focus = color.text_light
 theme.fg_urgent = "#C83F11"
-theme.bg_normal = color.primary
-theme.bg_focus = color.focus
+theme.bg_normal = color.dark_gray
+theme.bg_focus = color.primary
 theme.bg_urgent = color.primary
-theme.taglist_fg_focus = color.focus
-theme.tasklist_bg_focus = color.focus
+theme.taglist_fg_focus = color.text_light
+theme.tasklist_bg_focus = color.primary
 theme.tasklist_fg_focus = "#00CCFF"
 theme.border_width = dpi(2)
 theme.border_normal = color.primary
 theme.border_focus = "#6F6F6F"
 theme.border_marked = "#CC9393"
-theme.titlebar_bg_focus = color.focus
-theme.titlebar_bg_normal = theme.window_unfocused
+theme.titlebar_bg_focus = color.primary
+theme.titlebar_bg_normal = theme.dark_gray
 theme.titlebar_fg_focus = theme.fg_focus
 theme.menu_height = dpi(32)
 theme.menu_width = dpi(140)
@@ -365,10 +365,10 @@ function theme.at_screen_connect(s)
 		s.mytasklist, -- Middle widget
 		{ -- Right widgets
 			layout = wibox.layout.fixed.horizontal,
-			arrow(color.primary, color.primary),
-			wibox.widget.systray(),
-			arrow(color.primary, color.primary),
-			arrow(color.primary, color.secondary),
+			arrow(color.dark_gray, color.dark_gray),
+			wibox.container.background(wibox.widget.systray(), color.dark_gray),
+			arrow(color.dark_gray, color.dark_gray),
+			arrow(color.dark_gray, color.secondary),
 			wibox.container.background(cpu.widget, color.secondary),
 			arrow(color.secondary, color.primary),
 			wibox.container.background(mem.widget, color.primary),
