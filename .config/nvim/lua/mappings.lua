@@ -6,5 +6,5 @@ local map = vim.keymap.set
 
 map("n", ";", ":", { desc = "CMD enter command mode" })
 map("i", "jk", "<ESC>")
-
--- map({ "n", "i", "v" }, "<C-s>", "<cmd> w <cr>")
+map("n", "<leader>sd", vim.diagnostic.open_float, { desc = "Show diagnostics under cursor" })
+map("n", "<leader>sf", vim.lsp.buf.code_action, { desc = "Show/apply code fixes" })
