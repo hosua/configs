@@ -2,39 +2,33 @@ return {
   {
     "stevearc/conform.nvim",
     event = 'BufWritePre', -- uncomment for format on save
-    config = function()
-      require "configs.conform"
-    end,
+    opts = require "configs.conform",
   },
-
   -- These are some examples, uncomment them if you want to see them work!
   {
     "neovim/nvim-lspconfig",
     config = function()
-      require("nvchad.configs.lspconfig").defaults()
       require "configs.lspconfig"
     end,
   },
+  {
+    "williamboman/mason.nvim",
+    opts = {
+      automatic_installation = true,
+    },
+  },
+  {
+    "williamboman/mason-lspconfig.nvim",
+    dependencies = { "mason.nvim" },
+    opts = {
+      automatic_installation = true,
+      ensure_installed = { "eslint" },
+    },
+  },
 
-  {
-    "lervag/vimtex",
-    ft = "tex",
-    config = function()
-      vim.g.vimtex_view_method = 'zathura'  -- Set your preferred PDF viewer
-      vim.g.vimtex_compiler_method = 'latexmk'  -- Set the compiler
-    end
-  },
-  {
-  	"williamboman/mason.nvim",
-  	opts = {
-  		ensure_installed = {
-  			"lua-language-server", "stylua",
-  			"html-lsp", "css-lsp" , "prettier",
-  			"rust-analyzer"
-  		},
-  	},
-  },
-  --
+  -- test new blink
+  -- { import = "nvchad.blink.lazyspec" },
+
   -- {
   -- 	"nvim-treesitter/nvim-treesitter",
   -- 	opts = {
