@@ -401,7 +401,10 @@ function theme.at_screen_connect(s)
 				color.secondary
 			),
 			arrow(color.secondary, color.primary),
-			wibox.container.background(volume_widget({ widget_type = "arc" }), color.primary),
+			wibox.container.background(
+				wibox.container.margin(volume_widget({ widget_type = "arc" }), dpi(3), dpi(3)),
+				color.primary
+			),
 			arrow(color.primary, color.secondary),
 			wibox.container.background(wibox.container.margin(textclock, dpi(4), dpi(8)), color.secondary),
 			s.mylayoutbox,
