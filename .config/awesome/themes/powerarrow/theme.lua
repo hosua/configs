@@ -10,7 +10,8 @@ local lain = require("lain")
 local awful = require("awful")
 local wibox = require("wibox")
 local dpi = require("beautiful.xresources").apply_dpi
-local ram_widget = require("awesome-wm-widgets.ram-widget.ram-widget")
+-- local ram_widget = require("awesome-wm-widgets.ram-widget.ram-widget")
+local calendar_widget = require("awesome-wm-widgets.calendar-widget.calendar")
 local volume_widget = require("awesome-wm-widgets.volume-widget.volume")
 
 local math, string, os = math, string, os
@@ -125,6 +126,15 @@ local binclock = require("themes.powerarrow.binclock")({
 local textclock = wibox.widget.textclock()
 textclock.font = theme.font
 textclock.format = "%B %d - %I:%M %p"
+
+-- Calendar widget
+local cw =
+	calendar_widget({ theme = "nord", placement = "top_right", start_sunday = true, auto_hide = true, timeout = 3 })
+textclock:connect_signal("button::press", function(_, _, _, button)
+	if button == 1 then
+		cw.toggle()
+	end
+end)
 
 -- Taskwarrior
 local task = wibox.widget.imagebox(theme.widget_task)
@@ -373,10 +383,6 @@ function theme.at_screen_connect(s)
 			arrow(color.secondary, color.primary),
 			wibox.container.background(mem.widget, color.primary),
 			arrow(color.primary, color.secondary),
-			wibox.container.background(wibox.container.margin(textclock, dpi(4), dpi(8)), color.secondary),
-			arrow(color.secondary, color.primary),
-			wibox.container.background(volume_widget({ widget_type = "arc" }), color.primary),
-			arrow(color.primary, color.secondary),
 			wibox.container.background(
 				wibox.container.margin(
 					wibox.widget({ nil, neticon, net.widget, layout = wibox.layout.align.horizontal }),
@@ -385,6 +391,10 @@ function theme.at_screen_connect(s)
 				),
 				color.secondary
 			),
+			arrow(color.secondary, color.primary),
+			wibox.container.background(volume_widget({ widget_type = "arc" }), color.primary),
+			arrow(color.primary, color.secondary),
+			wibox.container.background(wibox.container.margin(textclock, dpi(4), dpi(8)), color.secondary),
 			s.mylayoutbox,
 		},
 	})

@@ -28,7 +28,7 @@ vim.lsp.config("eslint", {
   filetypes = { "javascript", "javascriptreact", "typescript", "typescriptreact" },
 })
 
--- Configure typescript-language-server for library imports
+-- Configure ts_ls - ensure settings are applied
 vim.lsp.config("ts_ls", {
   root_dir = function(fname)
     local util = require("lspconfig.util")
@@ -58,9 +58,35 @@ vim.lsp.config("ts_ls", {
       },
     },
   },
-  -- Disable formatting if using ESLint/prettier (like your old config)
   on_attach = function(client, bufnr)
     client.server_capabilities.documentFormattingProvider = false
+    -- Force update settings after attach
+    client.notify("workspace/didChangeConfiguration", {
+      settings = {
+        typescript = {
+          preferences = {
+            includePackageJsonAutoImports = "on",
+            importModuleSpecifier = "auto",
+            importModuleSpecifierEnding = "minimal",
+          },
+          suggest = {
+            autoImports = true,
+            includeCompletionsForModuleExports = true,
+          },
+        },
+        javascript = {
+          preferences = {
+            includePackageJsonAutoImports = "on",
+            importModuleSpecifier = "auto",
+            importModuleSpecifierEnding = "minimal",
+          },
+          suggest = {
+            autoImports = true,
+            includeCompletionsForModuleExports = true,
+          },
+        },
+      },
+    })
   end,
 })
 
