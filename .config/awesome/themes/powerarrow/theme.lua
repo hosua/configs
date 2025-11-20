@@ -10,8 +10,8 @@ local lain = require("lain")
 local awful = require("awful")
 local wibox = require("wibox")
 local dpi = require("beautiful.xresources").apply_dpi
--- local ram_widget = require("awesome-wm-widgets.ram-widget.ram-widget")
 local calendar_widget = require("awesome-wm-widgets.calendar-widget.calendar")
+local fs_widget = require("awesome-wm-widgets.fs-widget.fs-widget")
 local volume_widget = require("awesome-wm-widgets.volume-widget.volume")
 
 local math, string, os = math, string, os
@@ -281,7 +281,7 @@ local net = lain.widget.net({
 	end,
 })
 
--- Brigtness
+-- Brightness
 local brighticon = wibox.widget.imagebox(theme.widget_brightness)
 -- If you use xbacklight, comment the line with "light -G" and uncomment the line bellow
 -- local brightwidget = awful.widget.watch('xbacklight -get', 0.1,
@@ -377,11 +377,20 @@ function theme.at_screen_connect(s)
 			layout = wibox.layout.fixed.horizontal,
 			arrow(color.dark_gray, color.dark_gray),
 			wibox.container.background(wibox.widget.systray(), color.dark_gray),
-			arrow(color.dark_gray, color.dark_gray),
-			arrow(color.dark_gray, color.secondary),
-			wibox.container.background(cpu.widget, color.secondary),
+			arrow(color.dark_gray, color.primary),
+			arrow(color.primary, color.primary),
+			wibox.container.background(cpu.widget, color.primary),
+			arrow(color.primary, color.secondary),
+			wibox.container.background(mem.widget, color.secondary),
 			arrow(color.secondary, color.primary),
-			wibox.container.background(mem.widget, color.primary),
+			wibox.container.background(
+				wibox.widget({
+					wibox.widget.textbox("FS: "),
+					fs_widget({ mounts = { "/", "/mnt/DISK1", "/mnt/DISK2", "/mnt/DISK3", "/mnt/DISK4" } }),
+					layout = wibox.layout.fixed.horizontal,
+				}),
+				color.primary
+			),
 			arrow(color.primary, color.secondary),
 			wibox.container.background(
 				wibox.container.margin(
