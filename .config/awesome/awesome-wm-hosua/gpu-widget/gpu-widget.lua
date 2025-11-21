@@ -28,6 +28,8 @@ local function worker(input)
 		total = nil,
 		power = nil,
 		power_limit = nil,
+		gpu_name = nil,
+		driver_version = nil,
 	}
 
 	local mem_text_widget = wibox.widget.textbox()
@@ -96,7 +98,7 @@ local function worker(input)
 		widget = {},
 	})
 
-	local function format_nvidia_smi_output(stdout, temp_value)
+	local function format_nvidia_smi_output(stdout, temp_value, used_mem, total_mem, gpu_name, driver_version)
 		local widgets = {}
 		local gpu_data_line = nil
 
@@ -112,15 +114,38 @@ local function worker(input)
 
 		if gpu_data_line then
 			local power_match = gpu_data_line:match("(%d+W%s*/%s*%d+W)")
-			local mem_match = gpu_data_line:match("(%d+MiB%s*/%s*%d+MiB)")
 
-			if power_match and mem_match then
+			if power_match then
+				local gpu_name_text = gpu_name or "N/A"
+				local driver_version_text = driver_version or "N/A"
+
+				local gpu_info_widget = wibox.widget.textbox()
+				gpu_info_widget:set_markup(
+					string.format(
+						"<b>GPU:</b> %s    <b>Driver:</b> %s",
+						gpu_name_text,
+						driver_version_text
+					)
+				)
+				gpu_info_widget.font = "Terminus 10"
+				table.insert(widgets, gpu_info_widget)
+
 				local power = tostring(power_match):gsub("%s+", " ")
-				local mem = tostring(mem_match):gsub("%s+", " ")
+				local mem_display = "N/A"
+				if used_mem and total_mem then
+					mem_display = string.format("%.0fMiB / %.0fMiB", used_mem, total_mem)
+				end
 				local temp_text = temp_value or "N/A"
 
 				local info_widget = wibox.widget.textbox()
-				info_widget:set_markup(string.format("<b>Temperature:</b> %s    <b>Power:</b> %s    <b>Memory:</b> %s", temp_text, power, mem))
+				info_widget:set_markup(
+					string.format(
+						"<b>Temperature:</b> %s    <b>Power:</b> %s    <b>Memory:</b> %s",
+						temp_text,
+						power,
+						mem_display
+					)
+				)
 				info_widget.font = "Terminus 10"
 				table.insert(widgets, info_widget)
 			end
@@ -146,7 +171,7 @@ local function worker(input)
 			},
 			{
 				header_name,
-				forced_width = 100,
+				forced_width = 125,
 				halign = "left",
 				widget = wibox.container.place,
 			},
@@ -169,6 +194,11 @@ local function worker(input)
 				name = name:gsub("^%s+", ""):gsub("%s+$", "")
 				mem = mem:gsub("^%s+", ""):gsub("%s+$", "")
 
+				if #name > 20 then
+					local end_part = name:sub(-(20 - 3))
+					name = "..." .. end_part
+				end
+
 				local pid_widget = wibox.widget.textbox(pid)
 				pid_widget.font = "Terminus 9"
 
@@ -188,7 +218,7 @@ local function worker(input)
 					},
 					{
 						name_widget,
-						forced_width = 100,
+						forced_width = 125,
 						halign = "left",
 						widget = wibox.container.place,
 					},
@@ -211,7 +241,7 @@ local function worker(input)
 	local function update_popup()
 		spawn.easy_async("nvidia-smi", function(stdout, stderr, exitreason, exitcode)
 			if exitcode == 0 and stdout then
-				local widgets = format_nvidia_smi_output(stdout, stats.temp)
+				local widgets = format_nvidia_smi_output(stdout, stats.temp, stats.used, stats.total, stats.gpu_name, stats.driver_version)
 				local layout_table = {}
 				layout_table.layout = wibox.layout.fixed.vertical
 				for _, widget_item in ipairs(widgets) do
@@ -329,15 +359,23 @@ local function worker(input)
 	end
 
 	watch(
-		[[nvidia-smi --query-gpu=memory.used,memory.free,temperature.gpu,power.draw,power.limit --format=csv,noheader,nounits]],
+		[[nvidia-smi --query-gpu=gpu_name,driver_version,memory.used,memory.total,temperature.gpu,power.draw,power.limit --format=csv,noheader,nounits]],
 		_config.refresh_rate,
 		function(_, stdout)
 			if not stdout or stdout == "" then
 				return
 			end
 
-			local used_str, free_str, temp_str, power_str, power_limit_str =
-				stdout:match("([%d%.]+),%s*([%d%.]+),%s*([%d%.]+),%s*([%d%.]+),%s*([%d%.]+)")
+			local gpu_name_str, driver_version_str, used_str, total_str, temp_str, power_str, power_limit_str =
+				stdout:match("([^,]+),%s*([^,]+),%s*([%d%.]+),%s*([%d%.]+),%s*([%d%.]+),%s*([%d%.]+),%s*([%d%.]+)")
+
+			if gpu_name_str then
+				stats.gpu_name = gpu_name_str:gsub("^%s+", ""):gsub("%s+$", "")
+			end
+
+			if driver_version_str then
+				stats.driver_version = driver_version_str:gsub("^%s+", ""):gsub("%s+$", "")
+			end
 
 			if temp_str then
 				stats.temp = string.format("%.0f°C", tonumber(temp_str))
@@ -347,8 +385,8 @@ local function worker(input)
 				stats.used = tonumber(used_str)
 			end
 
-			if free_str and stats.used then
-				stats.total = stats.used + tonumber(free_str)
+			if total_str then
+				stats.total = tonumber(total_str)
 			end
 
 			if power_str then
