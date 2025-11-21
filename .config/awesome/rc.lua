@@ -73,7 +73,7 @@ end
 -- awful.spawn.with_shell("xrandr --output DP-0 --mode 1920x1080 --rate 165 --output DP-4 --mode 1920x1080 --rate 165 --right-of DP-0 --output DP-2 --mode 1920x1080 --rate 165 --right-of DP-4 &")
 
 awful.spawn.with_shell(
-	"xrandr --output DP-2 --mode 1920x1080 --rate 144 --output DP-0 --mode 1920x1080 --rate 144 --right-of DP-2 --output DP-4 --mode 1920x1080 --rate 144 --right-of DP-0 &"
+	"xrandr --output DP-4 --mode 1920x1080 --rate 144 --output DP-2 --mode 1920x1080 --rate 144 --right-of DP-4 --output DP-0 --mode 1920x1080 --rate 144 --right-of DP-2 &"
 )
 
 -- awful.spawn.with_shell("picom") -- "launch compositor"

@@ -13,6 +13,7 @@ local dpi = require("beautiful.xresources").apply_dpi
 local calendar_widget = require("awesome-wm-widgets.calendar-widget.calendar")
 local fs_widget = require("awesome-wm-widgets.fs-widget.fs-widget")
 local volume_widget = require("awesome-wm-widgets.volume-widget.volume")
+local gpu_widget = require("awesome-wm-hosua.gpu-widget.gpu-widget")
 
 local math, string, os = math, string, os
 local my_table = awful.util.table or gears.table -- 4.{0,1} compatibility
@@ -377,8 +378,9 @@ function theme.at_screen_connect(s)
 			layout = wibox.layout.fixed.horizontal,
 			arrow(color.dark_gray, color.dark_gray),
 			wibox.container.background(wibox.widget.systray(), color.dark_gray),
-			arrow(color.dark_gray, color.primary),
-			arrow(color.primary, color.primary),
+			arrow(color.dark_gray, color.secondary),
+			wibox.container.background(gpu_widget(), color.secondary),
+			arrow(color.secondary, color.primary),
 			wibox.container.background(cpu.widget, color.primary),
 			arrow(color.primary, color.secondary),
 			wibox.container.background(mem.widget, color.secondary),
