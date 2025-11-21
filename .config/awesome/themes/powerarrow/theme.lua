@@ -378,37 +378,37 @@ function theme.at_screen_connect(s)
 			layout = wibox.layout.fixed.horizontal,
 			arrow(color.dark_gray, color.dark_gray),
 			wibox.container.background(wibox.widget.systray(), color.dark_gray),
-			arrow(color.dark_gray, color.secondary),
-			wibox.container.background(gpu_widget(), color.secondary),
-			arrow(color.secondary, color.primary),
-			wibox.container.background(cpu.widget, color.primary),
+			arrow(color.dark_gray, color.primary),
+			wibox.container.background(gpu_widget(), color.primary),
 			arrow(color.primary, color.secondary),
-			wibox.container.background(mem.widget, color.secondary),
+			wibox.container.background(cpu.widget, color.secondary),
 			arrow(color.secondary, color.primary),
+			wibox.container.background(mem.widget, color.primary),
+			arrow(color.primary, color.secondary),
 			wibox.container.background(
 				wibox.widget({
 					wibox.widget.textbox("FS: "),
 					fs_widget({ mounts = { "/", "/mnt/DISK1", "/mnt/DISK2", "/mnt/DISK3", "/mnt/DISK4" } }),
 					layout = wibox.layout.fixed.horizontal,
 				}),
-				color.primary
+				color.secondary
 			),
-			arrow(color.primary, color.secondary),
+			arrow(color.secondary, color.primary),
 			wibox.container.background(
 				wibox.container.margin(
 					wibox.widget({ nil, neticon, net.widget, layout = wibox.layout.align.horizontal }),
 					dpi(3),
 					dpi(3)
 				),
-				color.secondary
-			),
-			arrow(color.secondary, color.primary),
-			wibox.container.background(
-				wibox.container.margin(volume_widget({ widget_type = "arc" }), dpi(3), dpi(3)),
 				color.primary
 			),
 			arrow(color.primary, color.secondary),
-			wibox.container.background(wibox.container.margin(textclock, dpi(4), dpi(8)), color.secondary),
+			wibox.container.background(
+				wibox.container.margin(volume_widget({ widget_type = "arc" }), dpi(3), dpi(3)),
+				color.secondary
+			),
+			arrow(color.secondary, color.primary),
+			wibox.container.background(wibox.container.margin(textclock, dpi(4), dpi(8)), color.primary),
 			s.mylayoutbox,
 		},
 	})
