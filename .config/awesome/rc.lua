@@ -77,6 +77,9 @@ end
 awful.spawn.with_shell(
 	"xrandr --output DP-4 --mode 1920x1080 --rate 144 --output DP-2 --mode 1920x1080 --rate 144 --right-of DP-4 --output DP-0 --mode 1920x1080 --rate 144 --right-of DP-2 &"
 )
+-- awful.spawn.with_shell(
+-- 	"xrandr --output DP-4 --mode 1920x1080 --rate 144 --output DP-0 --mode 1920x1080 --rate 144 --right-of DP-4 --output DP-2 --mode 1920x1080 --rate 144 --right-of DP-0 &"
+-- )
 
 -- awful.spawn.with_shell("picom") -- "launch compositor"
 awful.spawn.with_shell("picom --backend glx --vsync")
@@ -641,7 +644,45 @@ globalkeys = mytable.join(
 			exe_callback = awful.util.eval,
 			history_path = awful.util.get_cache_dir() .. "/history_eval",
 		})
-	end, { description = "lua execute prompt", group = "awesome" })
+	end, { description = "lua execute prompt", group = "awesome" }),
+
+	-- TTY switching (Ctrl+Alt+F1-F12)
+	awful.key({ "Control", altkey }, "F1", function()
+		awful.spawn("chvt 1")
+	end, { description = "switch to TTY1", group = "system" }),
+	awful.key({ "Control", altkey }, "F2", function()
+		awful.spawn("chvt 2")
+	end, { description = "switch to TTY2", group = "system" }),
+	awful.key({ "Control", altkey }, "F3", function()
+		awful.spawn("chvt 3")
+	end, { description = "switch to TTY3", group = "system" }),
+	awful.key({ "Control", altkey }, "F4", function()
+		awful.spawn("chvt 4")
+	end, { description = "switch to TTY4", group = "system" }),
+	awful.key({ "Control", altkey }, "F5", function()
+		awful.spawn("chvt 5")
+	end, { description = "switch to TTY5", group = "system" }),
+	awful.key({ "Control", altkey }, "F6", function()
+		awful.spawn("chvt 6")
+	end, { description = "switch to TTY6", group = "system" }),
+	awful.key({ "Control", altkey }, "F7", function()
+		awful.spawn("chvt 7")
+	end, { description = "switch to TTY7", group = "system" }),
+	awful.key({ "Control", altkey }, "F8", function()
+		awful.spawn("chvt 8")
+	end, { description = "switch to TTY8", group = "system" }),
+	awful.key({ "Control", altkey }, "F9", function()
+		awful.spawn("chvt 9")
+	end, { description = "switch to TTY9", group = "system" }),
+	awful.key({ "Control", altkey }, "F10", function()
+		awful.spawn("chvt 10")
+	end, { description = "switch to TTY10", group = "system" }),
+	awful.key({ "Control", altkey }, "F11", function()
+		awful.spawn("chvt 11")
+	end, { description = "switch to TTY11", group = "system" }),
+	awful.key({ "Control", altkey }, "F12", function()
+		awful.spawn("chvt 12")
+	end, { description = "switch to TTY12", group = "system" })
 	--]]
 )
 
