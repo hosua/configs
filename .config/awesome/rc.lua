@@ -349,6 +349,13 @@ globalkeys = mytable.join(
 	-- Show help
 	awful.key({ modkey }, "s", hotkeys_popup.show_help, { description = "show help", group = "awesome" }),
 
+	-- Move systray to focused screen
+	awful.key({ modkey }, "t", function()
+		if _G.mysystray then
+			_G.mysystray:set_screen(awful.screen.focused())
+		end
+	end, { description = "move systray to screen", group = "awesome" }),
+
 	-- Tag browsing
 	awful.key({ modkey }, "Left", awful.tag.viewprev, { description = "view previous", group = "tag" }),
 	awful.key({ modkey }, "Right", awful.tag.viewnext, { description = "view next", group = "tag" }),

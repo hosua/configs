@@ -14,8 +14,12 @@ local calendar_widget = require("awesome-wm-widgets.calendar-widget.calendar")
 local fs_widget = require("awesome-wm-widgets.fs-widget.fs-widget")
 local volume_widget = require("awesome-wm-widgets.volume-widget.volume")
 local pacman_widget = require("awesome-wm-widgets.pacman-widget.pacman")
+local mypacman = pacman_widget()
 
-local gpu_widget = require("awesome-wm-hosua.gpu-widget.gpu-widget")
+local nvidia_widget = require("awesome-wm-hosua.nvidia-widget.nvidia-widget")
+
+local mysystray = wibox.widget.systray()
+_G.mysystray = mysystray
 
 local math, string, os = math, string, os
 local my_table = awful.util.table or gears.table -- 4.{0,1} compatibility
@@ -379,9 +383,9 @@ function theme.at_screen_connect(s)
 		{ -- Right widgets
 			layout = wibox.layout.fixed.horizontal,
 			arrow(color.dark_gray, color.dark_gray),
-			wibox.container.background(wibox.widget.systray(), color.dark_gray),
+			wibox.container.background(mysystray, color.dark_gray),
 			arrow(color.dark_gray, color.primary),
-			wibox.container.background(gpu_widget(), color.primary),
+			wibox.container.background(nvidia_widget(), color.primary),
 			arrow(color.primary, color.secondary),
 			wibox.container.background(cpu.widget, color.secondary),
 			arrow(color.secondary, color.primary),
@@ -396,7 +400,7 @@ function theme.at_screen_connect(s)
 				color.secondary
 			),
 			arrow(color.secondary, color.primary),
-			wibox.container.background(pacman_widget(), color.primary),
+			wibox.container.background(mypacman, color.primary),
 			arrow(color.primary, color.secondary),
 			wibox.container.background(
 				wibox.container.margin(volume_widget({ widget_type = "arc" }), dpi(3), dpi(3)),
@@ -409,4 +413,5 @@ function theme.at_screen_connect(s)
 	})
 end
 
-return theme
+	theme.mysystray = mysystray
+	return theme
