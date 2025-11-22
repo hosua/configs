@@ -13,6 +13,8 @@ local dpi = require("beautiful.xresources").apply_dpi
 local calendar_widget = require("awesome-wm-widgets.calendar-widget.calendar")
 local fs_widget = require("awesome-wm-widgets.fs-widget.fs-widget")
 local volume_widget = require("awesome-wm-widgets.volume-widget.volume")
+local pacman_widget = require("awesome-wm-widgets.pacman-widget.pacman")
+
 local gpu_widget = require("awesome-wm-hosua.gpu-widget.gpu-widget")
 
 local math, string, os = math, string, os
@@ -394,14 +396,7 @@ function theme.at_screen_connect(s)
 				color.secondary
 			),
 			arrow(color.secondary, color.primary),
-			wibox.container.background(
-				wibox.container.margin(
-					wibox.widget({ nil, neticon, net.widget, layout = wibox.layout.align.horizontal }),
-					dpi(3),
-					dpi(3)
-				),
-				color.primary
-			),
+			wibox.container.background(pacman_widget(), color.primary),
 			arrow(color.primary, color.secondary),
 			wibox.container.background(
 				wibox.container.margin(volume_widget({ widget_type = "arc" }), dpi(3), dpi(3)),

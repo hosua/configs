@@ -4,7 +4,7 @@ local awful = require("awful")
 local beautiful = require("beautiful")
 local gears = require("gears")
 
-local DIR = os.getenv("HOME") .. "/.config/awesome/pacman-widget/"
+local DIR = os.getenv("HOME") .. "/.config/awesome/awesome-wm-widgets/pacman-widget/"
 local ICON_DIR = DIR .. "icons/"
 
 local pacman_widget = {}

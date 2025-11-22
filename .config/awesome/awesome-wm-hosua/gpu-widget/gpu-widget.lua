@@ -24,6 +24,7 @@ local function worker(input)
 
 	local stats = {
 		temp = nil,
+		temp_raw = nil,
 		used = nil,
 		total = nil,
 		power = nil,
@@ -98,58 +99,45 @@ local function worker(input)
 		widget = {},
 	})
 
-	local function format_nvidia_smi_output(stdout, temp_value, used_mem, total_mem, gpu_name, driver_version)
+	local function format_temp(celsius)
+		if not celsius then
+			return "N/A"
+		end
+		local fahrenheit = (celsius * 9 / 5) + 32
+		return string.format("%.0f°C (%.0f°F)", celsius, fahrenheit)
+	end
+
+	local function create_popup_info_widgets()
 		local widgets = {}
-		local gpu_data_line = nil
 
-		for line in stdout:gmatch("[^\r\n]+") do
-			line = line:gsub("^%s+", ""):gsub("%s+$", "")
+		local gpu_name_text = stats.gpu_name or "N/A"
+		local driver_version_text = stats.driver_version or "N/A"
 
-			if line:match("^%+%-+%+") or line:match("^|%-%-") or line == "" then
-			elseif line:match("^|%s+%d+%%") then
-				gpu_data_line = line
-				break
-			end
+		local gpu_info_widget = wibox.widget.textbox()
+		gpu_info_widget:set_markup(
+			string.format("<b>GPU:</b> %s    <b>Driver:</b> %s", gpu_name_text, driver_version_text)
+		)
+		gpu_info_widget.font = "Terminus 10"
+		table.insert(widgets, gpu_info_widget)
+
+		local power = "N/A"
+		if stats.power and stats.power_limit then
+			power = string.format("%.0f/%.0fW", stats.power, stats.power_limit)
 		end
 
-		if gpu_data_line then
-			local power_match = gpu_data_line:match("(%d+W%s*/%s*%d+W)")
-
-			if power_match then
-				local gpu_name_text = gpu_name or "N/A"
-				local driver_version_text = driver_version or "N/A"
-
-				local gpu_info_widget = wibox.widget.textbox()
-				gpu_info_widget:set_markup(
-					string.format(
-						"<b>GPU:</b> %s    <b>Driver:</b> %s",
-						gpu_name_text,
-						driver_version_text
-					)
-				)
-				gpu_info_widget.font = "Terminus 10"
-				table.insert(widgets, gpu_info_widget)
-
-				local power = tostring(power_match):gsub("%s+", " ")
-				local mem_display = "N/A"
-				if used_mem and total_mem then
-					mem_display = string.format("%.0fMiB / %.0fMiB", used_mem, total_mem)
-				end
-				local temp_text = temp_value or "N/A"
-
-				local info_widget = wibox.widget.textbox()
-				info_widget:set_markup(
-					string.format(
-						"<b>Temperature:</b> %s    <b>Power:</b> %s    <b>Memory:</b> %s",
-						temp_text,
-						power,
-						mem_display
-					)
-				)
-				info_widget.font = "Terminus 10"
-				table.insert(widgets, info_widget)
-			end
+		local mem_display = "N/A"
+		if stats.used and stats.total then
+			mem_display = string.format("%.0f/%.0fMiB", stats.used, stats.total)
 		end
+
+		local temp_text = format_temp(stats.temp_raw)
+
+		local info_widget = wibox.widget.textbox()
+		info_widget:set_markup(
+			string.format("<b>Temp:</b> %s    <b>Power:</b> %s    <b>Memory:</b> %s", temp_text, power, mem_display)
+		)
+		info_widget.font = "Terminus 10"
+		table.insert(widgets, info_widget)
 
 		return widgets
 	end
@@ -239,101 +227,64 @@ local function worker(input)
 	end
 
 	local function update_popup()
-		spawn.easy_async("nvidia-smi", function(stdout, stderr, exitreason, exitcode)
-			if exitcode == 0 and stdout then
-				local widgets = format_nvidia_smi_output(stdout, stats.temp, stats.used, stats.total, stats.gpu_name, stats.driver_version)
-				local layout_table = {}
-				layout_table.layout = wibox.layout.fixed.vertical
-				for _, widget_item in ipairs(widgets) do
-					table.insert(layout_table, widget_item)
+		local widgets = create_popup_info_widgets()
+		local layout_table = {}
+		layout_table.layout = wibox.layout.fixed.vertical
+		for _, widget_item in ipairs(widgets) do
+			table.insert(layout_table, widget_item)
+		end
+
+		local separator = wibox.widget({
+			wibox.widget.textbox(""),
+			forced_height = 10,
+			widget = wibox.container.constraint,
+		})
+		table.insert(layout_table, separator)
+
+		local process_cmd =
+			'nvidia-smi -q | awk \'/Process ID/ { pid=$NF } /Name/ { sub(/^.*: /, ""); name=$0 } /Used GPU Memory/ { sub(/^.*: /, ""); mem=$0; split(mem, a, " "); mem_num=a[1]; print pid "," name "," mem "," mem_num }\' | sort -t, -k4,4nr | cut -d, -f1-3 | head -10'
+
+		spawn.easy_async_with_shell(
+			process_cmd,
+			function(process_stdout, process_stderr, process_exitreason, process_exitcode)
+				if process_exitcode == 0 and process_stdout and process_stdout ~= "" then
+					local processes = {}
+					for line in process_stdout:gmatch("[^\r\n]+") do
+						line = line:gsub("^%s+", ""):gsub("%s+$", "")
+						if line and line ~= "" then
+							table.insert(processes, line)
+						end
+					end
+
+					if #processes > 0 then
+						local process_rows = create_process_table(processes)
+						for _, row in ipairs(process_rows) do
+							table.insert(layout_table, row)
+						end
+					end
 				end
 
-				local separator = wibox.widget({
-					wibox.widget.textbox(""),
-					forced_height = 10,
-					widget = wibox.container.constraint,
-				})
-				table.insert(layout_table, separator)
-
-				local process_cmd =
-					'nvidia-smi -q | awk \'/Process ID/ { pid=$NF } /Name/ { sub(/^.*: /, ""); name=$0 } /Used GPU Memory/ { sub(/^.*: /, ""); mem=$0; split(mem, a, " "); mem_num=a[1]; print pid "," name "," mem "," mem_num }\' | sort -t, -k4,4nr | cut -d, -f1-3 | head -10'
-
-				spawn.easy_async_with_shell(
-					process_cmd,
-					function(process_stdout, process_stderr, process_exitreason, process_exitcode)
-						if process_exitcode == 0 and process_stdout and process_stdout ~= "" then
-							local processes = {}
-							for line in process_stdout:gmatch("[^\r\n]+") do
-								line = line:gsub("^%s+", ""):gsub("%s+$", "")
-								if line and line ~= "" then
-									table.insert(processes, line)
-								end
-							end
-
-							if #processes > 0 then
-								local process_rows = create_process_table(processes)
-								for _, row in ipairs(process_rows) do
-									table.insert(layout_table, row)
-								end
-							end
-						end
-
-						popup:setup({
-							layout_table,
-							margins = 8,
-							widget = wibox.container.margin,
-						})
-					end
-				)
-			else
-				local error_widget = wibox.widget.textbox()
-				error_widget:set_markup("<b>Error:</b> Could not get GPU information")
-				error_widget.font = "Terminus 9"
 				popup:setup({
-					{
-						error_widget,
-						layout = wibox.layout.fixed.vertical,
-					},
+					layout_table,
 					margins = 8,
 					widget = wibox.container.margin,
 				})
 			end
-		end)
+		)
 	end
-
-	local popup_timer = gears.timer({
-		timeout = 1,
-		autostart = false,
-	})
-
-	popup_timer:connect_signal("timeout", function()
-		if popup.visible then
-			update_popup()
-		else
-			popup_timer:stop()
-		end
-	end)
-
-	popup:connect_signal("property::visible", function()
-		if not popup.visible then
-			popup_timer:stop()
-		end
-	end)
 
 	widget:buttons(awful.util.table.join(awful.button({}, 1, function()
 		if popup.visible then
 			popup.visible = false
-			popup_timer:stop()
 		else
 			popup:move_next_to(mouse.current_widget_geometry)
 			popup.visible = true
-			popup_timer:start()
-			popup_timer:emit_signal("timeout")
+			update_popup()
 		end
 	end)))
 
 	local update_widget = function()
-		local temp_text = stats.temp or "N/A"
+		local temp_text = format_temp(stats.temp_raw)
 		local power_text = "N/A"
 		local mem_text = "N/A"
 		local mem_percent = 0
@@ -378,7 +329,7 @@ local function worker(input)
 			end
 
 			if temp_str then
-				stats.temp = string.format("%.0f°C", tonumber(temp_str))
+				stats.temp_raw = tonumber(temp_str)
 			end
 
 			if used_str then
@@ -398,6 +349,9 @@ local function worker(input)
 			end
 
 			update_widget()
+			if popup.visible then
+				update_popup()
+			end
 		end,
 		widget
 	)
