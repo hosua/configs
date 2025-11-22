@@ -403,7 +403,11 @@ function theme.at_screen_connect(s)
 			wibox.container.background(mypacman, color.primary),
 			arrow(color.primary, color.secondary),
 			wibox.container.background(
-				wibox.container.margin(volume_widget({ widget_type = "arc" }), dpi(3), dpi(3)),
+				wibox.container.margin(
+					volume_widget({ widget_type = "icon_and_text", use_pactl = true }),
+					dpi(3),
+					dpi(3)
+				),
 				color.secondary
 			),
 			arrow(color.secondary, color.primary),
@@ -413,5 +417,5 @@ function theme.at_screen_connect(s)
 	})
 end
 
-	theme.mysystray = mysystray
-	return theme
+theme.mysystray = mysystray
+return theme

@@ -15,7 +15,13 @@ local beautiful = require("beautiful")
 local watch = require("awful.widget.watch")
 local utils = require("awesome-wm-widgets.volume-widget.utils")
 
-local LIST_DEVICES_CMD = [[sh -c "pacmd list-sinks; pacmd list-sources"]]
+local function LIST_DEVICES_CMD(use_pactl)
+	if use_pactl then
+		return [[sh -c "pactl list sinks; pactl list sources"]]
+	else
+		return [[sh -c "pacmd list-sinks; pacmd list-sources"]]
+	end
+end
 local function GET_VOLUME_CMD(card, device, mixctrl, value_type)
 	return "amixer -c " .. card .. " -D " .. device .. " sget " .. mixctrl .. " " .. value_type
 end
@@ -81,7 +87,7 @@ local function build_main_line(device)
 	end
 end
 
-local function build_rows(devices, on_checkbox_click, device_type)
+local function build_rows(devices, on_checkbox_click, device_type, use_pactl)
 	local device_rows = { layout = wibox.layout.fixed.vertical }
 	for _, device in pairs(devices) do
 		local checkbox = wibox.widget({
@@ -96,8 +102,14 @@ local function build_rows(devices, on_checkbox_click, device_type)
 		})
 
 		checkbox:connect_signal("button::press", function()
+			local cmd
+			if use_pactl then
+				cmd = string.format([[sh -c 'pactl set-default-%s "%s"']], device_type, device.name)
+			else
+				cmd = string.format([[sh -c 'pacmd set-default-%s "%s"']], device_type, device.name)
+			end
 			spawn.easy_async(
-				string.format([[sh -c 'pacmd set-default-%s "%s"']], device_type, device.name),
+				cmd,
 				function()
 					on_checkbox_click()
 				end
@@ -159,8 +171,14 @@ local function build_rows(devices, on_checkbox_click, device_type)
 		end)
 
 		row:connect_signal("button::press", function()
+			local cmd
+			if use_pactl then
+				cmd = string.format([[sh -c 'pactl set-default-%s "%s"']], device_type, device.name)
+			else
+				cmd = string.format([[sh -c 'pacmd set-default-%s "%s"']], device_type, device.name)
+			end
 			spawn.easy_async(
-				string.format([[sh -c 'pacmd set-default-%s "%s"']], device_type, device.name),
+				cmd,
 				function()
 					on_checkbox_click()
 				end
@@ -186,9 +204,9 @@ local function build_header_row(text)
 	})
 end
 
-local function rebuild_popup()
-	spawn.easy_async(LIST_DEVICES_CMD, function(stdout)
-		local sinks, sources = utils.extract_sinks_and_sources(stdout)
+local function rebuild_popup(use_pactl)
+	spawn.easy_async(LIST_DEVICES_CMD(use_pactl), function(stdout)
+		local sinks, sources = utils.extract_sinks_and_sources(stdout, use_pactl)
 
 		for i = 0, #rows do
 			rows[i] = nil
@@ -198,15 +216,15 @@ local function rebuild_popup()
 		table.insert(
 			rows,
 			build_rows(sinks, function()
-				rebuild_popup()
-			end, "sink")
+				rebuild_popup(use_pactl)
+			end, "sink", use_pactl)
 		)
 		table.insert(rows, build_header_row("SOURCES"))
 		table.insert(
 			rows,
 			build_rows(sources, function()
-				rebuild_popup()
-			end, "source")
+				rebuild_popup(use_pactl)
+			end, "source", use_pactl)
 		)
 
 		popup:setup(rows)
@@ -225,6 +243,7 @@ local function worker(user_args)
 	local mixctrl = args.mixctrl or "Master"
 	local value_type = args.value_type or "-M"
 	local toggle_cmd = args.toggle_cmd or nil
+	local use_pactl = args.use_pactl or false
 
 	if widget_types[widget_type] == nil then
 		volume.widget = widget_types["icon_and_text"].get_widget(args.icon_and_text_args)
@@ -281,7 +300,7 @@ local function worker(user_args)
 			if popup.visible then
 				popup.visible = not popup.visible
 			else
-				rebuild_popup()
+				rebuild_popup(use_pactl)
 				popup:move_next_to(mouse.current_widget_geometry)
 			end
 		end),

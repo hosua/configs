@@ -13,7 +13,7 @@ local function split(string_to_split, separator)
     return t
 end
 
-function utils.extract_sinks_and_sources(pacmd_output)
+function utils.extract_sinks_and_sources(output, use_pactl)
     local sinks = {}
     local sources = {}
     local device
@@ -24,17 +24,55 @@ function utils.extract_sinks_and_sources(pacmd_output)
     local in_device = false
     local in_properties = false
     local in_ports = false
-    for line in pacmd_output:gmatch("[^\r\n]+") do
-        if string.match(line, 'source%(s%) available.') then
+    
+    use_pactl = use_pactl or false
+    
+    -- Get default sink and source names (only for pactl)
+    local default_sink_name = nil
+    local default_source_name = nil
+    if use_pactl then
+        local handle = io.popen("pactl get-default-sink 2>/dev/null")
+        if handle then
+            default_sink_name = handle:read("*a"):gsub("%s+", "")
+            handle:close()
+        end
+        handle = io.popen("pactl get-default-source 2>/dev/null")
+        if handle then
+            default_source_name = handle:read("*a"):gsub("%s+", "")
+            handle:close()
+        end
+    end
+    
+    for line in output:gmatch("[^\r\n]+") do
+        if use_pactl and string.match(line, '^Source #') then
             in_sink = false
             in_source = true
-        end
-        if string.match(line, 'sink%(s%) available.') then
+            in_device = true
+            in_properties = false
+            local id = line:match('Source #(%d+)')
+            device = {
+                id = id,
+                is_default = false
+            }
+            table.insert(sources, device)
+        elseif use_pactl and string.match(line, '^Sink #') then
             in_sink = true
             in_source = false
-        end
-
-        if string.match(line, 'index:') then
+            in_device = true
+            in_properties = false
+            local id = line:match('Sink #(%d+)')
+            device = {
+                id = id,
+                is_default = false
+            }
+            table.insert(sinks, device)
+        elseif string.match(line, 'source%(s%) available.') then
+            in_sink = false
+            in_source = true
+        elseif string.match(line, 'sink%(s%) available.') then
+            in_sink = true
+            in_source = false
+        elseif string.match(line, 'index:') then
             in_device = true
             in_properties = false
             device = {
@@ -71,10 +109,33 @@ function utils.extract_sinks_and_sources(pacmd_output)
         end
 
         if in_device then
-            local t = split(line, ': ')
-            local key = t[1]:gsub('\t+', ''):lower()
-            local value = t[2]:gsub('^<', ''):gsub('>$', '')
-            device[key] = value
+            if use_pactl and string.match(line, '^\tName:') then
+                local name = line:match('Name: (.+)')
+                if name then
+                    device.name = name:gsub("^%s+", ""):gsub("%s+$", "")
+                    if in_sink and default_sink_name and device.name == default_sink_name then
+                        device.is_default = true
+                    elseif in_source and default_source_name and device.name == default_source_name then
+                        device.is_default = true
+                    end
+                end
+            elseif use_pactl and string.match(line, '^\tDescription:') then
+                local desc = line:match('Description: (.+)')
+                if desc then
+                    if not device.properties then
+                        device.properties = {}
+                    end
+                    device.properties.device_description = desc:gsub("^%s+", ""):gsub("%s+$", "")
+                end
+            else
+                local t = split(line, ': ')
+                local key = t[1]:gsub('\t+', ''):lower()
+                local value = t[2]
+                if value then
+                    value = value:gsub('^<', ''):gsub('>$', '')
+                    device[key] = value
+                end
+            end
         end
 
         if in_properties then
