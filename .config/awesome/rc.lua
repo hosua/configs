@@ -22,6 +22,8 @@ local lain = require("lain")
 local freedesktop = require("freedesktop")
 local hotkeys_popup = require("awful.hotkeys_popup")
 require("awful.hotkeys_popup.keys")
+-- local run_shell = require("awesome-wm-widgets.run-shell.run-shell")
+local run_shell = require("awesome-wm-widgets.run-shell-3.run-shell")
 local mytable = awful.util.table or gears.table -- 4.{0,1} compatibility
 
 -- }}}
@@ -625,9 +627,12 @@ globalkeys = mytable.join(
         {description = "show rofi", group = "launcher"}),
     --]]
 	-- Prompt
+	-- awful.key({ modkey }, "r", function()
+	-- 	awful.screen.focused().mypromptbox:run()
+	-- end, { description = "run prompt", group = "launcher" }),
 	awful.key({ modkey }, "r", function()
-		awful.screen.focused().mypromptbox:run()
-	end, { description = "run prompt", group = "launcher" }),
+		run_shell.launch()
+	end),
 
 	awful.key({ modkey }, "x", function()
 		awful.prompt.run({
