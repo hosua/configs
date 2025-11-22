@@ -90,6 +90,7 @@ local function worker(user_args)
 
     local popup = awful.popup {
         bg = _config.popup_bg,
+        fg = "#D8DEE9",
         ontop = true,
         visible = false,
         shape = gears.shape.rounded_rect,

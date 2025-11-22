@@ -67,13 +67,13 @@ local volume = {}
 local rows = { layout = wibox.layout.fixed.vertical }
 
 local popup = awful.popup({
-	bg = beautiful.bg_normal,
-	fg = beautiful.fg_normal,
+	bg = "#2E3440",
+	fg = "#D8DEE9",
 	ontop = true,
 	visible = false,
 	shape = gears.shape.rounded_rect,
 	border_width = 1,
-	border_color = beautiful.bg_focus,
+	border_color = "#4C566A",
 	maximum_width = 400,
 	offset = { y = 5 },
 	widget = {},

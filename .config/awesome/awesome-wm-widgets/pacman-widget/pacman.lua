@@ -11,9 +11,9 @@ local pacman_widget = {}
 local config, timer = {}, {}
 
 config.interval = 600
-config.popup_bg_color = "#222222"
+config.popup_bg_color = "#2E3440"
 config.popup_border_width = 1
-config.popup_border_color = "#7e7e7e"
+config.popup_border_color = "#4C566A"
 config.popup_height = 10
 config.popup_width = 300
 config.polkit_agent_path = "/usr/bin/lxpolkit"
@@ -67,6 +67,8 @@ local function worker(user_args)
        end)
 
     local popup = awful.popup {
+        bg = _config.popup_bg_color,
+        fg = "#D8DEE9",
         border_width = _config.popup_border_width,
         border_color = _config.popup_border_color,
         shape = gears.shape.rounded_rect,

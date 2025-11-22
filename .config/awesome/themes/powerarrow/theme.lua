@@ -394,7 +394,12 @@ function theme.at_screen_connect(s)
 			wibox.container.background(
 				wibox.widget({
 					wibox.widget.textbox("FS: "),
-					fs_widget({ mounts = { "/", "/mnt/DISK1", "/mnt/DISK2", "/mnt/DISK3", "/mnt/DISK4" } }),
+					fs_widget({
+						mounts = { "/", "/mnt/DISK1", "/mnt/DISK2", "/mnt/DISK3", "/mnt/DISK4" },
+						widget_background_color = "#222222",
+						popup_bg = "#2E3440",
+						popup_border_color = "#4C566A"
+					}),
 					layout = wibox.layout.fixed.horizontal,
 				}),
 				color.secondary
