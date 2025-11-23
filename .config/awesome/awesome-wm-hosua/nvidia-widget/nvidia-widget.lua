@@ -16,11 +16,17 @@ local nvidia_widget = {}
 
 local config = {
 	refresh_rate = 1,
+	popup_bg = "#2E3440",
+	popup_border_color = "#4C566A",
 }
 
 local function worker(input)
 	local args = input or {}
-	local _config = gears.table.join({}, config, args)
+	
+	local _config = {}
+	for prop, value in pairs(config) do
+		_config[prop] = args[prop] or beautiful[prop] or value
+	end
 
 	local stats = {
 		temp = nil,
@@ -92,9 +98,8 @@ local function worker(input)
 		visible = false,
 		shape = gears.shape.rounded_rect,
 		border_width = 1,
-		border_color = "#4C566A",
-		bg = "#2E3440",
-		fg = "#D8DEE9",
+		border_color = _config.popup_border_color,
+		bg = _config.popup_bg,
 		maximum_width = 600,
 		maximum_height = 500,
 		offset = { y = 5 },
@@ -178,15 +183,24 @@ local function worker(input)
 		local process_rows = { header_row }
 
 		for _, process in ipairs(processes) do
-			local pid, name, mem = process:match("([^,]+),([^,]+),([^,]+)")
-			if pid and name and mem then
+			local parts = {}
+			for part in process:gmatch("([^|]+)") do
+				table.insert(parts, part)
+			end
+			if #parts >= 3 then
+				local pid = parts[1]
+				local mem = parts[#parts]
+				local name = table.concat(parts, "|", 2, #parts - 1)
 				pid = pid:gsub("^%s+", ""):gsub("%s+$", "")
 				name = name:gsub("^%s+", ""):gsub("%s+$", "")
 				mem = mem:gsub("^%s+", ""):gsub("%s+$", "")
 
+				local full_name = name
+				local is_truncated = false
 				if #name > 20 then
 					local end_part = name:sub(-(20 - 3))
 					name = "..." .. end_part
+					is_truncated = true
 				end
 
 				local pid_widget = wibox.widget.textbox(pid)
@@ -199,6 +213,17 @@ local function worker(input)
 				local mem_widget = wibox.widget.textbox(mem_padded)
 				mem_widget.font = "Terminus 9"
 
+				local name_container = wibox.widget({
+					{
+						name_widget,
+						forced_width = 125,
+						halign = "left",
+						widget = wibox.container.place,
+					},
+					bg = "#00000000",
+					widget = wibox.container.background,
+				})
+
 				local row = wibox.widget({
 					{
 						pid_widget,
@@ -206,12 +231,7 @@ local function worker(input)
 						halign = "left",
 						widget = wibox.container.place,
 					},
-					{
-						name_widget,
-						forced_width = 125,
-						halign = "left",
-						widget = wibox.container.place,
-					},
+					name_container,
 					{
 						mem_widget,
 						forced_width = 100,
@@ -221,6 +241,46 @@ local function worker(input)
 					spacing = 2,
 					layout = wibox.layout.fixed.horizontal,
 				})
+
+				if is_truncated then
+					local tooltip_textbox = wibox.widget.textbox(full_name)
+					tooltip_textbox.font = "Terminus 9"
+					tooltip_textbox.wrap = "char"
+
+					local tooltip_width = 400
+					
+					local tooltip_widget = wibox.widget({
+						{
+							tooltip_textbox,
+							margins = 8,
+							widget = wibox.container.margin,
+						},
+						forced_width = tooltip_width,
+						widget = wibox.container.constraint,
+					})
+
+					local tooltip = awful.popup({
+						ontop = true,
+						visible = false,
+						shape = gears.shape.rounded_rect,
+						border_width = 1,
+						border_color = _config.popup_border_color,
+						bg = _config.popup_bg,
+						fg = beautiful.fg_normal or "#D8DEE9",
+						maximum_width = tooltip_width,
+						offset = { y = 5 },
+						widget = tooltip_widget,
+					})
+
+					name_container:connect_signal("mouse::enter", function()
+						tooltip:move_next_to(mouse.current_widget_geometry)
+						tooltip.visible = true
+					end)
+
+					name_container:connect_signal("mouse::leave", function()
+						tooltip.visible = false
+					end)
+				end
 				table.insert(process_rows, row)
 			end
 		end
@@ -243,8 +303,20 @@ local function worker(input)
 		})
 		table.insert(layout_table, separator)
 
-		local process_cmd =
-			'nvidia-smi -q | awk \'/Process ID/ { pid=$NF } /Name/ { sub(/^.*: /, ""); name=$0 } /Used GPU Memory/ { sub(/^.*: /, ""); mem=$0; split(mem, a, " "); mem_num=a[1]; print pid "," name "," mem "," mem_num }\' | sort -t, -k4,4nr | cut -d, -f1-3 | head -10'
+		local process_cmd = [[
+			nvidia-smi -q | awk '
+				BEGIN { OFS="|" }
+				/Process ID/ { pid=$NF }
+				/Name/ { sub(/^.*: /, ""); name=$0 }
+				/Used GPU Memory/ {
+					sub(/^.*: /, "");
+					mem=$0;
+					split(mem, a, " ");
+					mem_num=a[1];
+					print pid, name, mem, mem_num
+				}
+			' | sort -t'|' -k4,4nr | awk -F'|' '{print $1 "|" $2 "|" $3}' | head -10
+		]]
 
 		spawn.easy_async_with_shell(
 			process_cmd,

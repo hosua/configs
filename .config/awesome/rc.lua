@@ -203,8 +203,8 @@ awful.util.tasklist_buttons = mytable.join(
 )
 
 beautiful.init(string.format("%s/.config/awesome/themes/%s/theme.lua", os.getenv("HOME"), chosen_theme))
-beautiful.hotkeys_font = "Terminus 12"
-beautiful.hotkeys_description_font = "Terminus 12"
+beautiful.hotkeys_font = "Terminus 10"
+beautiful.hotkeys_description_font = "Terminus 10"
 
 -- }}}
 

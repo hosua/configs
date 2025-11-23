@@ -39,7 +39,7 @@ local color = {
 local theme = {}
 theme.dir = os.getenv("HOME") .. "/.config/awesome/themes/powerarrow"
 theme.wallpaper = os.getenv("HOME") .. "/Pictures/Wallpapers/aurian.jpg"
-theme.font = "Terminus 12"
+theme.font = "Terminus 10"
 theme.fg_normal = "#FEFEFE"
 theme.fg_focus = color.text_light
 theme.fg_urgent = "#C83F11"
@@ -396,9 +396,9 @@ function theme.at_screen_connect(s)
 					wibox.widget.textbox("FS: "),
 					fs_widget({
 						mounts = { "/", "/mnt/DISK1", "/mnt/DISK2", "/mnt/DISK3", "/mnt/DISK4" },
-						widget_background_color = "#222222",
+						-- widget_background_color = "#222222",
 						popup_bg = "#2E3440",
-						popup_border_color = "#4C566A"
+						popup_border_color = "#4C566A",
 					}),
 					layout = wibox.layout.fixed.horizontal,
 				}),
