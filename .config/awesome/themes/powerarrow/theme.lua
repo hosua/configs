@@ -39,7 +39,7 @@ local color = {
 
 local color_wibox = {
 	primary = color.primary .. opacity,
-	secondary = color.secondary .. opacity,
+	secondary = color.secondary .. "55",
 }
 
 local theme = {}
@@ -123,6 +123,8 @@ theme.titlebar_maximized_button_focus_active = theme.dir .. "/icons/titlebar/max
 theme.titlebar_maximized_button_normal_active = theme.dir .. "/icons/titlebar/maximized_normal_active.png"
 theme.titlebar_maximized_button_focus_inactive = theme.dir .. "/icons/titlebar/maximized_focus_inactive.png"
 theme.titlebar_maximized_button_normal_inactive = theme.dir .. "/icons/titlebar/maximized_normal_inactive.png"
+
+mypacman.font = theme.font
 
 local markup = lain.util.markup
 local separators = lain.util.separators
@@ -389,13 +391,11 @@ function theme.at_screen_connect(s)
 			s.mytaglist,
 			s.mypromptbox,
 			spr,
+			wibox.container.background(mysystray, color_wibox.secondary),
 		},
 		s.mytasklist, -- Middle widget
 		{ -- Right widgets
 			layout = wibox.layout.fixed.horizontal,
-			arrow(color.dark_gray, color.dark_gray),
-			wibox.container.background(mysystray, color_wibox.secondary),
-			arrow(color.dark_gray, color_wibox.primary),
 			wibox.container.background(nvidia_widget(), color_wibox.primary),
 			arrow(color_wibox.primary, color_wibox.secondary),
 			wibox.container.background(cpu.widget, color_wibox.secondary),
