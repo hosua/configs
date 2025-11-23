@@ -18,12 +18,13 @@ local mypacman = pacman_widget()
 
 local nvidia_widget = require("awesome-wm-hosua.nvidia-widget.nvidia-widget")
 
-local mysystray = wibox.widget.systray()
+local mysystray = wibox.widget.systray({ opacity = 0 }) -- why the fuck doesn't this work?
 _G.mysystray = mysystray
 
 local math, string, os = math, string, os
 local my_table = awful.util.table or gears.table -- 4.{0,1} compatibility
 
+local opacity = "85"
 local color = {
 	primary = "#27374D",
 	secondary = "#526D82",
@@ -36,6 +37,11 @@ local color = {
 	text_focus = "#50589C",
 }
 
+local color_wibox = {
+	primary = color.primary .. opacity,
+	secondary = color.secondary .. opacity,
+}
+
 local theme = {}
 theme.dir = os.getenv("HOME") .. "/.config/awesome/themes/powerarrow"
 theme.wallpaper = os.getenv("HOME") .. "/Pictures/Wallpapers/aurian.jpg"
@@ -43,18 +49,18 @@ theme.font = "Terminus 10"
 theme.fg_normal = "#FEFEFE"
 theme.fg_focus = color.text_light
 theme.fg_urgent = "#C83F11"
-theme.bg_normal = color.dark_gray
-theme.bg_focus = color.primary
+theme.bg_normal = color.dark_gray .. opacity
+theme.bg_focus = color.primary .. opacity
 theme.bg_urgent = color.primary
 theme.taglist_fg_focus = color.text_light
-theme.tasklist_bg_focus = color.primary
+theme.tasklist_bg_focus = color.primary .. opacity
 theme.tasklist_fg_focus = "#00CCFF"
 theme.border_width = dpi(2)
-theme.border_normal = color.primary
+theme.border_normal = color.primary .. opacity
 theme.border_focus = "#6F6F6F"
 theme.border_marked = "#CC9393"
-theme.titlebar_bg_focus = color.primary
-theme.titlebar_bg_normal = theme.dark_gray
+theme.titlebar_bg_focus = color.primary .. "AA"
+theme.titlebar_bg_normal = color.dark_gray .. "AA"
 theme.titlebar_fg_focus = theme.fg_focus
 theme.menu_height = dpi(32)
 theme.menu_width = dpi(140)
@@ -366,8 +372,13 @@ function theme.at_screen_connect(s)
 	s.mytasklist = awful.widget.tasklist(s, awful.widget.tasklist.filter.currenttags, awful.util.tasklist_buttons)
 
 	-- Create the wibox
-	s.mywibox =
-		awful.wibar({ position = "top", screen = s, height = dpi(26), bg = theme.bg_normal, fg = theme.fg_normal })
+	s.mywibox = awful.wibar({
+		position = "top",
+		screen = s,
+		height = dpi(26),
+		bg = theme.bg_normal,
+		fg = theme.fg_normal,
+	})
 
 	-- Add widgets to the wibox
 	s.mywibox:setup({
@@ -383,14 +394,14 @@ function theme.at_screen_connect(s)
 		{ -- Right widgets
 			layout = wibox.layout.fixed.horizontal,
 			arrow(color.dark_gray, color.dark_gray),
-			wibox.container.background(mysystray, color.dark_gray),
-			arrow(color.dark_gray, color.primary),
-			wibox.container.background(nvidia_widget(), color.primary),
-			arrow(color.primary, color.secondary),
-			wibox.container.background(cpu.widget, color.secondary),
-			arrow(color.secondary, color.primary),
-			wibox.container.background(mem.widget, color.primary),
-			arrow(color.primary, color.secondary),
+			wibox.container.background(mysystray, color_wibox.secondary),
+			arrow(color.dark_gray, color_wibox.primary),
+			wibox.container.background(nvidia_widget(), color_wibox.primary),
+			arrow(color_wibox.primary, color_wibox.secondary),
+			wibox.container.background(cpu.widget, color_wibox.secondary),
+			arrow(color_wibox.secondary, color_wibox.primary),
+			wibox.container.background(mem.widget, color_wibox.primary),
+			arrow(color_wibox.primary, color_wibox.secondary),
 			wibox.container.background(
 				wibox.widget({
 					wibox.widget.textbox("FS: "),
@@ -402,21 +413,21 @@ function theme.at_screen_connect(s)
 					}),
 					layout = wibox.layout.fixed.horizontal,
 				}),
-				color.secondary
+				color_wibox.secondary
 			),
-			arrow(color.secondary, color.primary),
-			wibox.container.background(mypacman, color.primary),
-			arrow(color.primary, color.secondary),
+			arrow(color_wibox.secondary, color_wibox.primary),
+			wibox.container.background(mypacman, color_wibox.primary),
+			arrow(color_wibox.primary, color_wibox.secondary),
 			wibox.container.background(
 				wibox.container.margin(
 					volume_widget({ widget_type = "icon_and_text", use_pactl = true }),
 					dpi(3),
 					dpi(3)
 				),
-				color.secondary
+				color_wibox.secondary
 			),
-			arrow(color.secondary, color.primary),
-			wibox.container.background(wibox.container.margin(textclock, dpi(4), dpi(8)), color.primary),
+			arrow(color_wibox.secondary, color_wibox.primary),
+			wibox.container.background(wibox.container.margin(textclock, dpi(4), dpi(8)), color_wibox.primary),
 			s.mylayoutbox,
 		},
 	})
