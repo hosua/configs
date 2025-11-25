@@ -43,6 +43,19 @@ local function worker(input)
 	local temp_text_widget = wibox.widget.textbox()
 	local power_text_widget = wibox.widget.textbox()
 
+	local widget_dir = debug.getinfo(1, "S").source:match("^@(.+/)[^/]+$")
+	local gpu_icon = wibox.widget.imagebox()
+	gpu_icon:set_image(widget_dir .. "gpu.svg")
+	gpu_icon.resize = true
+	gpu_icon.forced_width = 18
+	gpu_icon.forced_height = 18
+
+	local gpu_icon_container = wibox.widget({
+		gpu_icon,
+		top = 1,
+		widget = wibox.container.margin,
+	})
+
 	local mem_arc_widget = wibox.widget({
 		max_value = 100,
 		thickness = 2,
@@ -71,17 +84,18 @@ local function worker(input)
 
 	local widget = wibox.widget({
 		{
+			gpu_icon_container,
 			temp_text_widget,
 			{
-				power_text_widget,
 				power_arc_widget,
+				power_text_widget,
 				wibox.widget.textbox(" |"),
 				spacing = 4,
 				layout = wibox.layout.fixed.horizontal,
 			},
 			{
-				mem_text_widget,
 				mem_arc_widget,
+				mem_text_widget,
 				spacing = 4,
 				layout = wibox.layout.fixed.horizontal,
 			},
@@ -376,7 +390,7 @@ local function worker(input)
 			mem_text = string.format("%.0f/%.0f MiB", used_mb, total_mb)
 		end
 
-		temp_text_widget:set_markup(string.format("GPU: %s |", temp_text))
+		temp_text_widget:set_markup(string.format("%s |", temp_text))
 		power_text_widget:set_text(power_text)
 		mem_text_widget:set_text(mem_text)
 		mem_arc_widget.value = mem_percent

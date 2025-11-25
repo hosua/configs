@@ -17,6 +17,7 @@ local pacman_widget = require("awesome-wm-widgets.pacman-widget.pacman")
 local mypacman = pacman_widget()
 
 local nvidia_widget = require("awesome-wm-hosua.nvidia-widget.nvidia-widget")
+local cpu_widget = require("awesome-wm-hosua.cpu-widget.cpu-widget")
 
 local mysystray = wibox.widget.systray({ opacity = 0 }) -- why the fuck doesn't this work?
 _G.mysystray = mysystray
@@ -235,11 +236,6 @@ local mem = lain.widget.mem({
 
 -- CPU
 local cpuicon = wibox.widget.imagebox(theme.widget_cpu)
-local cpu = lain.widget.cpu({
-	settings = function()
-		widget:set_markup(markup.font(theme.font, "CPU: " .. cpu_now.usage .. "% "))
-	end,
-})
 
 -- Coretemp (lm_sensors, per core)
 local tempwidget = awful.widget.watch({ awful.util.shell, "-c", "sensors | grep Core" }, 30, function(widget, stdout)
@@ -398,7 +394,7 @@ function theme.at_screen_connect(s)
 			layout = wibox.layout.fixed.horizontal,
 			wibox.container.background(nvidia_widget(), color_wibox.primary),
 			arrow(color_wibox.primary, color_wibox.secondary),
-			wibox.container.background(cpu.widget, color_wibox.secondary),
+			wibox.container.background(cpu_widget(), color_wibox.secondary),
 			arrow(color_wibox.secondary, color_wibox.primary),
 			wibox.container.background(mem.widget, color_wibox.primary),
 			arrow(color_wibox.primary, color_wibox.secondary),
