@@ -372,7 +372,10 @@ local function worker(input)
 	end)))
 
 	local update_widget = function()
-		local temp_text = format_temp(stats.temp_raw)
+		local temp_text = "N/A"
+		if stats.temp_raw then
+			temp_text = string.format("%.0f°C", stats.temp_raw)
+		end
 		local power_text = "N/A"
 		local mem_text = "N/A"
 		local mem_percent = 0
