@@ -88,6 +88,10 @@ local function worker(input)
 	local columns_layout = wibox.layout.fixed.horizontal()
 	columns_layout.spacing = 16
 
+	local cpu_name_text = wibox.widget.textbox()
+	cpu_name_text.font = beautiful.font or "Terminus 10"
+	cpu_name_text:set_markup("Loading...")
+
 	local all_text = wibox.widget.textbox()
 	all_text.font = beautiful.font or "Terminus 10"
 	all_text.forced_width = 80
@@ -113,6 +117,20 @@ local function worker(input)
 		spacing = 0,
 		layout = wibox.layout.fixed.horizontal,
 	})
+
+	local function get_cpu_name()
+		awful.spawn.easy_async(
+			{ awful.util.shell, "-c", [[grep -m 1 "model name" /proc/cpuinfo | cut -d ':' -f 2 | sed 's/^ *//']] },
+			function(stdout)
+				if stdout and stdout ~= "" then
+					local cpu_name = stdout:gsub("^%s+", ""):gsub("%s+$", ""):gsub("\n", "")
+					if cpu_name ~= "" then
+						cpu_name_text:set_markup("<b>" .. cpu_name .. "</b>")
+					end
+				end
+			end
+		)
+	end
 
 	local function create_core_widget(core_id)
 		local core_text = wibox.widget.textbox()
@@ -196,6 +214,7 @@ local function worker(input)
 		end
 
 		local main_layout = wibox.layout.fixed.vertical()
+		main_layout:add(cpu_name_text)
 		main_layout:add(all_row)
 		main_layout:add(columns_layout)
 
@@ -284,6 +303,8 @@ local function worker(input)
 			update_widget(overall_usage, core_usages)
 		end
 	end, widget)
+
+	get_cpu_name()
 
 	return widget
 end
