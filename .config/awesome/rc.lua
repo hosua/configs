@@ -266,17 +266,40 @@ end)
 
 -- {{{ Screen
 
+-- Original single-monitor wallpaper code (commented out - now using spanning wallpaper)
+-- Re-set wallpaper when a screen's geometry changes (e.g. different resolution)
+-- screen.connect_signal("property::geometry", function(s)
+-- 	-- Wallpaper
+-- 	if beautiful.wallpaper then
+-- 		local wallpaper = beautiful.wallpaper
+-- 		-- If wallpaper is a function, call it with the screen
+-- 		if type(wallpaper) == "function" then
+-- 			wallpaper = wallpaper(s)
+-- 		end
+-- 		gears.wallpaper.maximized(wallpaper, s, true)
+-- 	end
+-- end)
+
+-- Function to set wallpaper spanning all screens
+local function set_spanning_wallpaper()
+	if not beautiful.wallpaper then
+		return
+	end
+
+	local wallpaper = beautiful.wallpaper
+
+	-- Set wallpaper spanning all screens using nitrogen
+	awful.spawn.with_shell(string.format("nitrogen --set-scaled --head=-1 '%s' 2>/dev/null", wallpaper))
+end
+
 -- Re-set wallpaper when a screen's geometry changes (e.g. different resolution)
 screen.connect_signal("property::geometry", function(s)
-	-- Wallpaper
-	if beautiful.wallpaper then
-		local wallpaper = beautiful.wallpaper
-		-- If wallpaper is a function, call it with the screen
-		if type(wallpaper) == "function" then
-			wallpaper = wallpaper(s)
-		end
-		gears.wallpaper.maximized(wallpaper, s, true)
-	end
+	set_spanning_wallpaper()
+end)
+
+-- Set wallpaper on startup
+screen.connect_signal("request::desktop_decoration", function(s)
+	set_spanning_wallpaper()
 end)
 
 -- No borders when rearranging only 1 non-floating or maximized client
@@ -295,6 +318,9 @@ end)
 awful.screen.connect_for_each_screen(function(s)
 	beautiful.at_screen_connect(s)
 end)
+
+-- Set wallpaper after all screens are connected
+set_spanning_wallpaper()
 
 beautiful.xresources.set_dpi(192)
 

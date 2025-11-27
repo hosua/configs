@@ -44,6 +44,7 @@ local color_wibox = {
 local theme = {}
 theme.dir = os.getenv("HOME") .. "/.config/awesome/themes/hosua"
 theme.wallpaper = os.getenv("HOME") .. "/Pictures/Wallpapers/aurian.jpg"
+-- theme.wallpaper = os.getenv("HOME") .. "/Pictures/Wallpapers/TripleSpace14.jpg"
 theme.font = "Terminus 10"
 theme.fg_normal = "#FEFEFE"
 theme.fg_focus = color.text_light
@@ -203,12 +204,13 @@ function theme.at_screen_connect(s)
 	-- Quake application
 	s.quake = lain.util.quake({ app = awful.util.terminal })
 
+	-- Original single-monitor wallpaper code (commented out - wallpaper now spans all screens via rc.lua)
 	-- If wallpaper is a function, call it with the screen
-	local wallpaper = theme.wallpaper
-	if type(wallpaper) == "function" then
-		wallpaper = wallpaper(s)
-	end
-	gears.wallpaper.maximized(wallpaper, s, true)
+	-- local wallpaper = theme.wallpaper
+	-- if type(wallpaper) == "function" then
+	-- 	wallpaper = wallpaper(s)
+	-- end
+	-- gears.wallpaper.maximized(wallpaper, s, true)
 
 	-- Tags
 	awful.tag(awful.util.tagnames, s, awful.layout.layouts[1])
