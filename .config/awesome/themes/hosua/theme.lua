@@ -23,7 +23,12 @@ _G.mysystray = mysystray
 local math, string, os = math, string, os
 local my_table = awful.util.table or gears.table -- 4.{0,1} compatibility
 
-local opacity = "85"
+local opacity = {
+	low = "10",
+	low_med = "30",
+	med = "55",
+	hi = "A0",
+}
 local color = {
 	primary = "#27374D",
 	secondary = "#526D82",
@@ -37,8 +42,8 @@ local color = {
 }
 
 local color_wibox = {
-	primary = color.primary .. opacity,
-	secondary = color.secondary .. "55",
+	primary = color.primary .. opacity.low,
+	secondary = color.secondary .. opacity.low_med,
 }
 
 local theme = {}
@@ -49,18 +54,19 @@ theme.font = "Terminus 10"
 theme.fg_normal = "#FEFEFE"
 theme.fg_focus = color.text_light
 theme.fg_urgent = "#C83F11"
-theme.bg_normal = color.dark_gray .. opacity
-theme.bg_focus = color.primary .. opacity
-theme.bg_urgent = color.primary
+theme.bg_normal = color.dark_gray .. opacity.low
+theme.bg_focus = color.primary .. opacity.low
+theme.bg_urgent = color.primary .. opacity.low
 theme.taglist_fg_focus = color.text_light
-theme.tasklist_bg_focus = color.primary .. opacity
+theme.tasklist_bg_normal = color.dark_gray .. opacity.low
+theme.tasklist_bg_focus = color.primary .. opacity.med
 theme.tasklist_fg_focus = "#00CCFF"
 theme.border_width = dpi(1)
-theme.border_normal = color.primary .. opacity
+theme.border_normal = color.primary .. opacity.med
 theme.border_focus = "#6F6F6F"
 theme.border_marked = "#CC9393"
-theme.titlebar_bg_focus = color.primary .. "AA"
-theme.titlebar_bg_normal = color.dark_gray .. "AA"
+theme.titlebar_bg_focus = color.primary .. opacity.low
+theme.titlebar_bg_normal = color.dark_gray .. opacity.low
 theme.titlebar_fg_focus = theme.fg_focus
 theme.menu_height = dpi(32)
 theme.menu_width = dpi(140)
@@ -128,14 +134,6 @@ mypacman.font = theme.font
 
 local markup = lain.util.markup
 local separators = lain.util.separators
-
--- Binary clock
-local binclock = require("themes.hosua.binclock")({
-	height = dpi(32),
-	show_seconds = true,
-	color_active = theme.fg_normal,
-	color_inactive = theme.bg_focus,
-})
 
 -- Clock
 local textclock = wibox.widget.textclock()
@@ -263,7 +261,7 @@ function theme.at_screen_connect(s)
 			spr,
 			wibox.container.background(mysystray, color_wibox.secondary),
 		},
-		s.mytasklist, -- Middle widget
+		wibox.container.background(s.mytasklist, theme.bg_normal), -- Middle widget
 		{ -- Right widgets
 			layout = wibox.layout.fixed.horizontal,
 			wibox.container.background(nvidia_widget(), color_wibox.primary),
