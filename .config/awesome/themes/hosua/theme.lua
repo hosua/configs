@@ -268,16 +268,15 @@ function theme.at_screen_connect(s)
 			layout = wibox.layout.fixed.horizontal,
 			wibox.container.background(nvidia_widget(), color_wibox.primary),
 			arrow(color_wibox.primary, color_wibox.secondary),
-			wibox.container.background(cpu_widget(), color_wibox.secondary),
+			wibox.container.background(mem.widget, color_wibox.secondary),
 			arrow(color_wibox.secondary, color_wibox.primary),
-			wibox.container.background(mem.widget, color_wibox.primary),
+			wibox.container.background(cpu_widget(), color_wibox.primary),
 			arrow(color_wibox.primary, color_wibox.secondary),
 			wibox.container.background(
 				wibox.widget({
 					wibox.widget.textbox("FS: "),
 					fs_widget({
 						mounts = { "/", "/mnt/DISK1", "/mnt/DISK2", "/mnt/DISK3", "/mnt/DISK4" },
-						-- widget_background_color = "#222222",
 						popup_bg = "#2E3440",
 						popup_border_color = "#4C566A",
 					}),
