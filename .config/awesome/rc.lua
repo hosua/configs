@@ -376,6 +376,9 @@ globalkeys = mytable.join(
 	awful.key({ altkey, "Control" }, "g", function()
 		awful.spawn("steam")
 	end, { description = "Steam" }),
+	awful.key({ altkey, "Control" }, "f", function()
+		awful.spawn("thunar")
+	end, { description = "Steam" }),
 	awful.key({}, "Print", function()
 		awful.spawn.with_shell("killall -9 shutter; shutter")
 	end, { description = "Screenshot" }),
@@ -517,7 +520,7 @@ globalkeys = mytable.join(
 	end, { description = "toggle wibox", group = "awesome" }),
 
 	-- On-the-fly useless gaps change
-	awful.key({ altkey, "Control" }, "+", function()
+	awful.key({ altkey, "Control" }, "=", function()
 		lain.util.useless_gaps_resize(1)
 	end, { description = "increment useless gaps", group = "tag" }),
 	awful.key({ altkey, "Control" }, "-", function()
