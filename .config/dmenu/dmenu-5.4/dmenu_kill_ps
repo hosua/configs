@@ -6,12 +6,11 @@
 LIST_HEIGHT=10
 
 SORT_BY="-%cpu"
-FMT="pid,%cpu,cmd"
+FMT="pid,%cpu,exe"
 
-CMD="ps a -o"
-
-ps a --no-headers -o "$FMT" --sort "$SORT_BY" | \
-  dmenu -l $LIST_HEIGHT -p "Process Killer" | \
+ps -eo "$FMT" --sort "$SORT_BY" | \
+  tail -n +2 | \
+  dmenu -l $LIST_HEIGHT -p "PID Killer" | \
   cut -d' ' -f1 | \
   xargs kill -9
 
