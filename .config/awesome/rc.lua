@@ -302,6 +302,10 @@ screen.connect_signal("request::desktop_decoration", function(s)
 	set_spanning_wallpaper()
 end)
 
+-- Disable middle-mouse paste
+-- See 3.1.2: https://wiki.archlinux.org/title/Clipboard
+awful.spawn("while true; do xsel --follow --input --nodetach </dev/null; done")
+
 -- No borders when rearranging only 1 non-floating or maximized client
 screen.connect_signal("arrange", function(s)
 	local only_one = #s.tiled_clients == 1
