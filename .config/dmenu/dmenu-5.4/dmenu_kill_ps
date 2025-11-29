@@ -1,15 +1,17 @@
 #!/bin/bash
 
+# Made by hosua
+# github.com/hosua
+
 LIST_HEIGHT=10
 
 SORT_BY="-%cpu"
-FMT="pid,%cpu,exe"
-USER=$(whoami)
+FMT="pid,%cpu,cmd"
 
-CMD="ps -U $USER a -o"
+CMD="ps a -o"
 
-ps a -U $USER --no-headers -o "$FMT" --sort "$SORT_BY" | \
-  dmenu -l $LIST_HEIGHT -p "Processes" | \
+ps a --no-headers -o "$FMT" --sort "$SORT_BY" | \
+  dmenu -l $LIST_HEIGHT -p "Process Killer" | \
   cut -d' ' -f1 | \
   xargs kill -9
 

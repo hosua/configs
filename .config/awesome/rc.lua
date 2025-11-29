@@ -352,6 +352,11 @@ globalkeys = mytable.join(
 		awful.spawn.with_shell("killall -9 shutter; shutter")
 	end, { description = "Screenshot" }),
 
+	-- dmenu
+	awful.key({ modkey }, "k", function()
+		awful.spawn.with_shell("dmenu_kill_ps")
+	end, { description = "dmenu process killer" }),
+
 	-- Volume control
 	awful.key({}, "XF86AudioRaiseVolume", function()
 		awful.spawn("amixer -q set Master 2%+")
