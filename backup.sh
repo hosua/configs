@@ -8,6 +8,7 @@ rsync -a --exclude='.git' \
   "$CONF/awesome" \
   "$CONF/bashtop" \
   "$CONF/cava" \
+  "$CONF/dmenu" \
   "$CONF/kitty" \
   "$CONF/nvim" \
   "$CONF/ranger" \

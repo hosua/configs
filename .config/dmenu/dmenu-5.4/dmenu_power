@@ -1,0 +1,5 @@
+#!/bin/bash
+
+echo -e "poweroff\nreboot\nsuspend" | dmenu -l -p "Power Options" | xargs systemctl
+
+

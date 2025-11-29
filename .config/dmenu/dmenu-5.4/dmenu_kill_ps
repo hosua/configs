@@ -1,0 +1,15 @@
+#!/bin/bash
+
+LIST_HEIGHT=10
+
+SORT_BY="-%cpu"
+FMT="pid,%cpu,exe"
+USER=$(whoami)
+
+CMD="ps -U $USER a -o"
+
+ps a -U $USER --no-headers -o "$FMT" --sort "$SORT_BY" | \
+  dmenu -l $LIST_HEIGHT -p "Processes" | \
+  cut -d' ' -f1 | \
+  xargs kill -9
+
