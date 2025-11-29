@@ -17,17 +17,18 @@ local mypacman = pacman_widget()
 local nvidia_widget = require("awesome-wm-hosua.nvidia-widget.nvidia-widget")
 local cpu_widget = require("awesome-wm-hosua.cpu-widget.cpu-widget")
 
-local mysystray = wibox.widget.systray({ opacity = 0 }) -- why the fuck doesn't this work?
+local mysystray = wibox.widget.systray({ opacity = 0 }) -- why the fuck doesn't opacity work?
 _G.mysystray = mysystray
 
 local math, string, os = math, string, os
 local my_table = awful.util.table or gears.table -- 4.{0,1} compatibility
 
 local opacity = {
-	low = "10",
-	low_med = "30",
+	lo = "10",
+	lo_med = "30",
 	med = "55",
 	hi = "A0",
+	very_hi = "CC",
 }
 local color = {
 	primary = "#27374D",
@@ -42,8 +43,8 @@ local color = {
 }
 
 local color_wibox = {
-	primary = color.primary .. opacity.low,
-	secondary = color.secondary .. opacity.low_med,
+	primary = color.primary .. opacity.lo,
+	secondary = color.secondary .. opacity.lo_med,
 }
 
 local wallpaper_path = os.getenv("HOME") .. "/Pictures/Wallpapers/"
@@ -51,32 +52,32 @@ local wallpaper_path = os.getenv("HOME") .. "/Pictures/Wallpapers/"
 local theme = {}
 theme.dir = os.getenv("HOME") .. "/.config/awesome/themes/hosua"
 
-theme.wallpaper = wallpaper_path .. "aurian.jpg"
+-- WallPaper settings moved to rc.lua
+-- theme.wallpaper = wallpaper_path .. "aurian.jpg"
 -- theme.wallpaper = wallpaper_path .. "utopia-space-triple.png"
 -- theme.wallpaper = wallpaper_path .. "thefrontierexpanse.png"
 -- theme.wallpaper = wallpaper_path .. "TripleSpace01.jpg"
 -- theme.wallpaper = wallpaper_path .. "TripleSpace03.jpg"
 -- theme.wallpaper = wallpaper_path .. "TripleSpace04.jpg"
 -- theme.wallpaper = wallpaper_path .. "TripleSpace07.jpg"
--- theme.wallpaper = wallpaper_path .. "overwatch-triple.jpg" -- NSFW, lol
 
 theme.font = "Terminus 10"
 theme.fg_normal = "#FEFEFE"
 theme.fg_focus = color.text_focus
 theme.fg_urgent = "#C83F11"
-theme.bg_normal = color.dark_gray .. opacity.low
-theme.bg_focus = color.primary .. opacity.low
-theme.bg_urgent = color.primary .. opacity.low
+theme.bg_normal = color.dark_gray .. opacity.lo
+theme.bg_focus = color.primary .. opacity.lo
+theme.bg_urgent = color.primary .. opacity.lo
 theme.taglist_fg_focus = color.text_focus
-theme.tasklist_bg_normal = color.dark_gray .. opacity.low
+theme.tasklist_bg_normal = color.dark_gray .. opacity.lo
 theme.tasklist_bg_focus = color.primary .. opacity.med
 theme.tasklist_fg_focus = color.text_focus
 theme.border_width = dpi(1)
 theme.border_normal = color.primary .. opacity.med
 theme.border_focus = "#6F6F6F"
 theme.border_marked = "#CC9393"
-theme.titlebar_bg_focus = color.primary .. opacity.low_med
-theme.titlebar_bg_normal = color.dark_gray .. opacity.low_med
+theme.titlebar_bg_focus = color.primary .. opacity.hi
+theme.titlebar_bg_normal = color.dark_gray .. opacity.hi
 theme.titlebar_fg_focus = theme.fg_focus
 theme.menu_height = dpi(32)
 theme.menu_width = dpi(140)
