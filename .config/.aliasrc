@@ -10,10 +10,10 @@ alias vimdiff="nvim -d"
 alias ppt2pdf="libreoffice --headless --convert-to pdf"
 alias PAT="cat ~/Desktop/git/PAT"
 alias zzz="systemctl suspend" # sleep
-alias nano="nvim -p" # nano not allowed on my system
-alias vi="nvim -p"
-alias vim="nvim -p" # vertical split if opening multiple files
-alias nvim="nvim -p"
+alias nano="nvim" # nano not allowed on my system
+alias vi="nvim"
+alias vim="nvim" 
+alias nvim="nvim"
 alias py="python"
 kill-port() {
     if [ -z "$1" ]; then
