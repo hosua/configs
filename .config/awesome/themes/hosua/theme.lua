@@ -46,10 +46,20 @@ local color_wibox = {
 	secondary = color.secondary .. opacity.low_med,
 }
 
+local wallpaper_path = os.getenv("HOME") .. "/Pictures/Wallpapers/"
+
 local theme = {}
 theme.dir = os.getenv("HOME") .. "/.config/awesome/themes/hosua"
-theme.wallpaper = os.getenv("HOME") .. "/Pictures/Wallpapers/aurian.jpg"
--- theme.wallpaper = os.getenv("HOME") .. "/Pictures/Wallpapers/TripleSpace14.jpg"
+
+theme.wallpaper = wallpaper_path .. "aurian.jpg"
+-- theme.wallpaper = wallpaper_path .. "utopia-space-triple.png"
+-- theme.wallpaper = wallpaper_path .. "thefrontierexpanse.png"
+-- theme.wallpaper = wallpaper_path .. "TripleSpace01.jpg"
+-- theme.wallpaper = wallpaper_path .. "TripleSpace03.jpg"
+-- theme.wallpaper = wallpaper_path .. "TripleSpace04.jpg"
+-- theme.wallpaper = wallpaper_path .. "TripleSpace07.jpg"
+-- theme.wallpaper = wallpaper_path .. "overwatch-triple.jpg" -- NSFW, lol
+
 theme.font = "Terminus 10"
 theme.fg_normal = "#FEFEFE"
 theme.fg_focus = color.text_focus

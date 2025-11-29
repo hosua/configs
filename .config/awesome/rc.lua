@@ -342,6 +342,30 @@ root.buttons(mytable.join(
 
 -- }}}
 
+local wallpaper_path = os.getenv("HOME") .. "/Pictures/Wallpapers/"
+local wallpapers = {
+	"aurian.jpg",
+	"TripleSpace01.jpg",
+	"TripleSpace03.jpg",
+	"TripleSpace04.jpg",
+	"TripleSpace07.jpg",
+	"utopia-space-triple.png",
+	"thefrontierexpanse.png",
+	-- "overwatch-triple.jpg", -- NSFW lol
+}
+
+local wallpaper_index = 1
+
+local function set_next_wall_paper(inc)
+	local function wrap(i, n)
+		return ((i - 1) % n) + 1
+	end
+	local n = #wallpapers
+	wallpaper_index = wrap(wallpaper_index + inc, n)
+	beautiful.wallpaper = wallpaper_path .. wallpapers[wallpaper_index]
+	set_spanning_wallpaper()
+end
+
 -- {{{ Key bindings
 
 globalkeys = mytable.join(
@@ -396,6 +420,14 @@ globalkeys = mytable.join(
 			_G.mysystray:set_screen(awful.screen.focused())
 		end
 	end, { description = "move systray to screen", group = "awesome" }),
+
+	-- Wallpaper selection
+	awful.key({ modkey }, "-", function()
+		set_next_wall_paper(-1)
+	end, { description = "Set previous wallpaper" }),
+	awful.key({ modkey }, "=", function()
+		set_next_wall_paper(1)
+	end, { description = "Set next wallpaper" }),
 
 	-- Tag browsing
 	awful.key({ modkey }, "Left", awful.tag.viewprev, { description = "view previous", group = "tag" }),
