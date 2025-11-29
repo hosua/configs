@@ -11,6 +11,6 @@ FMT="pid,%cpu,exe"
 ps -eo "$FMT" --sort "$SORT_BY" | \
   tail -n +2 | \
   dmenu -l $LIST_HEIGHT -p "Kill" | \
-  cut -d' ' -f1 | \
+  awk '{print $1}' | \
   xargs kill -9
 
