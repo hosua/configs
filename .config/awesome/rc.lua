@@ -204,42 +204,15 @@ awful.util.tasklist_buttons = mytable.join(
 )
 
 beautiful.init(string.format("%s/.config/awesome/themes/%s/theme.lua", os.getenv("HOME"), chosen_theme))
-beautiful.hotkeys_font = "Terminus 10"
-beautiful.hotkeys_description_font = "Terminus 10"
+-- hotkey help styles
+beautiful.hotkeys_font = "Terminus 14"
+beautiful.hotkeys_description_font = "Terminus 12"
+beautiful.hotkeys_bg = "#171a20" .. "C0" -- dark_gray with ~80% opacity (CC)
+beautiful.hotkeys_fg = "#FEFEFE" -- foreground color
 
 -- }}}
 
 -- {{{ Menu
-
--- Create a launcher widget and a main menu
-local myawesomemenu = {
-	{
-		"Hotkeys",
-		function()
-			hotkeys_popup.show_help(nil, awful.screen.focused())
-		end,
-	},
-	{ "Manual", string.format("%s -e man awesome", terminal) },
-	{ "Edit config", string.format("%s -e %s %s", terminal, editor, awesome.conffile) },
-	{ "Restart", awesome.restart },
-	{
-		"Quit",
-		function()
-			awesome.quit()
-		end,
-	},
-}
-
-awful.util.mymainmenu = freedesktop.menu.build({
-	before = {
-		{ "Awesome", myawesomemenu, beautiful.awesome_icon },
-		-- other triads can be put here
-	},
-	after = {
-		{ "Open terminal", terminal },
-		-- other triads can be put here
-	},
-})
 
 -- Hide the menu when the mouse leaves it
 --[[
@@ -415,7 +388,9 @@ globalkeys = mytable.join(
 	end, { description = "lock screen", group = "hotkeys" }),
 
 	-- Show help
-	awful.key({ modkey }, "s", hotkeys_popup.show_help, { description = "show help", group = "awesome" }),
+	awful.key({ modkey }, "/", function()
+		hotkeys_popup.show_help(nil, awful.screen.focused())
+	end, { description = "show help", group = "awesome" }),
 
 	-- Move systray to focused screen
 	awful.key({ modkey }, "t", function()
@@ -478,11 +453,6 @@ globalkeys = mytable.join(
 			client.focus:raise()
 		end
 	end, { description = "focus right", group = "client" }),
-
-	-- Menu
-	awful.key({ modkey }, "w", function()
-		awful.util.mymainmenu:show()
-	end, { description = "show main menu", group = "awesome" }),
 
 	-- Layout manipulation
 	awful.key({ modkey, "Shift" }, "j", function()
