@@ -263,6 +263,11 @@ local function set_spanning_wallpaper()
 
 	-- Set wallpaper spanning all screens using nitrogen
 	awful.spawn.with_shell(string.format("nitrogen --set-scaled --head=-1 '%s' 2>/dev/null", wallpaper))
+	naughty.notify({
+		preset = naughty.config.presets.low,
+		title = "Changed Wllpaper",
+		text = "Set wallpaper to " .. wallpaper,
+	})
 end
 
 -- Re-set wallpaper when a screen's geometry changes (e.g. different resolution)
@@ -317,13 +322,20 @@ root.buttons(mytable.join(
 
 local wallpaper_path = os.getenv("HOME") .. "/Pictures/Wallpapers/"
 local wallpapers = {
-	"aurian.jpg",
+	"aurian-5760x1080.jpg",
+	"blue-space-triple-5760x1080.jpg",
 	"TripleSpace01.jpg",
 	"TripleSpace03.jpg",
-	"TripleSpace04.jpg",
 	"TripleSpace07.jpg",
-	"utopia-space-triple.png",
+	"utopia-space-triple-5760x1080.png",
 	"thefrontierexpanse.png",
+	"nebula-triple-1.jpg",
+	"star_horizon-5760x1080.jpg",
+	"space-purple-5760x1080.jpg",
+	"space-purplish.jpeg",
+	"cometary-5760x1080.jpg",
+	"Ferarri-SF90XX.jpg",
+	"lamborghini-sian-5760x1080.jpg",
 	-- "overwatch-triple.jpg", -- NSFW lol
 }
 
