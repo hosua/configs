@@ -1,2 +1,2 @@
 #!/bin/sh
-dmenu_path | dmenu -l 10 "$@" | ${SHELL:-"/bin/sh"} &
+dmenu_path | dmenu -l 20 "$@" | ${SHELL:-"/bin/sh"} &

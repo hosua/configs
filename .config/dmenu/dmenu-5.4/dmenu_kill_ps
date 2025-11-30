@@ -3,7 +3,7 @@
 # Made by hosua
 # github.com/hosua
 
-LIST_HEIGHT=10
+LIST_HEIGHT=20
 
 SORT_BY="-%cpu"
 FMT="pid,%cpu,exe"

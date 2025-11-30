@@ -18,12 +18,10 @@ local wibox = require("wibox")
 local beautiful = require("beautiful")
 local naughty = require("naughty")
 local lain = require("lain")
---local menubar       = require("menubar")
-local freedesktop = require("freedesktop")
 local hotkeys_popup = require("awful.hotkeys_popup")
 require("awful.hotkeys_popup.keys")
 -- local run_shell = require("awesome-wm-widgets.run-shell.run-shell")
-local run_shell = require("awesome-wm-widgets.run-shell-3.run-shell")
+-- local run_shell = require("awesome-wm-widgets.run-shell-3.run-shell")
 local mytable = awful.util.table or gears.table -- 4.{0,1} compatibility
 
 -- }}}
@@ -323,19 +321,26 @@ root.buttons(mytable.join(
 local wallpaper_path = os.getenv("HOME") .. "/Pictures/Wallpapers/"
 local wallpapers = {
 	"aurian-5760x1080.jpg",
-	"blue-space-triple-5760x1080.jpg",
+	-- These don't fill the entire screen :(
+	-- "2026-Porsche911GT3-Manthey-1.jpg",
+	-- "2026-Porsche911GT3-Manthey-2.jpg",
+	-- "2026-Porsche911GT3-Manthey-3.jpg",
+	"Ferarri-SF90XX.jpg",
 	"TripleSpace01.jpg",
 	"TripleSpace03.jpg",
 	"TripleSpace07.jpg",
-	"utopia-space-triple-5760x1080.png",
-	"thefrontierexpanse.png",
+	"blue-space-triple-5760x1080.jpg",
+	"cometary-5760x1080.jpg",
+	"lamborghini-sian-5760x1080.jpg",
 	"nebula-triple-1.jpg",
-	"star_horizon-5760x1080.jpg",
+	"planets-5760x1080.webp",
+	"space-nebula.jpeg",
 	"space-purple-5760x1080.jpg",
 	"space-purplish.jpeg",
-	"cometary-5760x1080.jpg",
-	"Ferarri-SF90XX.jpg",
-	"lamborghini-sian-5760x1080.jpg",
+	"space-thunderous.jpg",
+	"star_horizon-5760x1080.jpg",
+	"thefrontierexpanse.png",
+	"utopia-space-triple-5760x1080.png",
 	-- "overwatch-triple.jpg", -- NSFW lol
 }
 
@@ -687,7 +692,8 @@ globalkeys = mytable.join(
 	-- 	awful.screen.focused().mypromptbox:run()
 	-- end, { description = "run prompt", group = "launcher" }),
 	awful.key({ modkey }, "r", function()
-		run_shell.launch()
+		awful.spawn("dmenu_run")
+		-- run_shell.launch()
 	end),
 
 	awful.key({ modkey }, "x", function()
