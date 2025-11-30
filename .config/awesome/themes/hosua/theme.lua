@@ -13,7 +13,6 @@ local fs_widget = require("awesome-wm-widgets.fs-widget.fs-widget")
 local volume_widget = require("awesome-wm-widgets.volume-widget.volume")
 local pacman_widget = require("awesome-wm-widgets.pacman-widget.pacman")
 local ram_widget = require("awesome-wm-hosua.ram-widget.ram-widget")
-local mypacman = pacman_widget()
 
 local nvidia_widget = require("awesome-wm-hosua.nvidia-widget.nvidia-widget")
 local cpu_widget = require("awesome-wm-hosua.cpu-widget.cpu-widget")
@@ -41,6 +40,7 @@ local color = {
 	text_light = "#EAEFEF",
 	text_dark = "#333446",
 	text_focus = "#00CCFF",
+	popup = "#2E3440",
 }
 
 local color_wibox = {
@@ -131,6 +131,7 @@ theme.titlebar_maximized_button_normal_active = theme.dir .. "/icons/titlebar/ma
 theme.titlebar_maximized_button_focus_inactive = theme.dir .. "/icons/titlebar/maximized_focus_inactive.png"
 theme.titlebar_maximized_button_normal_inactive = theme.dir .. "/icons/titlebar/maximized_normal_inactive.png"
 
+local mypacman = pacman_widget({ popup_bg_color = color.popup .. opacity.hi })
 mypacman.font = theme.font
 
 local markup = lain.util.markup
@@ -142,8 +143,14 @@ textclock.font = theme.font
 textclock.format = "%B %d - %I:%M %p"
 
 -- Calendar widget
-local cw =
-	calendar_widget({ theme = "nord", placement = "top_right", start_sunday = true, auto_hide = true, timeout = 3 })
+local cw = calendar_widget({
+	theme = "nord",
+	opacity = "DD",
+	placement = "top_right",
+	start_sunday = true,
+	auto_hide = true,
+	timeout = 3,
+})
 textclock:connect_signal("button::press", function(_, _, _, button)
 	if button == 1 then
 		cw.toggle()
@@ -247,18 +254,18 @@ function theme.at_screen_connect(s)
 		wibox.container.background(s.mytasklist, theme.bg_normal), -- Middle widget
 		{ -- Right widgets
 			layout = wibox.layout.fixed.horizontal,
-			wibox.container.background(nvidia_widget(), color_wibox.primary),
+			wibox.container.background(nvidia_widget({ popup_bg = color.popup .. opacity.hi }), color_wibox.primary),
 			arrow(color_wibox.primary, color_wibox.secondary),
 			wibox.container.background(ram_widget.widget, color_wibox.secondary),
 			arrow(color_wibox.secondary, color_wibox.primary),
-			wibox.container.background(cpu_widget(), color_wibox.primary),
+			wibox.container.background(cpu_widget({ popup_bg = color.popup .. opacity.hi }), color_wibox.primary),
 			arrow(color_wibox.primary, color_wibox.secondary),
 			wibox.container.background(
 				wibox.widget({
 					wibox.widget.textbox("FS: "),
 					fs_widget({
 						mounts = { "/", "/mnt/DISK1", "/mnt/DISK2", "/mnt/DISK3", "/mnt/DISK4" },
-						popup_bg = "#2E3440",
+						popup_bg = color.popup .. opacity.hi,
 						popup_border_color = "#4C566A",
 					}),
 					layout = wibox.layout.fixed.horizontal,

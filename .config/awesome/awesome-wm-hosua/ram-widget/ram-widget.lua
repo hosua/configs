@@ -26,5 +26,4 @@ local ram_widget = wibox.widget({
 	spacing = 4,
 })
 
--- Return an object with widget property to match theme usage
 return { widget = ram_widget }

@@ -99,6 +99,20 @@ local function worker(user_args)
     local previous_month_button = args.previous_month_button or 5
     local start_sunday = args.start_sunday or false
     local week_numbers = args.week_numbers or false
+    
+    -- Convert hex opacity string (e.g., "FF", "00", "80") to decimal opacity (0.0 to 1.0)
+    local opacity = 1.0
+    if args.opacity then
+        local hex_opacity = tostring(args.opacity)
+        if #hex_opacity == 2 then
+            opacity = tonumber(hex_opacity, 16) / 255
+        else
+            naughty.notify({
+                preset = naughty.config.presets.normal,
+                title = 'Calendar Widget',
+                text = 'Opacity must be a 2-character hex string (e.g., "FF", "00")'})
+        end
+    end
 
     local styles = {}
     local function rounded_shape(size)
@@ -201,6 +215,7 @@ local function worker(user_args)
         offset = { y = 5 },
         border_width = 1,
         border_color = calendar_themes[theme].border,
+        opacity = opacity,
         widget = cal
     }
 

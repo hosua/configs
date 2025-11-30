@@ -23,6 +23,11 @@ local function worker(user_args)
     for prop, value in pairs(config) do
         _config[prop] = args[prop] or beautiful[prop] or value
     end
+    
+    -- Allow popup_bg as an alias for popup_bg_color
+    if args.popup_bg then
+        _config.popup_bg_color = args.popup_bg
+    end
 
     awful.spawn.once(_config.polkit_agent_path)
 
