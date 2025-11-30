@@ -12,6 +12,7 @@ local calendar_widget = require("awesome-wm-widgets.calendar-widget.calendar")
 local fs_widget = require("awesome-wm-widgets.fs-widget.fs-widget")
 local volume_widget = require("awesome-wm-widgets.volume-widget.volume")
 local pacman_widget = require("awesome-wm-widgets.pacman-widget.pacman")
+local ram_widget = require("awesome-wm-hosua.ram-widget.ram-widget")
 local mypacman = pacman_widget()
 
 local nvidia_widget = require("awesome-wm-hosua.nvidia-widget.nvidia-widget")
@@ -47,19 +48,8 @@ local color_wibox = {
 	secondary = color.secondary .. opacity.lo_med,
 }
 
-local wallpaper_path = os.getenv("HOME") .. "/Pictures/Wallpapers/"
-
 local theme = {}
 theme.dir = os.getenv("HOME") .. "/.config/awesome/themes/hosua"
-
--- WallPaper settings moved to rc.lua
--- theme.wallpaper = wallpaper_path .. "aurian.jpg"
--- theme.wallpaper = wallpaper_path .. "utopia-space-triple.png"
--- theme.wallpaper = wallpaper_path .. "thefrontierexpanse.png"
--- theme.wallpaper = wallpaper_path .. "TripleSpace01.jpg"
--- theme.wallpaper = wallpaper_path .. "TripleSpace03.jpg"
--- theme.wallpaper = wallpaper_path .. "TripleSpace04.jpg"
--- theme.wallpaper = wallpaper_path .. "TripleSpace07.jpg"
 
 theme.font = "Terminus 10"
 theme.fg_normal = "#FEFEFE"
@@ -173,16 +163,6 @@ theme.volume = lain.widget.alsabar({
 	notification_preset = { font = "Terminus 10", fg = theme.fg_normal },
 })
 
--- MEM
-local memicon = wibox.widget.imagebox(theme.widget_mem)
-local mem = lain.widget.mem({
-	settings = function()
-		widget:set_markup(
-			markup.font(theme.font, string.format("MEM: %.1f/%.0fGB", mem_now.used / 1000, mem_now.total / 1000))
-		)
-	end,
-})
-
 -- Separators
 local arrow = separators.arrow_left
 
@@ -212,14 +192,6 @@ end
 function theme.at_screen_connect(s)
 	-- Quake application
 	s.quake = lain.util.quake({ app = awful.util.terminal })
-
-	-- Original single-monitor wallpaper code (commented out - wallpaper now spans all screens via rc.lua)
-	-- If wallpaper is a function, call it with the screen
-	-- local wallpaper = theme.wallpaper
-	-- if type(wallpaper) == "function" then
-	-- 	wallpaper = wallpaper(s)
-	-- end
-	-- gears.wallpaper.maximized(wallpaper, s, true)
 
 	-- Tags
 	awful.tag(awful.util.tagnames, s, awful.layout.layouts[1])
@@ -277,7 +249,7 @@ function theme.at_screen_connect(s)
 			layout = wibox.layout.fixed.horizontal,
 			wibox.container.background(nvidia_widget(), color_wibox.primary),
 			arrow(color_wibox.primary, color_wibox.secondary),
-			wibox.container.background(mem.widget, color_wibox.secondary),
+			wibox.container.background(ram_widget.widget, color_wibox.secondary),
 			arrow(color_wibox.secondary, color_wibox.primary),
 			wibox.container.background(cpu_widget(), color_wibox.primary),
 			arrow(color_wibox.primary, color_wibox.secondary),
