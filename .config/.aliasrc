@@ -8,12 +8,11 @@ alias cp="cp -iv" # -i = interactive. Prompt user yes/no if overwriting a file.
 alias sxiv="sxiv -a" # Automatically animate gifs
 alias vimdiff="nvim -d"
 alias ppt2pdf="libreoffice --headless --convert-to pdf"
-alias PAT="cat ~/Desktop/git/PAT"
 alias zzz="systemctl suspend" # sleep
-alias nano="nvim" # nano not allowed on my system
-alias vi="nvim"
-alias vim="nvim" 
-alias nvim="nvim"
+alias nano="nvim -p" # nano not allowed on my system
+alias vi="nvim -p"
+alias vim="nvim -p" 
+alias nvim="nvim -p"
 alias py="python"
 kill-port() {
     if [ -z "$1" ]; then

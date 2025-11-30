@@ -9,6 +9,21 @@ map("i", "jk", "<ESC>")
 map("n", "<leader>sd", vim.diagnostic.open_float, { desc = "Show diagnostics under cursor" })
 map("n", "<leader>sf", vim.lsp.buf.code_action, { desc = "Show/apply code fixes" })
 
+local format_on_save_enabled = true -- Track state ourselves
+
+map("n", "<leader>tf", function()
+  local conform = require "conform"
+  format_on_save_enabled = not format_on_save_enabled
+
+  if format_on_save_enabled then
+    conform.setup { format_on_save = { timeout_ms = 500, lsp_fallback = true } }
+    vim.notify("Format on save: ENABLED", vim.log.levels.INFO)
+  else
+    conform.setup { format_on_save = false }
+    vim.notify("Format on save: DISABLED", vim.log.levels.INFO)
+  end
+end, { desc = "Toggle format on save" })
+
 map({ "n", "i" }, "<leader>sm", function()
   local MAX_MESSAGES = 50
 
