@@ -237,6 +237,33 @@ end)
 
 -- {{{ Screen
 
+local wallpaper_path = os.getenv("HOME") .. "/Pictures/Wallpapers/"
+local wallpapers = {
+	"aurian-5760x1080.jpg",
+	-- These don't fill the entire screen :(
+	-- "2026-Porsche911GT3-Manthey-1.jpg",
+	-- "2026-Porsche911GT3-Manthey-2.jpg",
+	-- "2026-Porsche911GT3-Manthey-3.jpg",
+	"Ferarri-SF90XX.jpg",
+	"TripleSpace01.jpg",
+	"TripleSpace03.jpg",
+	"TripleSpace07.jpg",
+	"blue-space-triple-5760x1080.jpg",
+	"cometary-5760x1080.jpg",
+	"lamborghini-sian-5760x1080.jpg",
+	"nebula-triple-1.jpg",
+	"planets-5760x1080.webp",
+	"space-nebula.jpeg",
+	"space-purple-5760x1080.jpg",
+	"space-purplish.jpeg",
+	"space-thunderous.jpg",
+	"star_horizon-5760x1080.jpg",
+	"thefrontierexpanse.png",
+	"utopia-space-triple.png", -- incorrect resolution, but looks good anyway
+	-- "utopia-space-triple-5760x1080.png", -- does not fill screen
+	-- "overwatch-triple.jpg", -- NSFW lol
+}
+
 -- Original single-monitor wallpaper code (commented out - now using spanning wallpaper)
 -- Re-set wallpaper when a screen's geometry changes (e.g. different resolution)
 -- screen.connect_signal("property::geometry", function(s)
@@ -261,11 +288,31 @@ local function set_spanning_wallpaper()
 
 	-- Set wallpaper spanning all screens using nitrogen
 	awful.spawn.with_shell(string.format("nitrogen --set-scaled --head=-1 '%s' 2>/dev/null", wallpaper))
-	naughty.notify({
-		preset = naughty.config.presets.low,
-		title = "Changed Wllpaper",
-		text = "Set wallpaper to " .. wallpaper,
-	})
+	if io.open(wallpaper, "r") then
+		naughty.notify({
+			preset = naughty.config.presets.normal,
+			title = "Changed Wallpaper",
+			text = "Set wallpaper to " .. wallpaper,
+		})
+	else
+		naughty.notify({
+			preset = naughty.config.presets.critical,
+			title = "Failed to change wallpaper",
+			text = "Could not find wallpaper " .. wallpaper,
+		})
+	end
+end
+
+local wallpaper_index = 1
+
+local function set_next_wall_paper(inc)
+	local function wrap(i, n)
+		return ((i - 1) % n) + 1
+	end
+	local n = #wallpapers
+	wallpaper_index = wrap(wallpaper_index + inc, n)
+	beautiful.wallpaper = wallpaper_path .. wallpapers[wallpaper_index]
+	set_spanning_wallpaper()
 end
 
 -- Re-set wallpaper when a screen's geometry changes (e.g. different resolution)
@@ -317,44 +364,6 @@ root.buttons(mytable.join(
 ))
 
 -- }}}
-
-local wallpaper_path = os.getenv("HOME") .. "/Pictures/Wallpapers/"
-local wallpapers = {
-	"aurian-5760x1080.jpg",
-	-- These don't fill the entire screen :(
-	-- "2026-Porsche911GT3-Manthey-1.jpg",
-	-- "2026-Porsche911GT3-Manthey-2.jpg",
-	-- "2026-Porsche911GT3-Manthey-3.jpg",
-	"Ferarri-SF90XX.jpg",
-	"TripleSpace01.jpg",
-	"TripleSpace03.jpg",
-	"TripleSpace07.jpg",
-	"blue-space-triple-5760x1080.jpg",
-	"cometary-5760x1080.jpg",
-	"lamborghini-sian-5760x1080.jpg",
-	"nebula-triple-1.jpg",
-	"planets-5760x1080.webp",
-	"space-nebula.jpeg",
-	"space-purple-5760x1080.jpg",
-	"space-purplish.jpeg",
-	"space-thunderous.jpg",
-	"star_horizon-5760x1080.jpg",
-	"thefrontierexpanse.png",
-	"utopia-space-triple-5760x1080.png",
-	-- "overwatch-triple.jpg", -- NSFW lol
-}
-
-local wallpaper_index = 1
-
-local function set_next_wall_paper(inc)
-	local function wrap(i, n)
-		return ((i - 1) % n) + 1
-	end
-	local n = #wallpapers
-	wallpaper_index = wrap(wallpaper_index + inc, n)
-	beautiful.wallpaper = wallpaper_path .. wallpapers[wallpaper_index]
-	set_spanning_wallpaper()
-end
 
 -- {{{ Key bindings
 
