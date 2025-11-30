@@ -237,6 +237,9 @@ end)
 
 -- {{{ Screen
 
+-- when toggled true, a single wallpaper will span all monitors
+local spanning_wallpaper_mode = true
+local wallpaper_index = 1
 local wallpaper_path = os.getenv("HOME") .. "/Pictures/Wallpapers/"
 local wallpapers = {
 	"aurian-5760x1080.jpg",
@@ -264,19 +267,8 @@ local wallpapers = {
 	-- "overwatch-triple.jpg", -- NSFW lol
 }
 
--- Original single-monitor wallpaper code (commented out - now using spanning wallpaper)
+-- Original single-monitor wallpaper code (commented out and using spanning_wallpaper for multi-monitor setup)
 -- Re-set wallpaper when a screen's geometry changes (e.g. different resolution)
--- screen.connect_signal("property::geometry", function(s)
--- 	-- Wallpaper
--- 	if beautiful.wallpaper then
--- 		local wallpaper = beautiful.wallpaper
--- 		-- If wallpaper is a function, call it with the screen
--- 		if type(wallpaper) == "function" then
--- 			wallpaper = wallpaper(s)
--- 		end
--- 		gears.wallpaper.maximized(wallpaper, s, true)
--- 	end
--- end)
 
 -- Function to set wallpaper spanning all screens
 local function set_spanning_wallpaper()
@@ -303,7 +295,22 @@ local function set_spanning_wallpaper()
 	end
 end
 
-local wallpaper_index = 1
+-- Function to set wallpaper per screen (non-spanning)
+local function set_wallpaper()
+	if not beautiful.wallpaper then
+		return
+	end
+	local wallpaper = beautiful.wallpaper
+	if type(wallpaper) == "function" then
+		for s in screen do
+			gears.wallpaper.maximized(wallpaper(s), s, true)
+		end
+	else
+		for s in screen do
+			gears.wallpaper.maximized(wallpaper, s, true)
+		end
+	end
+end
 
 local function set_next_wall_paper(inc)
 	local function wrap(i, n)
@@ -312,7 +319,11 @@ local function set_next_wall_paper(inc)
 	local n = #wallpapers
 	wallpaper_index = wrap(wallpaper_index + inc, n)
 	beautiful.wallpaper = wallpaper_path .. wallpapers[wallpaper_index]
-	set_spanning_wallpaper()
+	if spanning_wallpaper_mode then
+		set_spanning_wallpaper()
+	else
+		set_wallpaper()
+	end
 end
 
 -- Re-set wallpaper when a screen's geometry changes (e.g. different resolution)
@@ -321,9 +332,22 @@ screen.connect_signal("property::geometry", function(s)
 end)
 
 -- Set wallpaper on startup
-screen.connect_signal("request::desktop_decoration", function(s)
-	set_spanning_wallpaper()
-end)
+if spanning_wallpaper_mode == true then
+	screen.connect_signal("request::desktop_decoration", function(s)
+		set_spanning_wallpaper()
+	end)
+else
+	screen.connect_signal("property::geometry", function(s)
+		if beautiful.wallpaper then
+			local wallpaper = beautiful.wallpaper
+			-- If wallpaper is a function, call it with the screen
+			if type(wallpaper) == "function" then
+				wallpaper = wallpaper(s)
+			end
+			gears.wallpaper.maximized(wallpaper, s, true)
+		end
+	end)
+end
 
 -- Disable middle-mouse paste
 -- See 3.1.2: https://wiki.archlinux.org/title/Clipboard
