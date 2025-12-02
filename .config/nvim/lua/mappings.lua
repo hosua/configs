@@ -8,6 +8,7 @@ map("n", ";", ":", { desc = "CMD enter command mode" })
 map("i", "jk", "<ESC>")
 map("n", "<leader>sd", vim.diagnostic.open_float, { desc = "Show diagnostics under cursor" })
 map("n", "<leader>sf", vim.lsp.buf.code_action, { desc = "Show/apply code fixes" })
+map("n", "<leader>gb", "<cmd>Gitsigns blame<CR>", { desc = "git blame current line" })
 
 local format_on_save_enabled = true -- Track state ourselves
 
