@@ -1,37 +1,23 @@
 require "nvchad.autocmds"
 
-local augroup = vim.api.nvim_create_augroup("SafeLSP", { clear = true })
+local original_signature_help = vim.lsp.buf.signature_help
 
-local function safe_signature_help()
-  local ok, _ = pcall(function()
-    local clients = vim.lsp.get_clients { bufnr = 0 }
-    if #clients == 0 then
-      return
-    end
+vim.lsp.buf.signature_help = function(opts)
+  local clients = vim.lsp.get_clients { bufnr = 0 }
+  local has_support = false
 
-    local has_support = false
-    for _, client in ipairs(clients) do
-      local caps = client.server_capabilities
-      if caps.textDocument and caps.textDocument.signatureHelp then
-        has_support = true
-        break
-      end
+  for _, client in ipairs(clients) do
+    local caps = client.server_capabilities
+    if caps.textDocument and caps.textDocument.signatureHelp then
+      has_support = true
+      break
     end
+  end
 
-    if has_support then
-      vim.lsp.buf.signature_help()
-    end
-  end)
-  if not ok then
-    return
+  if has_support then
+    return original_signature_help(opts)
   end
 end
-
-vim.api.nvim_create_autocmd("TextChangedI", {
-  group = augroup,
-  callback = safe_signature_help,
-  desc = "Safely trigger signature help if supported",
-})
 
 vim.lsp.handlers["textDocument/definition"] = vim.lsp.with(
   vim.lsp.handlers["textDocument/definition"] or function() end,
