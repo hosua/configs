@@ -6,9 +6,12 @@ local map = vim.keymap.set
 
 map("n", ";", ":", { desc = "CMD enter command mode" })
 map("i", "jk", "<ESC>")
-map("n", "<leader>sd", vim.diagnostic.open_float, { desc = "Show diagnostics under cursor" })
+map("n", "<leader>se", vim.diagnostic.open_float, { desc = "Show diagnostics under cursor" })
 map("n", "<leader>sf", vim.lsp.buf.code_action, { desc = "Show/apply code fixes" })
-map("n", "<leader>gb", "<cmd>Gitsigns blame<CR>", { desc = "git blame current line" })
+map("n", "<leader>gb", "<cmd>Gitsigns blame<CR>", { desc = "blame current line" })
+map("n", "<leader>sd", function()
+  vim.lsp.buf.hover()
+end, { desc = "Show function documentation" })
 
 local format_on_save_enabled = true -- Track state ourselves
 
@@ -24,6 +27,7 @@ map("n", "<leader>tf", function()
     vim.notify("Format on save: DISABLED", vim.log.levels.INFO)
   end
 end, { desc = "Toggle format on save" })
+
 
 map({ "n", "i" }, "<leader>sm", function()
   local MAX_MESSAGES = 50
