@@ -55,7 +55,9 @@ vim.lsp.config("ts_ls", {
   settings = {
     typescript = {
       validate = { enable = true },
-      diagnostics = { globals = {} },
+      diagnostics = {
+        globals = {},
+      },
       preferences = {
         includePackageJsonAutoImports = "on",
         importModuleSpecifier = "auto",
