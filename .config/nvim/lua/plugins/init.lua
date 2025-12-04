@@ -22,7 +22,7 @@ return {
     dependencies = { "mason.nvim" },
     opts = {
       automatic_installation = true,
-      ensure_installed = { "eslint", "typescript-language-server" },
+      ensure_installed = { "eslint", "vtsls" },
     },
   },
 
