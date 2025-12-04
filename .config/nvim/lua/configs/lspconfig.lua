@@ -29,6 +29,10 @@ vim.lsp.config("eslint", {
 })
 
 -- Configure ts_ls - ensure settings are applied
+local ts_restart_count = {}
+local MAX_RESTART_ATTEMPTS = 3
+local RESTART_DELAY_MS = 2000
+
 vim.lsp.config("ts_ls", {
   root_dir = function(fname)
     local util = require "lspconfig.util"
@@ -83,33 +87,51 @@ vim.lsp.config("ts_ls", {
 
   on_attach = function(client, bufnr)
     client.server_capabilities.documentFormattingProvider = false
-    -- Force update settings after attach
-    client.notify("workspace/didChangeConfiguration", {
-      settings = {
-        typescript = {
-          preferences = {
-            includePackageJsonAutoImports = "on",
-            importModuleSpecifier = "auto",
-            importModuleSpecifierEnding = "minimal",
-          },
-          suggest = {
-            autoImports = true,
-            includeCompletionsForModuleExports = true,
-          },
-        },
-        javascript = {
-          preferences = {
-            includePackageJsonAutoImports = "on",
-            importModuleSpecifier = "auto",
-            importModuleSpecifierEnding = "minimal",
-          },
-          suggest = {
-            autoImports = true,
-            includeCompletionsForModuleExports = true,
-          },
-        },
-      },
-    })
+  end,
+
+  on_exit = function(code, signal, client_id)
+    local root = vim.fn.getcwd()
+    ts_restart_count[root] = (ts_restart_count[root] or 0) + 1
+
+    if code ~= 0 and signal ~= 15 then
+      if ts_restart_count[root] <= MAX_RESTART_ATTEMPTS then
+        vim.notify(
+          string.format(
+            "TypeScript server exited unexpectedly (code: %d, signal: %d). Restarting... (%d/%d)",
+            code,
+            signal,
+            ts_restart_count[root],
+            MAX_RESTART_ATTEMPTS
+          ),
+          vim.log.levels.WARN
+        )
+
+        vim.defer_fn(function()
+          local bufnr = vim.api.nvim_get_current_buf()
+          local filetype = vim.bo[bufnr].filetype
+          if vim.tbl_contains({ "typescript", "typescriptreact", "javascript", "javascriptreact" }, filetype) then
+            local active = vim.lsp.get_active_clients({ name = "ts_ls", bufnr = bufnr })
+            if #active == 0 then
+              local config = vim.lsp.config.get("ts_ls")
+              if config then
+                vim.lsp.start(config, { bufnr = bufnr })
+              end
+            end
+          end
+        end, RESTART_DELAY_MS)
+      else
+        vim.notify(
+          string.format(
+            "TypeScript server crashed too many times (%d attempts). Manual restart required.",
+            ts_restart_count[root]
+          ),
+          vim.log.levels.ERROR
+        )
+        ts_restart_count[root] = 0
+      end
+    else
+      ts_restart_count[root] = 0
+    end
   end,
 })
 
