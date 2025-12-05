@@ -15,9 +15,12 @@ vim.diagnostic.config {
 vim.env.NODE_OPTIONS = vim.env.NODE_OPTIONS or "--max_old_space_size=4096"
 
 local servers = { "html", "cssls", "eslint", "vtsls", "clangd", "rust_analyzer", "bashls" }
-vim.lsp.enable(servers)
 
-vim.lsp.config("bashls", {
+local lsp = vim.lsp
+
+lsp.enable(servers)
+
+lsp.config("bashls", {
   settings = {
     bashIde = {
       globPattern = "*@(.sh|.inc|.bash|.command)",
@@ -25,7 +28,7 @@ vim.lsp.config("bashls", {
   },
 })
 
-vim.lsp.config("eslint", {
+lsp.config("eslint", {
   settings = {
     workingDirectory = { mode = "auto" },
     codeAction = {
@@ -41,7 +44,7 @@ vim.lsp.config("eslint", {
   filetypes = { "javascript", "javascriptreact", "typescript", "typescriptreact" },
 })
 
-vim.lsp.config("rust_analyzer", {
+lsp.config("rust_analyzer", {
   settings = {
     ["rust-analyzer"] = {
       diagnostics = {
@@ -51,7 +54,7 @@ vim.lsp.config("rust_analyzer", {
   },
 })
 
-vim.lsp.config("vtsls", {
+lsp.config("vtsls", {
   settings = {
     typescript = {
       validate = { enable = true },
