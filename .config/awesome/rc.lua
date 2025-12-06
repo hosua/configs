@@ -80,8 +80,8 @@ awful.spawn.with_shell(
 -- )
 
 -- awful.spawn.with_shell("picom") -- "launch compositor"
--- awful.spawn.with_shell("picom --backend glx --vsync")
-awful.spawn.with_shell("picom --backend glx --glx-no-stencil --vsync-use-glfinish --xrender-sync-fence --use-damage")
+awful.spawn.with_shell("picom --backend glx --vsync")
+-- awful.spawn.with_shell("picom --backend glx --glx-no-stencil --vsync-use-glfinish --xrender-sync-fence --use-damage")
 
 run_once({ "urxvtd", "unclutter -root" }) -- comma-separated entries
 
@@ -987,7 +987,7 @@ client.connect_signal("request::titlebars", function(c)
 
 	awful.titlebar(c, { size = 20 }):setup({
 		{ -- Left
-			awful.titlebar.widget.iconwidget(c),
+			wibox.container.margin(awful.titlebar.widget.iconwidget(c), 5, 0, 0, 0),
 			buttons = buttons,
 			layout = wibox.layout.fixed.horizontal,
 		},
