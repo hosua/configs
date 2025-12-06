@@ -10,6 +10,8 @@ local options = {
     json = { "prettierd" },
     sh = { "shfmt" },
     bash = { "shfmt" },
+    c = { "clang-fmt" },
+    cpp = { "clang-fmt" },
   },
 
   format_on_save = {

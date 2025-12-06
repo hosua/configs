@@ -58,6 +58,7 @@ alias ua-update-all='export TMPFILE="$(mktemp)"; \
       && yay -Syyu --noconfirm'
 
 alias rustdocs="rustup docs --book"
+alias wr="~/.cargo/bin/wr"
 
 alias rbtree="eval $HOME/Desktop/Programming/ruby/rbtree/rbtree"
 
