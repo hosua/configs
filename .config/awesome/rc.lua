@@ -80,7 +80,8 @@ awful.spawn.with_shell(
 -- )
 
 -- awful.spawn.with_shell("picom") -- "launch compositor"
-awful.spawn.with_shell("picom --backend glx --vsync")
+-- awful.spawn.with_shell("picom --backend glx --vsync")
+awful.spawn.with_shell("picom --backend glx --glx-no-stencil --vsync-use-glfinish --xrender-sync-fence --use-damage")
 
 run_once({ "urxvtd", "unclutter -root" }) -- comma-separated entries
 
@@ -877,12 +878,6 @@ clientbuttons = mytable.join(
 		awful.mouse.client.resize(c)
 	end)
 )
-
-client.connect_signal("manage", function(c)
-	c.shape = function(cr, w, h)
-		gears.shape.rounded_rect(cr, w, h, 10)
-	end
-end)
 
 -- Set keys
 root.keys(globalkeys)
