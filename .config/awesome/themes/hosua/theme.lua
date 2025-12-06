@@ -196,12 +196,12 @@ local function pl(widget, bgcolor, padding)
 	return wibox.container.background(wibox.container.margin(widget, dpi(16), dpi(16)), bgcolor, theme.powerline_rl)
 end
 
--- Rounded borders
-client.connect_signal("manage", function(c)
-	c.shape = function(cr, w, h)
-		gears.shape.rounded_rect(cr, w, h, 10)
-	end
-end)
+-- Rounded borders (causing graphical bugs)
+-- client.connect_signal("manage", function(c)
+-- 	c.shape = function(cr, w, h)
+-- 		gears.shape.rounded_rect(cr, w, h, 10)
+-- 	end
+-- end)
 
 function theme.at_screen_connect(s)
 	-- Quake application

@@ -5,6 +5,7 @@ DEST_CONF=".config"
 
 rsync -a --exclude='.git' \
   "$CONF/.aliasrc" \
+  "$CONF/Thunar" \
   "$CONF/awesome" \
   "$CONF/bashtop" \
   "$CONF/btop" \
@@ -12,8 +13,8 @@ rsync -a --exclude='.git' \
   "$CONF/dmenu" \
   "$CONF/kitty" \
   "$CONF/nvim" \
+  "$CONF/picom" \
   "$CONF/ranger" \
-  "$CONF/Thunar" \
   "$CONF/tmux-powerline" \
   "$DEST_CONF"
 
