@@ -14,7 +14,8 @@ vim.diagnostic.config {
 -- Increase memory for TypeScript server
 vim.env.NODE_OPTIONS = vim.env.NODE_OPTIONS or "--max_old_space_size=4096"
 
-local servers = { "html", "cssls", "eslint", "vtsls", "clangd", "rust_analyzer", "bashls" }
+local servers =
+  { "html", "cssls", "eslint", "vtsls", "clangd", "rust_analyzer", "bashls", "gopls", "ruff", "basedpyright" }
 
 local lsp = vim.lsp
 
@@ -26,6 +27,57 @@ lsp.config("bashls", {
       globPattern = "*@(.sh|.inc|.bash|.command)",
     },
   },
+})
+
+lsp.config("basedpyright", {
+  cmd = { "basedpyright-langserver", "--stdio" },
+  filetypes = { "python" },
+  root_markers = {
+    "pyrightconfig.json",
+    "pyproject.toml",
+    "setup.py",
+    "setup.cfg",
+    "requirements.txt",
+    "Pipfile",
+    ".git",
+  },
+  settings = {
+    basedpyright = {
+      analysis = {
+        autoSearchPaths = true,
+        diagnosticMode = "openFilesOnly",
+        useLibraryCodeForTypes = true,
+      },
+    },
+  },
+})
+
+lsp.config("ruff", {
+  cmd = { "basedpyright-langserver", "--stdio" },
+  settings = {
+    basedpyright = {
+      analysis = {
+        autoSearchPaths = true,
+        diagnosticMode = "openFilesOnly",
+        useLibraryCodeForTypes = true,
+      },
+    },
+  },
+  root_markers = {
+    "pyrightconfig.json",
+    "pyproject.toml",
+    "setup.py",
+    "setup.cfg",
+    "requirements.txt",
+    "Pipfile",
+    ".git",
+  },
+  filetypes = { "python" },
+})
+
+lsp.config("gopls", {
+  settings = {},
+  filetypes = { "go", "gomod", "gowork", "gotmpl" },
 })
 
 lsp.config("eslint", {
