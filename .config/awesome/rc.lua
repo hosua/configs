@@ -253,15 +253,12 @@ local wallpapers = {
 	"TripleSpace03.jpg",
 	"TripleSpace07.jpg",
 	"blue-space-triple-5760x1080.jpg",
-	"cometary-5760x1080.jpg",
 	"lamborghini-sian-5760x1080.jpg",
 	"nebula-triple-1.jpg",
 	"planets-5760x1080.webp",
 	"space-nebula.jpeg",
 	"space-purple-5760x1080.jpg",
 	"space-purplish.jpeg",
-	"space-thunderous.jpg",
-	"star_horizon-5760x1080.jpg",
 	"thefrontierexpanse.png",
 	"utopia-space-triple.png", -- incorrect resolution, but looks good anyway
 	-- "utopia-space-triple-5760x1080.png", -- does not fill screen
