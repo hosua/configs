@@ -2,7 +2,7 @@
 
 # dwm, kde, cinnamon
 # environment=dwm
-environment=kde
+environment=awesome
 
 userresources=$HOME/.Xresources
 usermodmap=$HOME/.Xmodmap
@@ -16,7 +16,7 @@ if [ -f $sysresources ]; then
 fi
 
 if [ -f $sysmodmap ]; then
-    xmodmap $sysmodmap
+	xmodmap $sysmodmap
 fi
 
 if [ -f "$userresources" ]; then
@@ -24,20 +24,22 @@ if [ -f "$userresources" ]; then
 fi
 
 if [ -f "$usermodmap" ]; then
-    xmodmap "$usermodmap"
+	xmodmap "$usermodmap"
 fi
 
 # start some nice programs
 
-if [ -d /etc/X11/xinit/xinitrc.d ] ; then
-	for f in /etc/X11/xinit/xinitrc.d/?*.sh ; do
-	[ -x "$f" ] && . "$f"
+if [ -d /etc/X11/xinit/xinitrc.d ]; then
+	for f in /etc/X11/xinit/xinitrc.d/?*.sh; do
+		[ -x "$f" ] && . "$f"
 	done
 	unset f
 fi
 
 # keyboard layout
 setxkbmap us &
+
+exec dbus-launch --sh-syntax --exit-with-session awesome
 
 # Display resolution
 # xrandr --output HDMI-0 --off --output DP-0 --mode 1920x1080 --rate 144 --output DP-2 --mode 1920x1080 --rate 144 --right-of DP-0 --output DP-4 --mode 1920x1080 --rate 144 --right-of DP-2 &
@@ -49,9 +51,9 @@ xrandr --output DP-2 --mode 1920x1080 --rate 144 --output DP-0 --mode 1920x1080 
 # Needed to use JDownloader for some reason
 export _JAVA_AWT_WM_NONREPARENTING=1
 
-killall -9 dwm_bar.sh 
+killall -9 dwm_bar.sh
 killall -9 dwmblocks
-# Volume bindings 
+# Volume bindings
 xbindkeys &
 
 # Different desktop environments and window managers
@@ -92,7 +94,3 @@ fi
 if [[ $environment == cinnamon ]]; then
 	exec cinnamon-session
 fi
-
-
-
-

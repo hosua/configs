@@ -265,6 +265,9 @@ local wallpapers = {
 	-- "overwatch-triple.jpg", -- NSFW lol
 }
 
+-- Initialize wallpaper to first in array on startup
+beautiful.wallpaper = wallpaper_path .. wallpapers[wallpaper_index]
+
 -- Original single-monitor wallpaper code (commented out and using spanning_wallpaper for multi-monitor setup)
 -- Re-set wallpaper when a screen's geometry changes (e.g. different resolution)
 
@@ -292,6 +295,8 @@ local function set_spanning_wallpaper()
 		})
 	end
 end
+
+set_spanning_wallpaper()
 
 -- Function to set wallpaper per screen (non-spanning)
 local function set_wallpaper()
@@ -401,6 +406,9 @@ globalkeys = mytable.join(
 		awful.spawn("thunar")
 	end, { description = "Steam" }),
 	awful.key({}, "Print", function()
+		awful.spawn.with_shell("shutter --select")
+	end, { description = "Screenshot with select" }),
+	awful.key({ "Shift" }, "Print", function()
 		awful.spawn.with_shell("killall -9 shutter; shutter")
 	end, { description = "Screenshot" }),
 
