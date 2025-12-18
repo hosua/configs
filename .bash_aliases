@@ -1,3 +1,8 @@
+export VISUAL="nvim"
+export EDITOR="nvim"
+export PAGER="nvim -R"
+export MANPAGER="nvim +Man!"
+
 # Easy clipboard
 alias c="xclip"
 alias v="xclip -o"
@@ -18,6 +23,7 @@ alias vi="nvim -p"
 alias vim="nvim -p"
 alias nvim="nvim -p"
 alias py="python"
+
 kill-port() {
     if [ -z "$1" ]; then
         echo "Usage: kill-port <port>"
