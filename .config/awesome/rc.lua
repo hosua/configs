@@ -111,28 +111,20 @@ local browser = "brave"
 -- when toggled true, a single wallpaper will span all monitors
 local spanning_wallpaper_mode = true
 local wallpaper_index = 1
-local wallpaper_path = os.getenv("HOME") .. "/Pictures/Wallpapers/"
+local wallpaper_path = string.format("%s/.config/awesome/hosua/wallpapers/", os.getenv("HOME"))
 local wallpapers = {
 	"aurian-5760x1080.jpg",
-	-- These don't fill the entire screen :(
-	-- "2026-Porsche911GT3-Manthey-1.jpg",
-	-- "2026-Porsche911GT3-Manthey-2.jpg",
-	-- "2026-Porsche911GT3-Manthey-3.jpg",
-	"Ferarri-SF90XX.jpg",
 	"TripleSpace01.jpg",
 	"TripleSpace03.jpg",
 	"TripleSpace07.jpg",
 	"blue-space-triple-5760x1080.jpg",
-	"lamborghini-sian-5760x1080.jpg",
 	"nebula-triple-1.jpg",
 	"planets-5760x1080.webp",
 	"space-nebula.jpeg",
 	"space-purple-5760x1080.jpg",
 	"space-purplish.jpeg",
 	"thefrontierexpanse.png",
-	"utopia-space-triple.png", -- incorrect resolution, but looks good anyway
-	-- "utopia-space-triple-5760x1080.png", -- does not fill screen
-	-- "overwatch-triple.jpg", -- NSFW lol
+	"utopia-space-triple.png",
 }
 
 -- Initialize wallpaper to first in array on startup
