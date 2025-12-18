@@ -100,21 +100,6 @@ awful.spawn.with_shell(
 
 -- {{{ Variable definitions
 
-local themes = {
-	"blackburn", -- 1
-	"copland", -- 2
-	"dremora", -- 3
-	"holo", -- 4
-	"multicolor", -- 5
-	"powerarrow", -- 6
-	"powerarrow-dark", -- 7
-	"rainbow", -- 8
-	"steamburn", -- 9
-	"vertex", -- 10
-	"hosua", -- 11
-}
-
-local chosen_theme = themes[11]
 local modkey = "Mod4"
 local altkey = "Mod1"
 local terminal = "kitty"
@@ -122,6 +107,36 @@ local vi_focus = true -- vi-like client focus https://github.com/lcpz/awesome-co
 local cycle_prev = true -- cycle with only the previously focused client or all https://github.com/lcpz/awesome-copycats/issues/274
 local editor = os.getenv("EDITOR") or "nvim"
 local browser = "brave"
+
+-- when toggled true, a single wallpaper will span all monitors
+local spanning_wallpaper_mode = true
+local wallpaper_index = 1
+local wallpaper_path = os.getenv("HOME") .. "/Pictures/Wallpapers/"
+local wallpapers = {
+	"aurian-5760x1080.jpg",
+	-- These don't fill the entire screen :(
+	-- "2026-Porsche911GT3-Manthey-1.jpg",
+	-- "2026-Porsche911GT3-Manthey-2.jpg",
+	-- "2026-Porsche911GT3-Manthey-3.jpg",
+	"Ferarri-SF90XX.jpg",
+	"TripleSpace01.jpg",
+	"TripleSpace03.jpg",
+	"TripleSpace07.jpg",
+	"blue-space-triple-5760x1080.jpg",
+	"lamborghini-sian-5760x1080.jpg",
+	"nebula-triple-1.jpg",
+	"planets-5760x1080.webp",
+	"space-nebula.jpeg",
+	"space-purple-5760x1080.jpg",
+	"space-purplish.jpeg",
+	"thefrontierexpanse.png",
+	"utopia-space-triple.png", -- incorrect resolution, but looks good anyway
+	-- "utopia-space-triple-5760x1080.png", -- does not fill screen
+	-- "overwatch-triple.jpg", -- NSFW lol
+}
+
+-- Initialize wallpaper to first in array on startup
+beautiful.wallpaper = wallpaper_path .. wallpapers[wallpaper_index]
 
 awful.util.terminal = terminal
 awful.util.tagnames = { "1", "2", "3", "4", "5", "6", "7", "8", "9" }
@@ -202,7 +217,8 @@ awful.util.tasklist_buttons = mytable.join(
 	end)
 )
 
-beautiful.init(string.format("%s/.config/awesome/themes/%s/theme.lua", os.getenv("HOME"), chosen_theme))
+local theme = string.format("%s/.config/awesome/hosua/theme.lua", os.getenv("HOME"))
+beautiful.init(theme)
 -- hotkey help styles
 beautiful.hotkeys_font = "Terminus 14"
 beautiful.hotkeys_description_font = "Terminus 12"
@@ -211,62 +227,7 @@ beautiful.hotkeys_fg = "#FEFEFE" -- foreground color
 
 -- }}}
 
--- {{{ Menu
-
--- Hide the menu when the mouse leaves it
---[[
-awful.util.mymainmenu.wibox:connect_signal("mouse::leave", function()
-    if not awful.util.mymainmenu.active_child or
-       (awful.util.mymainmenu.wibox ~= mouse.current_wibox and
-       awful.util.mymainmenu.active_child.wibox ~= mouse.current_wibox) then
-        awful.util.mymainmenu:hide()
-    else
-        awful.util.mymainmenu.active_child.wibox:connect_signal("mouse::leave",
-        function()
-            if awful.util.mymainmenu.wibox ~= mouse.current_wibox then
-                awful.util.mymainmenu:hide()
-            end
-        end)
-    end
-end)
---]]
-
--- Set the Menubar terminal for applications that require it
---menubar.utils.terminal = terminal
-
--- }}}
-
 -- {{{ Screen
-
--- when toggled true, a single wallpaper will span all monitors
-local spanning_wallpaper_mode = true
-local wallpaper_index = 1
-local wallpaper_path = os.getenv("HOME") .. "/Pictures/Wallpapers/"
-local wallpapers = {
-	"aurian-5760x1080.jpg",
-	-- These don't fill the entire screen :(
-	-- "2026-Porsche911GT3-Manthey-1.jpg",
-	-- "2026-Porsche911GT3-Manthey-2.jpg",
-	-- "2026-Porsche911GT3-Manthey-3.jpg",
-	"Ferarri-SF90XX.jpg",
-	"TripleSpace01.jpg",
-	"TripleSpace03.jpg",
-	"TripleSpace07.jpg",
-	"blue-space-triple-5760x1080.jpg",
-	"lamborghini-sian-5760x1080.jpg",
-	"nebula-triple-1.jpg",
-	"planets-5760x1080.webp",
-	"space-nebula.jpeg",
-	"space-purple-5760x1080.jpg",
-	"space-purplish.jpeg",
-	"thefrontierexpanse.png",
-	"utopia-space-triple.png", -- incorrect resolution, but looks good anyway
-	-- "utopia-space-triple-5760x1080.png", -- does not fill screen
-	-- "overwatch-triple.jpg", -- NSFW lol
-}
-
--- Initialize wallpaper to first in array on startup
-beautiful.wallpaper = wallpaper_path .. wallpapers[wallpaper_index]
 
 -- Original single-monitor wallpaper code (commented out and using spanning_wallpaper for multi-monitor setup)
 -- Re-set wallpaper when a screen's geometry changes (e.g. different resolution)
