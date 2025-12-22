@@ -9,7 +9,10 @@ SORT_BY="-rss"
 FMT="pid,%cpu,rss,exe"
 
 ps -eo "$FMT" --sort "$SORT_BY" |
+  # Convert mem to human readable
   awk '{m=$3/1024; $3 = (m>1000 ? sprintf("%.2fGB", m/1024) : sprintf("%.2fMB", m)); print}' |
+  # Get everything after last slash for process name
+  awk '{gsub(/.*\//, "", $4); print}' |
   column -t |
   tail -n +2 |
   dmenu -l $LIST_HEIGHT -p "Kill" |
