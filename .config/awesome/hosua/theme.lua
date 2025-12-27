@@ -59,12 +59,12 @@ theme.font = "Terminus 10"
 theme.fg_normal = "#FEFEFE"
 theme.fg_focus = color.text_focus
 theme.fg_urgent = "#C83F11"
-theme.bg_normal = color.dark_gray .. opacity.lo
-theme.bg_focus = color.primary .. opacity.lo
-theme.bg_urgent = color.primary .. opacity.lo
+theme.bg_normal = color.dark_gray .. opacity.med
+theme.bg_focus = color.primary .. opacity.med
+theme.bg_urgent = color.primary .. opacity.med
 theme.taglist_fg_focus = color.text_focus
-theme.tasklist_bg_normal = color.dark_gray .. opacity.lo
-theme.tasklist_bg_focus = color.primary .. opacity.med
+theme.tasklist_bg_normal = color.dark_gray .. opacity.med
+theme.tasklist_bg_focus = color.primary .. opacity.hi
 theme.tasklist_fg_focus = color.text_focus
 theme.border_width = dpi(1)
 theme.border_normal = color.primary .. opacity.med
@@ -236,7 +236,7 @@ function theme.at_screen_connect(s)
 		position = "top",
 		screen = s,
 		height = dpi(26),
-		bg = theme.bg_normal,
+		bg = color.dark_gray .. opacity.hi,
 		fg = theme.fg_normal,
 	})
 

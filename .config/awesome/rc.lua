@@ -361,11 +361,14 @@ globalkeys = mytable.join(
 		awful.spawn("thunar")
 	end, { description = "Steam" }),
 	awful.key({}, "Print", function()
-		awful.spawn.with_shell("shutter --select")
-	end, { description = "Screenshot with select" }),
-	awful.key({ "Shift" }, "Print", function()
-		awful.spawn.with_shell("killall -9 shutter; shutter")
-	end, { description = "Screenshot" }),
+		awful.spawn.with_shell("flameshot gui")
+	end, { description = "Screenshot with flameshot" }),
+	-- awful.key({}, "Print", function()
+	-- 	awful.spawn.with_shell("shutter --select")
+	-- end, { description = "Screenshot with select" }),
+	-- awful.key({ "Shift" }, "Print", function()
+	-- 	awful.spawn.with_shell("killall -9 shutter; shutter")
+	-- end, { description = "Screenshot" }),
 
 	-- dmenu
 	awful.key({ modkey }, "k", function()
