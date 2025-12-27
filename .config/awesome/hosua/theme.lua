@@ -48,8 +48,8 @@ local color = {
 }
 
 local color_wibox = {
-	primary = color.primary .. opacity.lo,
-	secondary = color.secondary .. opacity.lo_med,
+	primary = color.primary .. opacity.hi,
+	secondary = color.secondary .. opacity.very_hi,
 }
 
 local theme = {}

@@ -114,6 +114,7 @@ local spanning_wallpaper_mode = true
 local wallpaper_index = 1
 local wallpaper_path = string.format("%s/.config/awesome/hosua/wallpapers/", os.getenv("HOME"))
 local wallpapers = {
+	"2026-Porsche911GT3-Manthey-1.jpg",
 	"aurian-5760x1080.jpg",
 	"TripleSpace01.jpg",
 	"TripleSpace03.jpg",
