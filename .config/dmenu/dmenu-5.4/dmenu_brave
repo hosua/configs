@@ -1,0 +1,22 @@
+#!/bin/sh
+
+input=$(dmenu "$@" -p brave </dev/null)
+
+[ -z "$input" ] && exit 0
+
+# URL detection:
+# - scheme://
+# - or domain.tld (with optional path)
+if printf '%s' "$input" | grep -Eq '^(https?://|[a-zA-Z0-9.-]+\.[a-zA-Z]{2,})'; then
+  # Add scheme if missing
+  case "$input" in
+  http://* | https://*) url="$input" ;;
+  *) url="https://$input" ;;
+  esac
+else
+  # Treat as search query
+  query=$(printf '%s' "$input" | sed 's/ /+/g')
+  url="https://search.brave.com/search?q=$query"
+fi
+
+brave "$url" &

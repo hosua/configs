@@ -107,7 +107,7 @@ local terminal = "kitty"
 local vi_focus = true -- vi-like client focus https://github.com/lcpz/awesome-copycats/issues/275
 local cycle_prev = true -- cycle with only the previously focused client or all https://github.com/lcpz/awesome-copycats/issues/274
 local editor = os.getenv("EDITOR") or "nvim"
-local browser = "brave"
+local browser = "dmenu_brave"
 
 -- when toggled true, a single wallpaper will span all monitors
 local spanning_wallpaper_mode = true

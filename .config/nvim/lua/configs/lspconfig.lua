@@ -14,8 +14,19 @@ vim.diagnostic.config {
 -- Increase memory for TypeScript server
 vim.env.NODE_OPTIONS = vim.env.NODE_OPTIONS or "--max_old_space_size=4096"
 
-local servers =
-  { "html", "cssls", "eslint", "vtsls", "clangd", "rust_analyzer", "bashls", "gopls", "ruff", "basedpyright" }
+local servers = {
+  "html",
+  "cssls",
+  "eslint",
+  "vtsls",
+  "clangd",
+  "rust_analyzer",
+  "bashls",
+  "gopls",
+  "ruff",
+  "basedpyright",
+  "docker_language_server",
+}
 
 local lsp = vim.lsp
 
@@ -49,6 +60,22 @@ lsp.config("basedpyright", {
         useLibraryCodeForTypes = true,
       },
     },
+  },
+})
+
+lsp.config("docker_language_server", {
+  cmd = { "docker-language-server", "start", "--stdio" },
+  filetypes = { "dockerfile", "yaml.docker-compose" },
+  root_markers = {
+    "Dockerfile",
+    "docker-compose.yaml",
+    "docker-compose.yml",
+    "compose.yaml",
+    "compose.yml",
+    "docker-bake.json",
+    "docker-bake.hcl",
+    "docker-bake.override.json",
+    "docker-bake.override.hcl",
   },
 })
 
