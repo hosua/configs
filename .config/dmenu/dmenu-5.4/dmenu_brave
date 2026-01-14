@@ -19,4 +19,4 @@ else
   url="https://search.brave.com/search?q=$query"
 fi
 
-brave "$url" &
+brave --new-window "$url" &
