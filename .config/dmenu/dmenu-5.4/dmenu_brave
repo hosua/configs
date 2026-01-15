@@ -1,6 +1,6 @@
 #!/bin/sh
 
-input=$(dmenu "$@" -p brave </dev/null)
+input=$(dmenu "$@" -z 1200 -p brave </dev/null)
 
 [ -z "$input" ] && exit 0
 
