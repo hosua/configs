@@ -107,7 +107,6 @@ local terminal = "kitty"
 local vi_focus = true -- vi-like client focus https://github.com/lcpz/awesome-copycats/issues/275
 local cycle_prev = true -- cycle with only the previously focused client or all https://github.com/lcpz/awesome-copycats/issues/274
 local editor = os.getenv("EDITOR") or "nvim"
-local browser = "dmenu_brave"
 
 -- when toggled true, a single wallpaper will span all monitors
 local spanning_wallpaper_mode = true
@@ -533,7 +532,7 @@ globalkeys = mytable.join(
 		awful.spawn(terminal)
 	end, { description = "open a terminal", group = "launcher" }),
 	awful.key({ modkey, "Control" }, "r", awesome.restart, { description = "reload awesome", group = "awesome" }),
-	awful.key({ modkey, "Shift" }, "q", awesome.quit, { description = "quit awesome", group = "awesome" }),
+	awful.key({ modkey, "Control" }, "q", awesome.quit, { description = "quit awesome", group = "awesome" }),
 
 	awful.key({ modkey, altkey }, "l", function()
 		awful.tag.incmwfact(0.05)
@@ -660,7 +659,11 @@ globalkeys = mytable.join(
 
 	-- User programs
 	awful.key({ modkey }, "q", function()
-		awful.spawn(browser)
+		awful.spawn("dmenu_brave")
+	end, { description = "run browser through dmenu", group = "launcher" }),
+
+	awful.key({ modkey, "Shift" }, "q", function()
+		awful.spawn("brave")
 	end, { description = "run browser", group = "launcher" }),
 
 	-- Default
