@@ -14,6 +14,9 @@ rsync -a --exclude='.git' \
   "$CONF/picom" \
   "$CONF/ranger" \
   "$CONF/tmux" \
+  "$CONF/mimeapps.list" \
+  "$CONF/lazydocker" \
+  "$CONF/lazygit" \
   "$DEST_CONF"
 
 rsync -a --exclude='.git' \

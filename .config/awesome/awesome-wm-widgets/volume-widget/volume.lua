@@ -26,30 +26,10 @@ local function GET_VOLUME_CMD(card, device, mixctrl, value_type)
 	return "amixer -c " .. card .. " -D " .. device .. " sget " .. mixctrl .. " " .. value_type
 end
 local function INC_VOLUME_CMD(card, device, mixctrl, value_type, step)
-	return "amixer -c "
-		.. card
-		.. " -D "
-		.. device
-		.. " sset "
-		.. mixctrl
-		.. " "
-		.. value_type
-		.. " "
-		.. step
-		.. "%+"
+	return "amixer -c " .. card .. " -D " .. device .. " sset " .. mixctrl .. " " .. value_type .. " " .. step .. "%+"
 end -- luacheck: ignore
 local function DEC_VOLUME_CMD(card, device, mixctrl, value_type, step)
-	return "amixer -c "
-		.. card
-		.. " -D "
-		.. device
-		.. " sset "
-		.. mixctrl
-		.. " "
-		.. value_type
-		.. " "
-		.. step
-		.. "%-"
+	return "amixer -c " .. card .. " -D " .. device .. " sset " .. mixctrl .. " " .. value_type .. " " .. step .. "%-"
 end -- luacheck: ignore
 local function TOG_VOLUME_CMD(card, device, mixctrl)
 	return "amixer -c " .. card .. " -D " .. device .. " sset " .. mixctrl .. " toggle"
@@ -108,12 +88,9 @@ local function build_rows(devices, on_checkbox_click, device_type, use_pactl)
 			else
 				cmd = string.format([[sh -c 'pacmd set-default-%s "%s"']], device_type, device.name)
 			end
-			spawn.easy_async(
-				cmd,
-				function()
-					on_checkbox_click()
-				end
-			)
+			spawn.easy_async(cmd, function()
+				on_checkbox_click()
+			end)
 		end)
 
 		local row = wibox.widget({
@@ -177,12 +154,9 @@ local function build_rows(devices, on_checkbox_click, device_type, use_pactl)
 			else
 				cmd = string.format([[sh -c 'pacmd set-default-%s "%s"']], device_type, device.name)
 			end
-			spawn.easy_async(
-				cmd,
-				function()
-					on_checkbox_click()
-				end
-			)
+			spawn.easy_async(cmd, function()
+				on_checkbox_click()
+			end)
 		end)
 
 		table.insert(device_rows, row)

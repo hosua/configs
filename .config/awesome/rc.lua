@@ -115,6 +115,7 @@ local wallpaper_path = string.format("%s/.config/awesome/hosua/wallpapers/", os.
 local wallpapers = {
 	"2026-Porsche911GT3-Manthey-1.jpg",
 	"aurian-5760x1080.jpg",
+	"TripleStorm01.jpg",
 	"TripleSpace01.jpg",
 	"TripleSpace03.jpg",
 	"TripleSpace07.jpg",
@@ -384,6 +385,9 @@ globalkeys = mytable.join(
 	awful.key({}, "XF86AudioMute", function()
 		awful.spawn("amixer -q set Master toggle")
 	end, { description = "mute/unmute audio", group = "Audio" }),
+	awful.key({}, "XF86Calculator", function()
+		awful.spawn("pavucontrol")
+	end, { description = "Open sound mixer (pavucontrol)", group = "Audio" }),
 
 	-- Destroy all notifications
 	awful.key({ "Control" }, "space", function()
