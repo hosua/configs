@@ -23,6 +23,7 @@ alias vi="nvim -p"
 alias vim="nvim -p"
 alias nvim="nvim -p"
 alias py="python"
+alias neofetch="fastfetch"
 
 kill-port() {
     if [ -z "$1" ]; then
@@ -65,3 +66,5 @@ alias aws-venv="source $HOME/python-venvs/aws/bin/activate"
 # vpn
 alias vpnup="sudo surfshark-vpn attack"
 alias vpndown="sudo surfshark-vpn down"
+
+alias claude-docker='/home/hoswoo/dev/claude-docker/src/claude-docker.sh'

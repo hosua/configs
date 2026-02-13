@@ -1,0 +1,300 @@
+-------------------------------------------------
+-- Crypto Widget
+-- Displays cryptocurrency prices from LiveCoin Watch API
+-- @author hosua
+-------------------------------------------------
+
+local awful = require("awful")
+local wibox = require("wibox")
+local beautiful = require("beautiful")
+local gears = require("gears")
+local spawn = require("awful.spawn")
+
+local crypto_widget = {}
+
+local config = {
+	refresh_rate = 120, -- refresh every 2 minutes
+	popup_bg = "#2E3440",
+	popup_border_color = "#4C566A",
+}
+
+local function worker(input)
+	local args = input or {}
+
+	local _config = {}
+	for prop, value in pairs(config) do
+		_config[prop] = args[prop] or beautiful[prop] or value
+	end
+
+	-- Get the widget directory path
+	local widget_dir = debug.getinfo(1, "S").source:match("^@(.+/)[^/]+$")
+
+	-- Load JSON library from awesome config
+	local json = require("json")
+
+	local crypto_data = {}
+
+	-- Main widget text
+	local crypto_text_widget = wibox.widget.textbox()
+
+	-- Icon widget
+	local crypto_icon = wibox.widget.textbox("₿ ")
+	crypto_icon.font = "Terminus Bold 10"
+
+	local widget = wibox.widget({
+		{
+			crypto_icon,
+			crypto_text_widget,
+			spacing = 4,
+			layout = wibox.layout.fixed.horizontal,
+		},
+		layout = wibox.container.margin,
+		left = 4,
+		right = 4,
+	})
+
+	local popup = awful.popup({
+		ontop = true,
+		visible = false,
+		shape = gears.shape.rounded_rect,
+		border_width = 1,
+		border_color = _config.popup_border_color,
+		bg = _config.popup_bg,
+		maximum_width = 400,
+		maximum_height = 500,
+		offset = { y = 5 },
+		widget = {},
+	})
+
+	local function format_number(num)
+		if not num then
+			return "N/A"
+		end
+
+		-- Format large numbers with commas
+		local formatted = tostring(num)
+		if num >= 1000 then
+			formatted = string.format("%.2f", num)
+			local k
+			while true do
+				formatted, k = string.gsub(formatted, "^(-?%d+)(%d%d%d)", '%1,%2')
+				if k == 0 then break end
+			end
+		else
+			formatted = string.format("%.2f", num)
+		end
+		return formatted
+	end
+
+	local function format_delta(delta)
+		if not delta then
+			return "N/A", "#FFFFFF"
+		end
+
+		local percent = (delta - 1) * 100
+		local color
+		if percent > 0 then
+			color = "#A3BE8C" -- green
+		elseif percent < 0 then
+			color = "#BF616A" -- red
+		else
+			color = "#D8DEE9" -- white
+		end
+
+		return string.format("%+.2f%%", percent), color
+	end
+
+	local function create_popup_content()
+		local widgets = {}
+
+		if not crypto_data or #crypto_data == 0 then
+			local error_text = wibox.widget.textbox("No crypto data available")
+			error_text.font = "Terminus 10"
+			table.insert(widgets, error_text)
+			widgets.layout = wibox.layout.fixed.vertical
+			return widgets
+		end
+
+		-- Header
+		local header = wibox.widget.textbox("<b>Cryptocurrency Prices (USD)</b>")
+		header.font = "Terminus Bold 11"
+		table.insert(widgets, header)
+
+		-- Separator
+		table.insert(widgets, wibox.widget({
+			wibox.widget.textbox(""),
+			forced_height = 8,
+			widget = wibox.container.constraint,
+		}))
+
+		-- Table header
+		local header_row = wibox.widget({
+			{
+				wibox.widget.textbox("<b>Coin</b>"),
+				font = "Terminus 10",
+				forced_width = 50,
+				halign = "left",
+				widget = wibox.container.place,
+			},
+			{
+				wibox.widget.textbox("<b>Price</b>"),
+				font = "Terminus 10",
+				forced_width = 100,
+				halign = "right",
+				widget = wibox.container.place,
+			},
+			{
+				wibox.widget.textbox("<b>24h</b>"),
+				font = "Terminus 10",
+				forced_width = 70,
+				halign = "right",
+				widget = wibox.container.place,
+			},
+			{
+				wibox.widget.textbox("<b>7d</b>"),
+				font = "Terminus 10",
+				forced_width = 70,
+				halign = "right",
+				widget = wibox.container.place,
+			},
+			spacing = 8,
+			layout = wibox.layout.fixed.horizontal,
+		})
+		table.insert(widgets, header_row)
+
+		-- Crypto rows
+		for _, coin in ipairs(crypto_data) do
+			local day_change, day_color = format_delta(coin.delta and coin.delta.day)
+			local week_change, week_color = format_delta(coin.delta and coin.delta.week)
+
+			local code_widget = wibox.widget.textbox(coin.code)
+			code_widget.font = "Terminus Bold 10"
+
+			local price_widget = wibox.widget.textbox("$" .. format_number(coin.rate))
+			price_widget.font = "Terminus 10"
+
+			local day_widget = wibox.widget.textbox(day_change)
+			day_widget.font = "Terminus 10"
+			day_widget.markup = string.format('<span foreground="%s">%s</span>', day_color, day_change)
+
+			local week_widget = wibox.widget.textbox(week_change)
+			week_widget.font = "Terminus 10"
+			week_widget.markup = string.format('<span foreground="%s">%s</span>', week_color, week_change)
+
+			local row = wibox.widget({
+				{
+					code_widget,
+					forced_width = 50,
+					halign = "left",
+					widget = wibox.container.place,
+				},
+				{
+					price_widget,
+					forced_width = 100,
+					halign = "right",
+					widget = wibox.container.place,
+				},
+				{
+					day_widget,
+					forced_width = 70,
+					halign = "right",
+					widget = wibox.container.place,
+				},
+				{
+					week_widget,
+					forced_width = 70,
+					halign = "right",
+					widget = wibox.container.place,
+				},
+				spacing = 8,
+				layout = wibox.layout.fixed.horizontal,
+			})
+			table.insert(widgets, row)
+		end
+
+		widgets.layout = wibox.layout.fixed.vertical
+		return widgets
+	end
+
+	local function update_popup()
+		local content = create_popup_content()
+		popup:setup({
+			content,
+			margins = 12,
+			widget = wibox.container.margin,
+		})
+	end
+
+	widget:buttons(awful.util.table.join(awful.button({}, 1, function()
+		if popup.visible then
+			popup.visible = false
+		else
+			popup:move_next_to(mouse.current_widget_geometry)
+			update_popup()
+			popup.visible = true
+		end
+	end)))
+
+	local function update_widget()
+		-- Run the get-map.sh script to fetch fresh crypto data
+		local cmd = string.format("cd %s && ./get-map.sh", widget_dir)
+
+		spawn.easy_async_with_shell(cmd, function(stdout, stderr, exitreason, exitcode)
+			if exitcode ~= 0 or not stdout or stdout == "" then
+				crypto_text_widget:set_text("Fetch error")
+				return
+			end
+
+			-- Parse JSON
+			local success, data = pcall(json.decode, stdout)
+			if not success or not data then
+				crypto_text_widget:set_text("Parse error")
+				return
+			end
+
+			crypto_data = data
+
+			-- Build compact display text showing first crypto (usually BTC)
+			if crypto_data and #crypto_data > 0 then
+				local btc = crypto_data[1]
+				local price_text = format_number(btc.rate)
+				local day_change, day_color = format_delta(btc.delta and btc.delta.day)
+
+				crypto_text_widget.markup = string.format(
+					'<span foreground="#FFFFFF">$%s</span> <span foreground="%s">%s</span>',
+					price_text,
+					day_color,
+					day_change
+				)
+			else
+				crypto_text_widget:set_text("No data")
+			end
+
+			-- Update popup if it's visible
+			if popup.visible then
+				update_popup()
+			end
+		end)
+	end
+
+	-- Initial update
+	update_widget()
+
+	-- Set up periodic updates
+	gears.timer {
+		timeout = _config.refresh_rate,
+		call_now = false,
+		autostart = true,
+		callback = function()
+			update_widget()
+		end
+	}
+
+	return widget
+end
+
+return setmetatable(crypto_widget, {
+	__call = function(_, ...)
+		return worker(...)
+	end,
+})

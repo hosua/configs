@@ -16,6 +16,7 @@ local ram_widget = require("hosua.hosuas-awesome-widgets.ram-widget.ram-widget")
 
 local nvidia_widget = require("hosua.hosuas-awesome-widgets.nvidia-widget.nvidia-widget")
 local cpu_widget = require("hosua.hosuas-awesome-widgets.cpu-widget.cpu-widget")
+local crypto_widget = require("hosua.hosuas-awesome-widgets.crypto-widget.crypto-widget")
 
 local mysystray = wibox.widget.systray({ opacity = 0 }) -- why the fuck doesn't opacity work?
 _G.mysystray = mysystray
@@ -256,10 +257,12 @@ function theme.at_screen_connect(s)
 			layout = wibox.layout.fixed.horizontal,
 			wibox.container.background(nvidia_widget({ popup_bg = color.popup .. opacity.hi }), color_wibox.primary),
 			arrow(color_wibox.primary, color_wibox.secondary),
-			wibox.container.background(ram_widget.widget, color_wibox.secondary),
+			wibox.container.background(crypto_widget({ popup_bg = color.popup .. opacity.hi }), color_wibox.secondary),
 			arrow(color_wibox.secondary, color_wibox.primary),
-			wibox.container.background(cpu_widget({ popup_bg = color.popup .. opacity.hi }), color_wibox.primary),
+			wibox.container.background(ram_widget.widget, color_wibox.primary),
 			arrow(color_wibox.primary, color_wibox.secondary),
+			wibox.container.background(cpu_widget({ popup_bg = color.popup .. opacity.hi }), color_wibox.secondary),
+			arrow(color_wibox.secondary, color_wibox.primary),
 			wibox.container.background(
 				wibox.widget({
 					wibox.widget.textbox("FS: "),
@@ -270,21 +273,21 @@ function theme.at_screen_connect(s)
 					}),
 					layout = wibox.layout.fixed.horizontal,
 				}),
-				color_wibox.secondary
+				color_wibox.primary
 			),
-			arrow(color_wibox.secondary, color_wibox.primary),
-			wibox.container.background(mypacman, color_wibox.primary),
 			arrow(color_wibox.primary, color_wibox.secondary),
+			wibox.container.background(mypacman, color_wibox.secondary),
+			arrow(color_wibox.secondary, color_wibox.primary),
 			wibox.container.background(
 				wibox.container.margin(
 					volume_widget({ widget_type = "icon_and_text", use_pactl = true }),
 					dpi(3),
 					dpi(3)
 				),
-				color_wibox.secondary
+				color_wibox.primary
 			),
-			arrow(color_wibox.secondary, color_wibox.primary),
-			wibox.container.background(wibox.container.margin(textclock, dpi(4), dpi(8)), color_wibox.primary),
+			arrow(color_wibox.primary, color_wibox.secondary),
+			wibox.container.background(wibox.container.margin(textclock, dpi(4), dpi(8)), color_wibox.secondary),
 			s.mylayoutbox,
 		},
 	})
