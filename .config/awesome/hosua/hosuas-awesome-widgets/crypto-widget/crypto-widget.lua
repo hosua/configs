@@ -13,7 +13,7 @@ local spawn = require("awful.spawn")
 local crypto_widget = {}
 
 local config = {
-	refresh_rate = 120, -- refresh every 2 minutes
+	refresh_rate = 9,
 	popup_bg = "#2E3440",
 	popup_border_color = "#4C566A",
 }

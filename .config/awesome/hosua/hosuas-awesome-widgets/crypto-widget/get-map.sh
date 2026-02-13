@@ -1,5 +1,4 @@
 #!/bin/bash
-# https://livecoinwatch.github.io/lcw-api-docs/#introduction
 
 . .env
 
