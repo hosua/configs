@@ -13,7 +13,7 @@ local spawn = require("awful.spawn")
 local crypto_widget = {}
 
 local config = {
-	refresh_rate = 9,
+	refresh_rate = 20,
 	popup_bg = "#2E3440",
 	popup_border_color = "#4C566A",
 }
@@ -60,7 +60,7 @@ local function worker(input)
 		border_width = 1,
 		border_color = _config.popup_border_color,
 		bg = _config.popup_bg,
-		maximum_width = 400,
+		maximum_width = 700,
 		maximum_height = 500,
 		offset = { y = 5 },
 		widget = {},
@@ -77,8 +77,10 @@ local function worker(input)
 			formatted = string.format("%.2f", num)
 			local k
 			while true do
-				formatted, k = string.gsub(formatted, "^(-?%d+)(%d%d%d)", '%1,%2')
-				if k == 0 then break end
+				formatted, k = string.gsub(formatted, "^(-?%d+)(%d%d%d)", "%1,%2")
+				if k == 0 then
+					break
+				end
 			end
 		else
 			formatted = string.format("%.2f", num)
@@ -121,92 +123,171 @@ local function worker(input)
 		table.insert(widgets, header)
 
 		-- Separator
-		table.insert(widgets, wibox.widget({
-			wibox.widget.textbox(""),
-			forced_height = 8,
-			widget = wibox.container.constraint,
-		}))
+		table.insert(
+			widgets,
+			wibox.widget({
+				wibox.widget.textbox(""),
+				forced_height = 8,
+				widget = wibox.container.constraint,
+			})
+		)
 
 		-- Table header
 		local header_row = wibox.widget({
 			{
 				wibox.widget.textbox("<b>Coin</b>"),
 				font = "Terminus 10",
-				forced_width = 50,
+				forced_width = 120,
 				halign = "left",
 				widget = wibox.container.place,
 			},
 			{
 				wibox.widget.textbox("<b>Price</b>"),
 				font = "Terminus 10",
-				forced_width = 100,
+				forced_width = 90,
+				halign = "right",
+				widget = wibox.container.place,
+			},
+			{
+				wibox.widget.textbox("<b>1h</b>"),
+				font = "Terminus 10",
+				forced_width = 55,
 				halign = "right",
 				widget = wibox.container.place,
 			},
 			{
 				wibox.widget.textbox("<b>24h</b>"),
 				font = "Terminus 10",
-				forced_width = 70,
+				forced_width = 55,
 				halign = "right",
 				widget = wibox.container.place,
 			},
 			{
 				wibox.widget.textbox("<b>7d</b>"),
 				font = "Terminus 10",
-				forced_width = 70,
+				forced_width = 55,
 				halign = "right",
 				widget = wibox.container.place,
 			},
-			spacing = 8,
+			{
+				wibox.widget.textbox("<b>30d</b>"),
+				font = "Terminus 10",
+				forced_width = 55,
+				halign = "right",
+				widget = wibox.container.place,
+			},
+			{
+				wibox.widget.textbox("<b>90d</b>"),
+				font = "Terminus 10",
+				forced_width = 55,
+				halign = "right",
+				widget = wibox.container.place,
+			},
+			{
+				wibox.widget.textbox("<b>1y</b>"),
+				font = "Terminus 10",
+				forced_width = 55,
+				halign = "right",
+				widget = wibox.container.place,
+			},
+			spacing = 6,
 			layout = wibox.layout.fixed.horizontal,
 		})
 		table.insert(widgets, header_row)
 
 		-- Crypto rows
 		for _, coin in ipairs(crypto_data) do
+			-- Get all delta periods
+			local hour_change, hour_color = format_delta(coin.delta and coin.delta.hour)
 			local day_change, day_color = format_delta(coin.delta and coin.delta.day)
 			local week_change, week_color = format_delta(coin.delta and coin.delta.week)
+			local month_change, month_color = format_delta(coin.delta and coin.delta.month)
+			local quarter_change, quarter_color = format_delta(coin.delta and coin.delta.quarter)
+			local year_change, year_color = format_delta(coin.delta and coin.delta.year)
 
-			local code_widget = wibox.widget.textbox(coin.code)
-			code_widget.font = "Terminus Bold 10"
+			-- Display coin as "Name (CODE)" or just "CODE" if name not available
+			local coin_display = coin.name and string.format("%s (%s)", coin.name, coin.code) or coin.code
+			local name_widget = wibox.widget.textbox(coin_display)
+			name_widget.font = "Terminus Bold 10"
 
 			local price_widget = wibox.widget.textbox("$" .. format_number(coin.rate))
 			price_widget.font = "Terminus 10"
 
+			-- Create widgets for all deltas
+			local hour_widget = wibox.widget.textbox(hour_change)
+			hour_widget.font = "Terminus 9"
+			hour_widget.markup = string.format('<span foreground="%s">%s</span>', hour_color, hour_change)
+
 			local day_widget = wibox.widget.textbox(day_change)
-			day_widget.font = "Terminus 10"
+			day_widget.font = "Terminus 9"
 			day_widget.markup = string.format('<span foreground="%s">%s</span>', day_color, day_change)
 
 			local week_widget = wibox.widget.textbox(week_change)
-			week_widget.font = "Terminus 10"
+			week_widget.font = "Terminus 9"
 			week_widget.markup = string.format('<span foreground="%s">%s</span>', week_color, week_change)
+
+			local month_widget = wibox.widget.textbox(month_change)
+			month_widget.font = "Terminus 9"
+			month_widget.markup = string.format('<span foreground="%s">%s</span>', month_color, month_change)
+
+			local quarter_widget = wibox.widget.textbox(quarter_change)
+			quarter_widget.font = "Terminus 9"
+			quarter_widget.markup = string.format('<span foreground="%s">%s</span>', quarter_color, quarter_change)
+
+			local year_widget = wibox.widget.textbox(year_change)
+			year_widget.font = "Terminus 9"
+			year_widget.markup = string.format('<span foreground="%s">%s</span>', year_color, year_change)
 
 			local row = wibox.widget({
 				{
-					code_widget,
-					forced_width = 50,
+					name_widget,
+					forced_width = 120,
 					halign = "left",
 					widget = wibox.container.place,
 				},
 				{
 					price_widget,
-					forced_width = 100,
+					forced_width = 90,
+					halign = "right",
+					widget = wibox.container.place,
+				},
+				{
+					hour_widget,
+					forced_width = 55,
 					halign = "right",
 					widget = wibox.container.place,
 				},
 				{
 					day_widget,
-					forced_width = 70,
+					forced_width = 55,
 					halign = "right",
 					widget = wibox.container.place,
 				},
 				{
 					week_widget,
-					forced_width = 70,
+					forced_width = 55,
 					halign = "right",
 					widget = wibox.container.place,
 				},
-				spacing = 8,
+				{
+					month_widget,
+					forced_width = 55,
+					halign = "right",
+					widget = wibox.container.place,
+				},
+				{
+					quarter_widget,
+					forced_width = 55,
+					halign = "right",
+					widget = wibox.container.place,
+				},
+				{
+					year_widget,
+					forced_width = 55,
+					halign = "right",
+					widget = wibox.container.place,
+				},
+				spacing = 6,
 				layout = wibox.layout.fixed.horizontal,
 			})
 			table.insert(widgets, row)
@@ -281,14 +362,14 @@ local function worker(input)
 	update_widget()
 
 	-- Set up periodic updates
-	gears.timer {
+	gears.timer({
 		timeout = _config.refresh_rate,
 		call_now = false,
 		autostart = true,
 		callback = function()
 			update_widget()
-		end
-	}
+		end,
+	})
 
 	return widget
 end
