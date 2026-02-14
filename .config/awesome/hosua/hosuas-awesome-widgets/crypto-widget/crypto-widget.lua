@@ -18,6 +18,53 @@ local config = {
 	popup_border_color = "#4C566A",
 }
 
+-- Global shared state (singleton pattern)
+local shared_state = {
+	crypto_data = {},
+	update_callbacks = {},
+	timer_started = false,
+	widget_dir = nil,
+	json = nil,
+	refresh_rate = nil,
+}
+
+-- Global function to fetch crypto data (runs once for all instances)
+local function fetch_crypto_data()
+	if not shared_state.widget_dir or not shared_state.json then
+		return
+	end
+
+	local cmd = string.format("cd %s && ./get-map.sh", shared_state.widget_dir)
+
+	spawn.easy_async_with_shell(cmd, function(stdout, stderr, exitreason, exitcode)
+		if exitcode ~= 0 or not stdout or stdout == "" then
+			-- Notify all callbacks of error
+			for _, callback in ipairs(shared_state.update_callbacks) do
+				callback(nil, "Fetch error")
+			end
+			return
+		end
+
+		-- Parse JSON
+		local success, data = pcall(shared_state.json.decode, stdout)
+		if not success or not data then
+			-- Notify all callbacks of error
+			for _, callback in ipairs(shared_state.update_callbacks) do
+				callback(nil, "Parse error")
+			end
+			return
+		end
+
+		-- Update shared data
+		shared_state.crypto_data = data
+
+		-- Notify all registered widget instances
+		for _, callback in ipairs(shared_state.update_callbacks) do
+			callback(shared_state.crypto_data, nil)
+		end
+	end)
+end
+
 local function worker(input)
 	local args = input or {}
 
@@ -26,13 +73,14 @@ local function worker(input)
 		_config[prop] = args[prop] or beautiful[prop] or value
 	end
 
-	-- Get the widget directory path
-	local widget_dir = debug.getinfo(1, "S").source:match("^@(.+/)[^/]+$")
-
-	-- Load JSON library from awesome config
-	local json = require("json")
-
-	local crypto_data = {}
+	-- Initialize shared state on first widget creation
+	if not shared_state.timer_started then
+		-- Get the widget directory path
+		shared_state.widget_dir = debug.getinfo(1, "S").source:match("^@(.+/)[^/]+$")
+		-- Load JSON library from awesome config
+		shared_state.json = require("json")
+		shared_state.refresh_rate = _config.refresh_rate
+	end
 
 	-- Main widget text
 	local crypto_text_widget = wibox.widget.textbox()
@@ -109,7 +157,7 @@ local function worker(input)
 	local function create_popup_content()
 		local widgets = {}
 
-		if not crypto_data or #crypto_data == 0 then
+		if not shared_state.crypto_data or #shared_state.crypto_data == 0 then
 			local error_text = wibox.widget.textbox("No crypto data available")
 			error_text.font = "Terminus 10"
 			table.insert(widgets, error_text)
@@ -196,7 +244,7 @@ local function worker(input)
 		table.insert(widgets, header_row)
 
 		-- Crypto rows
-		for _, coin in ipairs(crypto_data) do
+		for _, coin in ipairs(shared_state.crypto_data) do
 			-- Get all delta periods
 			local hour_change, hour_color = format_delta(coin.delta and coin.delta.hour)
 			local day_change, day_color = format_delta(coin.delta and coin.delta.day)
@@ -316,60 +364,58 @@ local function worker(input)
 		end
 	end)))
 
-	local function update_widget()
-		-- Run the get-map.sh script to fetch fresh crypto data
-		local cmd = string.format("cd %s && ./get-map.sh", widget_dir)
+	-- Widget-specific update callback
+	local function update_widget_display(data, error_msg)
+		if error_msg then
+			crypto_text_widget:set_text(error_msg)
+			return
+		end
 
-		spawn.easy_async_with_shell(cmd, function(stdout, stderr, exitreason, exitcode)
-			if exitcode ~= 0 or not stdout or stdout == "" then
-				crypto_text_widget:set_text("Fetch error")
-				return
-			end
+		-- Build compact display text showing first crypto (usually BTC)
+		if data and #data > 0 then
+			local btc = data[1]
+			local price_text = format_number(btc.rate)
+			local day_change, day_color = format_delta(btc.delta and btc.delta.day)
 
-			-- Parse JSON
-			local success, data = pcall(json.decode, stdout)
-			if not success or not data then
-				crypto_text_widget:set_text("Parse error")
-				return
-			end
+			crypto_text_widget.markup = string.format(
+				'<span foreground="#FFFFFF">$%s</span> <span foreground="%s">%s</span>',
+				price_text,
+				day_color,
+				day_change
+			)
+		else
+			crypto_text_widget:set_text("No data")
+		end
 
-			crypto_data = data
-
-			-- Build compact display text showing first crypto (usually BTC)
-			if crypto_data and #crypto_data > 0 then
-				local btc = crypto_data[1]
-				local price_text = format_number(btc.rate)
-				local day_change, day_color = format_delta(btc.delta and btc.delta.day)
-
-				crypto_text_widget.markup = string.format(
-					'<span foreground="#FFFFFF">$%s</span> <span foreground="%s">%s</span>',
-					price_text,
-					day_color,
-					day_change
-				)
-			else
-				crypto_text_widget:set_text("No data")
-			end
-
-			-- Update popup if it's visible
-			if popup.visible then
-				update_popup()
-			end
-		end)
+		-- Update popup if it's visible
+		if popup.visible then
+			update_popup()
+		end
 	end
 
-	-- Initial update
-	update_widget()
+	-- Register this widget's update callback
+	table.insert(shared_state.update_callbacks, update_widget_display)
 
-	-- Set up periodic updates
-	gears.timer({
-		timeout = _config.refresh_rate,
-		call_now = false,
-		autostart = true,
-		callback = function()
-			update_widget()
-		end,
-	})
+	-- Start global timer only once
+	if not shared_state.timer_started then
+		shared_state.timer_started = true
+
+		-- Initial fetch
+		fetch_crypto_data()
+
+		-- Set up periodic updates (global timer, runs once for all instances)
+		gears.timer({
+			timeout = _config.refresh_rate,
+			call_now = false,
+			autostart = true,
+			callback = function()
+				fetch_crypto_data()
+			end,
+		})
+	else
+		-- If timer already started, trigger display update with existing data
+		update_widget_display(shared_state.crypto_data, nil)
+	end
 
 	return widget
 end
