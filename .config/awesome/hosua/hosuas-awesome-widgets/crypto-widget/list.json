@@ -1,1402 +1,484 @@
 [
   {
+    "name": "Bitcoin",
+    "symbol": "₿",
+    "rank": 1,
+    "age": 6251,
+    "color": "#fa9e32",
+    "png32": "https://lcw.nyc3.cdn.digitaloceanspaces.com/production/currencies/32/btc.png",
+    "png64": "https://lcw.nyc3.cdn.digitaloceanspaces.com/production/currencies/64/btc.png",
+    "webp32": "https://lcw.nyc3.cdn.digitaloceanspaces.com/production/currencies/32/btc.webp",
+    "webp64": "https://lcw.nyc3.cdn.digitaloceanspaces.com/production/currencies/64/btc.webp",
+    "exchanges": 147,
+    "markets": 1245,
+    "pairs": 394,
+    "categories": [],
+    "allTimeHighUSD": 125928.28093561555,
+    "circulatingSupply": 19989293,
+    "totalSupply": 19989293,
+    "maxSupply": 21000000,
+    "links": {
+      "website": "https://bitcoin.org",
+      "whitepaper": "https://bitcoin.org/bitcoin.pdf",
+      "twitter": null,
+      "reddit": "https://reddit.com/r/bitcoin",
+      "telegram": null,
+      "discord": null,
+      "medium": null,
+      "instagram": null,
+      "tiktok": null,
+      "youtube": null,
+      "linkedin": null,
+      "twitch": null,
+      "spotify": null,
+      "naver": null,
+      "wechat": null,
+      "soundcloud": null
+    },
     "code": "BTC",
-    "rate": 68880.1855793084,
-    "volume": 34673116499,
-    "cap": 1376833080069,
+    "rate": 69775.39875991088,
+    "volume": 28325417110,
+    "cap": 1394760890003,
     "delta": {
-      "hour": 0.9983,
-      "day": 1.0458,
-      "week": 0.9741,
-      "month": 0.7074,
-      "quarter": 0.7201,
-      "year": 0.7148
+      "hour": 1.0004,
+      "day": 1.0093,
+      "week": 1.0039,
+      "month": 0.7279,
+      "quarter": 0.7399,
+      "year": 0.7104
     }
   },
   {
+    "name": "Ethereum",
+    "symbol": "Ξ",
+    "rank": 2,
+    "age": 3843,
+    "color": "#2f2f2f",
+    "png32": "https://lcw.nyc3.cdn.digitaloceanspaces.com/production/currencies/32/eth.png",
+    "png64": "https://lcw.nyc3.cdn.digitaloceanspaces.com/production/currencies/64/eth.png",
+    "webp32": "https://lcw.nyc3.cdn.digitaloceanspaces.com/production/currencies/32/eth.webp",
+    "webp64": "https://lcw.nyc3.cdn.digitaloceanspaces.com/production/currencies/64/eth.webp",
+    "exchanges": 307,
+    "markets": 5541,
+    "pairs": 3087,
+    "allTimeHighUSD": 4942.492362954442,
+    "circulatingSupply": 117762924,
+    "totalSupply": 117762924,
+    "maxSupply": null,
+    "links": {
+      "website": "https://ethereum.org/en/",
+      "whitepaper": "https://ethereum.org/en/whitepaper",
+      "twitter": "https://x.com/ethereum",
+      "reddit": "https://reddit.com/r/ethereum",
+      "telegram": null,
+      "discord": "https://discord.com/invite/ethereum-org",
+      "medium": null,
+      "instagram": null,
+      "tiktok": null,
+      "youtube": null,
+      "linkedin": null,
+      "twitch": null,
+      "spotify": null,
+      "naver": null,
+      "wechat": null,
+      "soundcloud": null
+    },
     "code": "ETH",
-    "rate": 2050.6298758552693,
-    "volume": 19598117675,
-    "cap": 241488170222,
+    "rate": 2083.689711730724,
+    "volume": 11493775532,
+    "cap": 245381393162,
     "delta": {
-      "hour": 0.9981,
-      "day": 1.0648,
-      "week": 0.9941,
-      "month": 0.6101,
-      "quarter": 0.6476,
-      "year": 0.7687
+      "hour": 1.0021,
+      "day": 1.0132,
+      "week": 0.9932,
+      "month": 0.6337,
+      "quarter": 0.6803,
+      "year": 0.7558
     }
   },
   {
+    "name": "Tether",
+    "rank": 3,
+    "age": 4006,
+    "color": "#fbfbfb",
+    "png32": "https://lcw.nyc3.cdn.digitaloceanspaces.com/production/currencies/32/usdt.png",
+    "png64": "https://lcw.nyc3.cdn.digitaloceanspaces.com/production/currencies/64/usdt.png",
+    "webp32": "https://lcw.nyc3.cdn.digitaloceanspaces.com/production/currencies/32/usdt.webp",
+    "webp64": "https://lcw.nyc3.cdn.digitaloceanspaces.com/production/currencies/64/usdt.webp",
+    "exchanges": 236,
+    "markets": 17967,
+    "pairs": 3767,
+    "categories": ["stablecoins", "asset_backed_tokens"],
+    "allTimeHighUSD": 1.08372533074166,
+    "circulatingSupply": 148904681418,
+    "totalSupply": 148904681418,
+    "maxSupply": null,
+    "links": {
+      "website": "https://tether.to/",
+      "whitepaper": "https://assets.ctfassets.net/vyse88cgwfbl/5UWgHMvz071t2Cq5yTw5vi/c9798ea8db99311bf90ebe0810938b01/TetherWhitePaper.pdf",
+      "twitter": "https://x.com/tether_to",
+      "reddit": "https://reddit.com/r/Tether",
+      "telegram": "https://t.me/OfficialTether",
+      "discord": null,
+      "medium": null,
+      "instagram": "https://www.instagram.com/tether/",
+      "tiktok": null,
+      "youtube": null,
+      "linkedin": "https://www.linkedin.com/company/tether/",
+      "twitch": null,
+      "spotify": null,
+      "naver": null,
+      "wechat": null,
+      "soundcloud": null
+    },
     "code": "USDT",
-    "rate": 1.0001931154779713,
-    "volume": 66298818778,
-    "cap": 148933437216,
-    "delta": {
-      "hour": 1,
-      "day": 1.0002,
-      "week": 1.0015,
-      "month": 1.0002,
-      "quarter": 0.999,
-      "year": 1.0036
-    }
-  },
-  {
-    "code": "BNB",
-    "rate": 619.5391989393825,
-    "volume": 880011592,
-    "cap": 92919210820,
-    "delta": {
-      "hour": 0.9952,
-      "day": 1.0198,
-      "week": 0.9348,
-      "month": 0.6547,
-      "quarter": 0.6646,
-      "year": 0.9264
-    }
-  },
-  {
-    "code": "XRP",
-    "rate": 1.402138724692555,
-    "volume": 2027459112,
-    "cap": 85414526857,
-    "delta": {
-      "hour": 0.9919,
-      "day": 1.0333,
-      "week": 0.9529,
-      "month": 0.655,
-      "quarter": 0.6259,
-      "year": 0.5434
-    }
-  },
-  {
-    "code": "USDC",
-    "rate": 1.000275692058691,
-    "volume": 4845932708,
-    "cap": 73491313092,
-    "delta": {
-      "hour": 1.0004,
-      "day": 0.9999,
-      "week": 1.0019,
-      "month": 1.0006,
-      "quarter": 0.9997,
-      "year": 1.0043
-    }
-  },
-  {
-    "code": "SOL",
-    "rate": 84.59904579213999,
-    "volume": 3228934533,
-    "cap": 48048801292,
-    "delta": {
-      "hour": 0.9958,
-      "day": 1.0945,
-      "week": 0.9532,
-      "month": 0.5769,
-      "quarter": 0.6055,
-      "year": 0.4358
-    }
-  },
-  {
-    "code": "TRX",
-    "rate": 0.2830573669080538,
-    "volume": 630935260,
-    "cap": 24446052986,
-    "delta": {
-      "hour": 1.007,
-      "day": 1.0104,
-      "week": 1.0315,
-      "month": 0.9394,
-      "quarter": 0.9505,
-      "year": 1.2039
-    }
-  },
-  {
-    "code": "DOGE",
-    "rate": 0.09700944142473605,
-    "volume": 735456047,
-    "cap": 12870316738,
-    "delta": {
-      "hour": 0.9944,
-      "day": 1.0576,
-      "week": 0.9796,
-      "month": 0.6587,
-      "quarter": 0.594,
-      "year": 0.3692
-    }
-  },
-  {
-    "code": "BCH",
-    "rate": 556.7196832924245,
-    "volume": 274614607,
-    "cap": 11131411318,
-    "delta": {
-      "hour": 1.0051,
-      "day": 1.1136,
-      "week": 1.1071,
-      "month": 0.9284,
-      "quarter": 1.1098,
-      "year": 1.6653
-    }
-  },
-  {
-    "code": "WBT",
-    "rate": 51.51624924784346,
-    "volume": 55939799,
-    "cap": 11007339892,
-    "delta": {
-      "hour": 0.9992,
-      "day": 1.0413,
-      "week": 0.9693,
-      "month": 0.8879,
-      "quarter": 0.9749,
-      "year": 1.907
-    }
-  },
-  {
-    "code": "ADA",
-    "rate": 0.2729284005720262,
-    "volume": 307580767,
-    "cap": 10488889376,
-    "delta": {
-      "hour": 0.9957,
-      "day": 1.0518,
-      "week": 0.9847,
-      "month": 0.6599,
-      "quarter": 0.5414,
-      "year": 0.3328
-    }
-  },
-  {
-    "code": "______HYPE",
-    "rate": 31.52664212336329,
-    "volume": 196974151,
-    "cap": 8540993622,
-    "delta": {
-      "hour": 1.0052,
-      "day": 1.0546,
-      "week": 0.9566,
-      "month": 1.2153,
-      "quarter": 0.8181,
-      "year": 1.2174
-    }
-  },
-  {
-    "code": "XMR",
-    "rate": 352.58650194192285,
-    "volume": 129635371,
-    "cap": 6504072939,
-    "delta": {
-      "hour": 1.0001,
-      "day": 1.0716,
-      "week": 1.0986,
-      "month": 0.488,
-      "quarter": 0.8545,
-      "year": 1.5793
-    }
-  },
-  {
-    "code": "LINK",
-    "rate": 8.83427310018881,
-    "volume": 263957530,
-    "cap": 6255548517,
-    "delta": {
-      "hour": 1,
-      "day": 1.065,
-      "week": 0.9949,
-      "month": 0.6244,
-      "quarter": 0.6251,
-      "year": 0.4772
-    }
-  },
-  {
-    "code": "__________________CC",
-    "rate": 0.15700849200861852,
-    "volume": 14513665,
-    "cap": 5926441662,
-    "delta": {
-      "hour": 1.0093,
-      "day": 0.9506,
-      "week": 0.8939,
-      "month": 1.1322,
-      "quarter": null,
-      "year": null
-    }
-  },
-  {
-    "code": "DAI",
-    "rate": 1.0006652228272095,
-    "volume": 146451639,
-    "cap": 5446914197,
-    "delta": {
-      "hour": 1,
-      "day": 1.0001,
-      "week": 1.0014,
-      "month": 1.0005,
-      "quarter": 0.9993,
-      "year": 1.0036
-    }
-  },
-  {
-    "code": "XLM",
-    "rate": 0.16553429523914825,
-    "volume": 127421883,
-    "cap": 5421373011,
-    "delta": {
-      "hour": 0.9975,
-      "day": 1.0667,
-      "week": 1.0112,
-      "month": 0.7007,
-      "quarter": 0.636,
-      "year": 0.4869
-    }
-  },
-  {
-    "code": "HBAR",
-    "rate": 0.09799528859338048,
-    "volume": 133890189,
-    "cap": 4214104983,
-    "delta": {
-      "hour": 1.0011,
-      "day": 1.0707,
-      "week": 1.0737,
-      "month": 0.7947,
-      "quarter": 0.6318,
-      "year": 0.4353
-    }
-  },
-  {
-    "code": "LTC",
-    "rate": 55.419985019262796,
-    "volume": 421946209,
-    "cap": 4187440131,
-    "delta": {
-      "hour": 0.9952,
-      "day": 1.0569,
-      "week": 1.0071,
-      "month": 0.7144,
-      "quarter": 0.5411,
-      "year": 0.4379
-    }
-  },
-  {
-    "code": "ZEC",
-    "rate": 272.3623202469492,
-    "volume": 348774512,
-    "cap": 4117932531,
-    "delta": {
-      "hour": 0.9887,
-      "day": 1.1784,
-      "week": 1.1056,
-      "month": 0.6106,
-      "quarter": 0.4007,
-      "year": 8.4178
-    }
-  },
-  {
-    "code": "AVAX",
-    "rate": 9.204578840538531,
-    "volume": 172948101,
-    "cap": 3893563818,
-    "delta": {
-      "hour": 0.9977,
-      "day": 1.0513,
-      "week": 0.9977,
-      "month": 0.6285,
-      "quarter": 0.5909,
-      "year": 0.3621
-    }
-  },
-  {
-    "code": "SHIB",
-    "rate": 0.0000063733077162636145,
-    "volume": 128750640,
-    "cap": 3755135221,
-    "delta": {
-      "hour": 0.9981,
-      "day": 1.0671,
-      "week": 1.0091,
-      "month": 0.7298,
-      "quarter": 0.7037,
-      "year": 0.3915
-    }
-  },
-  {
-    "code": "_SUI",
-    "rate": 0.9704345363344635,
-    "volume": 430859938,
-    "cap": 3732458652,
-    "delta": {
-      "hour": 0.994,
-      "day": 1.0661,
-      "week": 0.9573,
-      "month": 0.5248,
-      "quarter": 0.5474,
-      "year": 0.2777
-    }
-  },
-  {
-    "code": "TONCOIN",
-    "rate": 1.4584480224751475,
-    "volume": 42722714,
-    "cap": 3571321125,
-    "delta": {
-      "hour": 1,
-      "day": 1.0548,
-      "week": 1.045,
-      "month": 0.8267,
-      "quarter": 0.7804,
-      "year": 0.3911
-    }
-  },
-  {
-    "code": "DOT",
-    "rate": 1.3356441906458387,
-    "volume": 72270247,
-    "cap": 2184978380,
-    "delta": {
-      "hour": 1.0008,
-      "day": 1.0532,
-      "week": 0.9748,
-      "month": 0.5991,
-      "quarter": 0.4691,
-      "year": 0.2604
-    }
-  },
-  {
-    "code": "______MNT",
-    "rate": 0.6398307656945944,
-    "volume": 7312728,
-    "cap": 2081333685,
-    "delta": {
-      "hour": 1.0026,
-      "day": 1.051,
-      "week": 0.9885,
-      "month": 0.6477,
-      "quarter": 0.5356,
-      "year": 0.6199
-    }
-  },
-  {
-    "code": "UNI",
-    "rate": 3.412740836710574,
-    "volume": 264080326,
-    "cap": 2033524300,
-    "delta": {
-      "hour": 0.994,
-      "day": 1.0638,
-      "week": 0.96,
-      "month": 0.5947,
-      "quarter": 0.4609,
-      "year": 0.349
-    }
-  },
-  {
-    "code": "CRO",
-    "rate": 0.07946526813341512,
-    "volume": 10865696,
-    "cap": 2007532156,
-    "delta": {
-      "hour": 1.0036,
-      "day": 1.042,
-      "week": 0.9974,
-      "month": 0.7634,
-      "quarter": 0.6936,
-      "year": 0.874
-    }
-  },
-  {
-    "code": "PYUSD",
-    "rate": 1.0001094731661981,
-    "volume": 41010694,
-    "cap": 1932597444,
-    "delta": {
-      "hour": 1.0003,
-      "day": 1.0005,
-      "week": 1.0015,
-      "month": 1.0005,
-      "quarter": 0.9998,
-      "year": 1.004
-    }
-  },
-  {
-    "code": "AAVE",
-    "rate": 119.70651272584408,
-    "volume": 509674004,
-    "cap": 1824906513,
-    "delta": {
-      "hour": 1.001,
-      "day": 1.0831,
-      "week": 1.0492,
-      "month": 0.6706,
-      "quarter": 0.6687,
-      "year": 0.4708
-    }
-  },
-  {
-    "code": "____PEPE",
-    "rate": 0.000003798799880528592,
-    "volume": 197690284,
-    "cap": 1571702519,
-    "delta": {
-      "hour": 0.9929,
-      "day": 1.0436,
-      "week": 0.9678,
-      "month": 0.6074,
-      "quarter": 0.7604,
-      "year": 0.3927
-    }
-  },
-  {
-    "code": "PAXG",
-    "rate": 5046.036376119623,
-    "volume": 264414100,
-    "cap": 1478397829,
-    "delta": {
-      "hour": 1.0015,
-      "day": 1.0223,
-      "week": 1.0176,
-      "month": 1.0871,
-      "quarter": 1.2313,
-      "year": 1.7216
-    }
-  },
-  {
-    "code": "____TAO",
-    "rate": 175.92584956688196,
-    "volume": 69166037,
-    "cap": 1430729814,
-    "delta": {
-      "hour": 1.042,
-      "day": 1.1593,
-      "week": 1.0055,
-      "month": 0.6022,
-      "quarter": 0.522,
-      "year": 0.4592
-    }
-  },
-  {
-    "code": "ETC",
-    "rate": 8.562945407230172,
-    "volume": 38119890,
-    "cap": 1331698566,
-    "delta": {
-      "hour": 1.0052,
-      "day": 1.0515,
-      "week": 0.9672,
-      "month": 0.6487,
-      "quarter": 0.5553,
-      "year": 0.4057
-    }
-  },
-  {
-    "code": "NEAR",
-    "rate": 1.02680654523135,
-    "volume": 106218574,
-    "cap": 1283340803,
-    "delta": {
-      "hour": 1,
-      "day": 1.0836,
-      "week": 0.9435,
-      "month": 0.5675,
-      "quarter": 0.4252,
-      "year": 0.3037
-    }
-  },
-  {
-    "code": "POL",
-    "rate": 0.10100134573341318,
-    "volume": 118803497,
-    "cap": 1207273510,
-    "delta": {
-      "hour": 1.0145,
-      "day": 1.0666,
-      "week": 1.0272,
-      "month": 0.6495,
-      "quarter": 0.648,
-      "year": 0.3184
-    }
-  },
-  {
-    "code": "FDUSD",
-    "rate": 0.9999490140700805,
-    "volume": 1933629347,
-    "cap": 1201127569,
-    "delta": {
-      "hour": 1.0001,
-      "day": 1.0009,
-      "week": 1.0014,
-      "month": 0.9958,
-      "quarter": 1.0016,
-      "year": 1.0043
-    }
-  },
-  {
-    "code": "__WLD",
-    "rate": 0.3977239318356194,
-    "volume": 62245868,
-    "cap": 1126879708,
-    "delta": {
-      "hour": 1.0002,
-      "day": 1.053,
-      "week": 0.98,
-      "month": 0.6634,
-      "quarter": 0.5699,
-      "year": 0.3247
-    }
-  },
-  {
-    "code": "ICP",
-    "rate": 2.3966564298305104,
-    "volume": 44683110,
-    "cap": 1108975640,
-    "delta": {
-      "hour": 0.9975,
-      "day": 1.0218,
-      "week": 0.9555,
-      "month": 0.5237,
-      "quarter": 0.4604,
-      "year": 0.3344
-    }
-  },
-  {
-    "code": "ONDO",
-    "rate": 0.26485912802654804,
-    "volume": 49109249,
-    "cap": 938208428,
-    "delta": {
-      "hour": 1.0003,
-      "day": 1.0676,
-      "week": 1.0219,
-      "month": 0.6604,
-      "quarter": 0.4511,
-      "year": 0.1993
-    }
-  },
-  {
-    "code": "KAS",
-    "rate": 0.03215818773431013,
-    "volume": 7938991,
-    "cap": 874722760,
-    "delta": {
-      "hour": 0.9982,
-      "day": 1.0361,
-      "week": 1.0071,
-      "month": 0.6729,
-      "quarter": 0.711,
-      "year": 0.3094
-    }
-  },
-  {
-    "code": "QNT",
-    "rate": 70.47735776569368,
-    "volume": 15530661,
-    "cap": 850854675,
-    "delta": {
-      "hour": 0.9986,
-      "day": 1.0419,
-      "week": 1.0731,
-      "month": 0.9426,
-      "quarter": 0.8423,
-      "year": 0.7664
-    }
-  },
-  {
-    "code": "GT",
-    "rate": 7.085945313391751,
-    "volume": 1992759,
-    "cap": 846379944,
-    "delta": {
-      "hour": 0.998,
-      "day": 1.0177,
-      "week": 1.0073,
-      "month": 0.6693,
-      "quarter": 0.6482,
-      "year": 0.3107
-    }
-  },
-  {
-    "code": "ALGO",
-    "rate": 0.09444332349039677,
-    "volume": 17572466,
-    "cap": 837926178,
-    "delta": {
-      "hour": 0.9946,
-      "day": 1.046,
-      "week": 0.9499,
-      "month": 0.6892,
-      "quarter": 0.5788,
-      "year": 0.3203
-    }
-  },
-  {
-    "code": "ATOM",
-    "rate": 2.1146884582059187,
-    "volume": 26085575,
-    "cap": 826679152,
-    "delta": {
-      "hour": 1.0028,
-      "day": 1.0833,
-      "week": 1.0579,
-      "month": 0.8168,
-      "quarter": 0.7392,
-      "year": 0.4213
-    }
-  },
-  {
-    "code": "ARB",
-    "rate": 0.1162264237386912,
-    "volume": 64713176,
-    "cap": 797934673,
-    "delta": {
-      "hour": 1.0002,
-      "day": 1.0628,
-      "week": 0.9676,
-      "month": 0.5319,
-      "quarter": 0.4805,
-      "year": 0.2386
-    }
-  },
-  {
-    "code": "GNO",
-    "rate": 128.32332071353872,
-    "volume": 2668454,
-    "cap": 742649531,
-    "delta": {
-      "hour": 0.9943,
-      "day": 1.0503,
-      "week": 1.138,
-      "month": 0.8681,
-      "quarter": 1.0345,
-      "year": 0.7424
-    }
-  },
-  {
-    "code": "APT",
-    "rate": 0.9465755365186062,
-    "volume": 43898500,
-    "cap": 736888348,
-    "delta": {
-      "hour": 0.9946,
-      "day": 1.0378,
-      "week": 0.8295,
-      "month": 0.4895,
-      "quarter": 0.3241,
-      "year": 0.1536
-    }
-  },
-  {
-    "code": "FIL",
-    "rate": 0.9614643213598423,
-    "volume": 50011192,
-    "cap": 723652828,
-    "delta": {
-      "hour": 0.9991,
-      "day": 1.0688,
-      "week": 0.9871,
-      "month": 0.6065,
-      "quarter": 0.4693,
-      "year": 0.2819
-    }
-  },
-  {
-    "code": "RENDER",
-    "rate": 1.3755903290424627,
-    "volume": 51245003,
-    "cap": 711393794,
-    "delta": {
-      "hour": 1.0004,
-      "day": 1.0725,
-      "week": 0.9605,
-      "month": 0.591,
-      "quarter": 0.6438,
-      "year": 0.3047
-    }
-  },
-  {
-    "code": "VET",
-    "rate": 0.00824290130209847,
-    "volume": 13567513,
-    "cap": 667551701,
-    "delta": {
-      "hour": 0.9973,
-      "day": 1.0588,
-      "week": 0.9994,
-      "month": 0.6778,
-      "quarter": 0.5262,
-      "year": 0.2379
-    }
-  },
-  {
-    "code": "KCS",
-    "rate": 8.354202319894723,
-    "volume": 2522993,
-    "cap": 631926424,
-    "delta": {
-      "hour": 1.0047,
-      "day": 1.0413,
-      "week": 0.9925,
-      "month": 0.7261,
-      "quarter": 0.6835,
-      "year": 0.6915
-    }
-  },
-  {
-    "code": "_______________________________TRUMP",
-    "rate": 3.4177873874307916,
-    "volume": 63246967,
-    "cap": 622037283,
-    "delta": {
-      "hour": 1.0008,
-      "day": 1.0515,
-      "week": 0.9747,
-      "month": 0.6113,
-      "quarter": 0.4748,
-      "year": 0.2091
-    }
-  },
-  {
-    "code": "XDC",
-    "rate": 0.03675066726219827,
-    "volume": 18527752,
-    "cap": 512713870,
-    "delta": {
-      "hour": 0.9998,
-      "day": 1.018,
-      "week": 0.9838,
-      "month": 0.8115,
-      "quarter": 0.6794,
-      "year": 0.3958
-    }
-  },
-  {
-    "code": "TUSD",
-    "rate": 0.999453566872265,
-    "volume": 4884573,
-    "cap": 494244862,
-    "delta": {
-      "hour": 1,
-      "day": 1.0008,
-      "week": 1.0018,
-      "month": 0.9996,
-      "quarter": 1.0024,
-      "year": 1.0047
-    }
-  },
-  {
-    "code": "_STX",
-    "rate": 0.2706446385866458,
-    "volume": 6688690,
-    "cap": 491111460,
-    "delta": {
-      "hour": 0.9939,
-      "day": 1.037,
-      "week": 0.9671,
-      "month": 0.7004,
-      "quarter": 0.754,
-      "year": 0.2827
-    }
-  },
-  {
-    "code": "DASH",
-    "rate": 38.099307527823214,
-    "volume": 179914533,
-    "cap": 479552326,
-    "delta": {
-      "hour": 1.0035,
-      "day": 1.1272,
-      "week": 0.9915,
-      "month": 0.488,
-      "quarter": 0.464,
-      "year": 1.3819
-    }
-  },
-  {
-    "code": "NEXO",
-    "rate": 0.8472802837202876,
-    "volume": 8232189,
-    "cap": 474476966,
-    "delta": {
-      "hour": 0.9973,
-      "day": 1.0596,
-      "week": 1.1021,
-      "month": 0.8625,
-      "quarter": 0.8395,
-      "year": 0.6403
-    }
-  },
-  {
-    "code": "CAKE",
-    "rate": 1.300173613698043,
-    "volume": 32405270,
-    "cap": 431819195,
-    "delta": {
-      "hour": 0.9981,
-      "day": 1.0135,
-      "week": 0.9344,
-      "month": 0.6329,
-      "quarter": 0.537,
-      "year": 0.4923
-    }
-  },
-  {
-    "code": "FET",
-    "rate": 0.1654640934665626,
-    "volume": 20937805,
-    "cap": 431248993,
-    "delta": {
-      "hour": 0.9999,
-      "day": 1.0598,
-      "week": 0.9831,
-      "month": 0.577,
-      "quarter": 0.5769,
-      "year": 0.2129
-    }
-  },
-  {
-    "code": "DCR",
-    "rate": 24.52570977100816,
-    "volume": 5548273,
-    "cap": 423658459,
-    "delta": {
-      "hour": 1.0016,
-      "day": 1.1204,
-      "week": 1.0569,
-      "month": 1.0747,
-      "quarter": 0.7066,
-      "year": 1.82
-    }
-  },
-  {
-    "code": "FLR",
-    "rate": 0.009564889587559565,
-    "volume": 4770319,
-    "cap": 423565034,
-    "delta": {
-      "hour": 1.0015,
-      "day": 1.025,
-      "week": 0.9633,
-      "month": 0.8208,
-      "quarter": 0.6783,
-      "year": 0.4465
-    }
-  },
-  {
-    "code": "JST",
-    "rate": 0.04139881352494072,
-    "volume": 13768590,
-    "cap": 409848253,
-    "delta": {
-      "hour": 0.9999,
-      "day": 1.029,
-      "week": 1.0201,
-      "month": 1.0212,
-      "quarter": 1.1378,
-      "year": 1.2429
-    }
-  },
-  {
-    "code": "OP",
-    "rate": 0.19084622168906204,
-    "volume": 32238434,
-    "cap": 404183163,
-    "delta": {
-      "hour": 0.9985,
-      "day": 1.0605,
-      "week": 0.9752,
-      "month": 0.5414,
-      "quarter": 0.4875,
-      "year": 0.169
-    }
-  },
-  {
-    "code": "VIRTUAL",
-    "rate": 0.6027478353853936,
-    "volume": 71944910,
-    "cap": 397325975,
-    "delta": {
-      "hour": 1.0016,
-      "day": 1.0448,
-      "week": 1.0087,
-      "month": 0.5861,
-      "quarter": 0.5192,
-      "year": 0.4679
-    }
-  },
-  {
-    "code": "XTZ",
-    "rate": 0.41290951225007044,
-    "volume": 9648385,
-    "cap": 395624716,
-    "delta": {
-      "hour": 0.9994,
-      "day": 1.018,
-      "week": 0.9334,
-      "month": 0.7158,
-      "quarter": 0.7234,
-      "year": 0.4611
-    }
-  },
-  {
-    "code": "_ETHFI",
-    "rate": 0.47571165330196125,
-    "volume": 28945817,
-    "cap": 392319490,
-    "delta": {
-      "hour": 0.9988,
-      "day": 1.0524,
-      "week": 0.9864,
-      "month": 0.6092,
-      "quarter": 0.512,
-      "year": 0.4099
-    }
-  },
-  {
-    "code": "__BONK",
-    "rate": 0.000006313415424158512,
-    "volume": 33948820,
-    "cap": 384093197,
-    "delta": {
-      "hour": 0.9988,
-      "day": 1.0556,
-      "week": 0.9697,
-      "month": 0.5634,
-      "quarter": 0.5725,
-      "year": 0.3619
-    }
-  },
-  {
-    "code": "CHZ",
-    "rate": 0.041671646212977455,
-    "volume": 43049630,
-    "cap": 367661835,
-    "delta": {
-      "hour": 1.0003,
-      "day": 1.0502,
-      "week": 0.9936,
-      "month": 0.7486,
-      "quarter": 1.3251,
-      "year": 0.6846
-    }
-  },
-  {
-    "code": "CRV",
-    "rate": 0.2523359647502745,
-    "volume": 31732693,
-    "cap": 351676200,
-    "delta": {
-      "hour": 0.9968,
-      "day": 1.0758,
-      "week": 0.9791,
-      "month": 0.5881,
-      "quarter": 0.5845,
-      "year": 0.4775
-    }
-  },
-  {
-    "code": "ENS",
-    "rate": 6.789652449115793,
-    "volume": 102294149,
-    "cap": 348172264,
-    "delta": {
-      "hour": 1.0317,
-      "day": 1.1779,
-      "week": 1.1077,
-      "month": 0.6212,
-      "quarter": 0.5204,
-      "year": 0.2528
-    }
-  },
-  {
-    "code": "BTT",
-    "rate": 3.4667665246026903e-7,
-    "volume": 7288553,
-    "cap": 342182990,
-    "delta": {
-      "hour": 0.9969,
-      "day": 1.0133,
-      "week": 1.0404,
-      "month": 0.7928,
-      "quarter": 0.7787,
-      "year": 0.3986
-    }
-  },
-  {
-    "code": "BSV",
-    "rate": 17.086471131985135,
-    "volume": 16586677,
-    "cap": 341527580,
-    "delta": {
-      "hour": 1.0013,
-      "day": 1.1578,
-      "week": 1.1978,
-      "month": 0.8524,
-      "quarter": 0.7532,
-      "year": 0.4318
-    }
-  },
-  {
-    "code": "_IMX",
-    "rate": 0.16868450802070148,
-    "volume": 8780085,
-    "cap": 332815702,
-    "delta": {
-      "hour": 0.9973,
-      "day": 1.0564,
-      "week": 1.0205,
-      "month": 0.5842,
-      "quarter": 0.441,
-      "year": 0.212
-    }
-  },
-  {
-    "code": "_NFT",
-    "rate": 3.347555984389654e-7,
-    "volume": 13983619,
-    "cap": 331443390,
-    "delta": {
-      "hour": 0.9994,
-      "day": 1.0421,
-      "week": 0.999,
-      "month": 0.9092,
-      "quarter": 0.8527,
-      "year": 0.7569
-    }
-  },
-  {
-    "code": "SYRUP",
-    "rate": 0.27770988718498124,
-    "volume": 9347145,
-    "cap": 330927255,
-    "delta": {
-      "hour": 0.9984,
-      "day": 1.0503,
-      "week": 0.997,
-      "month": 0.7152,
-      "quarter": 0.6192,
-      "year": 2.486
-    }
-  },
-  {
-    "code": "PENDLE",
-    "rate": 1.187481315745682,
-    "volume": 10511947,
-    "cap": 314705714,
-    "delta": {
-      "hour": 0.9972,
-      "day": 1.0563,
-      "week": 0.9532,
-      "month": 0.5268,
-      "quarter": 0.5116,
-      "year": 0.349
-    }
-  },
-  {
-    "code": "INJ",
-    "rate": 3.135767014040624,
-    "volume": 20374211,
-    "cap": 313576701,
-    "delta": {
-      "hour": 1.0018,
-      "day": 1.0421,
-      "week": 0.9502,
-      "month": 0.5674,
-      "quarter": 0.4664,
-      "year": 0.2072
-    }
-  },
-  {
-    "code": "OHM",
-    "rate": 17.306256041726098,
-    "volume": 94214,
-    "cap": 300815906,
-    "delta": {
-      "hour": 1.0002,
-      "day": 1.0131,
-      "week": 0.9796,
-      "month": 0.7973,
-      "quarter": 0.8362,
-      "year": 0.6729
-    }
-  },
-  {
-    "code": "LDO",
-    "rate": 0.35217653797693566,
-    "volume": 16860309,
-    "cap": 298669230,
-    "delta": {
-      "hour": 1.002,
-      "day": 1.0604,
-      "week": 0.973,
-      "month": 0.5412,
-      "quarter": 0.467,
-      "year": 0.2096
-    }
-  },
-  {
-    "code": "JASMY",
-    "rate": 0.006035015326769552,
-    "volume": 9762115,
-    "cap": 298359860,
-    "delta": {
-      "hour": 0.9984,
-      "day": 1.0333,
-      "week": 1.0576,
-      "month": 0.6865,
-      "quarter": 0.6886,
-      "year": 0.2759
-    }
-  },
-  {
-    "code": "_TIA",
-    "rate": 0.3363914619361856,
-    "volume": 12011336,
-    "cap": 295808134,
-    "delta": {
-      "hour": 1.0012,
-      "day": 1.0608,
-      "week": 0.9852,
-      "month": 0.5681,
-      "quarter": 0.3909,
-      "year": 0.1104
-    }
-  },
-  {
-    "code": "_FLOKI",
-    "rate": 0.00003059955282782393,
-    "volume": 21118637,
-    "cap": 295439198,
-    "delta": {
-      "hour": 0.9993,
-      "day": 1.0367,
-      "week": 0.9451,
-      "month": 0.5704,
-      "quarter": 0.5536,
-      "year": 0.3153
-    }
-  },
-  {
-    "code": "MKR",
-    "rate": 1737.8922690979407,
-    "volume": 428911,
-    "cap": 295134078,
+    "rate": 1.0008745297905395,
+    "volume": 53129994660,
+    "cap": 149034902997,
     "delta": {
       "hour": 0.9997,
-      "day": 0.9992,
-      "week": 1.1344,
-      "month": 1.0172,
-      "quarter": 1.1306,
-      "year": 1.7653
+      "day": 1.0007,
+      "week": 0.9999,
+      "month": 1.0011,
+      "quarter": 0.999,
+      "year": 1.002
     }
   },
   {
-    "code": "NEO",
-    "rate": 2.8679948904129966,
-    "volume": 7345713,
-    "cap": 286799489,
+    "name": "BNB",
+    "rank": 4,
+    "age": 3125,
+    "color": "#fcfbfb",
+    "png32": "https://lcw.nyc3.cdn.digitaloceanspaces.com/production/currencies/32/bnb.png",
+    "png64": "https://lcw.nyc3.cdn.digitaloceanspaces.com/production/currencies/64/bnb.png",
+    "webp32": "https://lcw.nyc3.cdn.digitaloceanspaces.com/production/currencies/32/bnb.webp",
+    "webp64": "https://lcw.nyc3.cdn.digitaloceanspaces.com/production/currencies/64/bnb.webp",
+    "exchanges": 105,
+    "markets": 3170,
+    "pairs": 2499,
+    "categories": ["cex", "smart_contract_platforms"],
+    "allTimeHighUSD": 1374.0935804715223,
+    "circulatingSupply": 149981183,
+    "totalSupply": 150425010,
+    "maxSupply": 200000000,
+    "links": {
+      "website": "https://www.binance.com/en/bnb?ref=Y6TC8MN4",
+      "whitepaper": "https://academy.binance.com/en/articles/what-is-bnb?ref=Y6TC8MN4",
+      "twitter": "https://x.com/binance",
+      "reddit": "https://reddit.com/r/binance",
+      "telegram": "https://t.me/BinanceExchange",
+      "discord": "https://discord.com/invite/jE4wt8g2H2",
+      "medium": "https://medium.com/@binance",
+      "instagram": "https://instagram.com/Binance",
+      "tiktok": "https://www.tiktok.com/@binance",
+      "youtube": "https://www.youtube.com/binanceyoutube",
+      "linkedin": "https://www.linkedin.com/company/binance",
+      "twitch": null,
+      "spotify": null,
+      "naver": null,
+      "wechat": null,
+      "soundcloud": null
+    },
+    "code": "BNB",
+    "rate": 632.2358636618163,
+    "volume": 607968889,
+    "cap": 94823482767,
     "delta": {
-      "hour": 0.9942,
-      "day": 1.0639,
-      "week": 0.9741,
-      "month": 0.7155,
-      "quarter": 0.5906,
-      "year": 0.2521
+      "hour": 0.9992,
+      "day": 1.0237,
+      "week": 0.9678,
+      "month": 0.6777,
+      "quarter": 0.6901,
+      "year": 0.9481
     }
   },
   {
-    "code": "TEL",
-    "rate": 0.0028648400686358587,
-    "volume": 1164925,
-    "cap": 286484006,
+    "name": "XRP",
+    "rank": 5,
+    "age": 4576,
+    "color": "#242c2c",
+    "png32": "https://lcw.nyc3.cdn.digitaloceanspaces.com/production/currencies/32/xrp.png",
+    "png64": "https://lcw.nyc3.cdn.digitaloceanspaces.com/production/currencies/64/xrp.png",
+    "webp32": "https://lcw.nyc3.cdn.digitaloceanspaces.com/production/currencies/32/xrp.webp",
+    "webp64": "https://lcw.nyc3.cdn.digitaloceanspaces.com/production/currencies/64/xrp.webp",
+    "exchanges": 105,
+    "markets": 338,
+    "pairs": 160,
+    "categories": ["smart_contract_platforms"],
+    "allTimeHighUSD": 3.91546307780967,
+    "circulatingSupply": 60917315351,
+    "totalSupply": 99985721048,
+    "maxSupply": 100000000000,
+    "links": {
+      "website": "https://ripple.com/",
+      "whitepaper": "https://ripple.com/files/ripple_consensus_whitepaper.pdf",
+      "twitter": "https://x.com/Ripple",
+      "reddit": "https://reddit.com/r/ripple",
+      "telegram": "https://t.me/Ripple",
+      "discord": null,
+      "medium": null,
+      "instagram": null,
+      "tiktok": null,
+      "youtube": "https://www.youtube.com/@ripple",
+      "linkedin": "https://www.linkedin.com/company/rippleofficial/",
+      "twitch": null,
+      "spotify": null,
+      "naver": null,
+      "wechat": null,
+      "soundcloud": null
+    },
+    "code": "XRP",
+    "rate": 1.485047098576859,
+    "volume": 1781467470,
+    "cap": 90465082415,
     "delta": {
-      "hour": 0.9904,
-      "day": 1.0701,
-      "week": 0.9566,
-      "month": 0.7153,
-      "quarter": 0.4826,
-      "year": 0.3357
+      "hour": 1.0089,
+      "day": 1.0497,
+      "week": 1.0302,
+      "month": 0.7172,
+      "quarter": 0.6786,
+      "year": 0.5394
     }
   },
   {
-    "code": "___AERO",
-    "rate": 0.30699676595810144,
-    "volume": 17207879,
-    "cap": 282186278,
+    "name": "USDC",
+    "rank": 6,
+    "age": 2685,
+    "color": "#edf3f9",
+    "png32": "https://lcw.nyc3.cdn.digitaloceanspaces.com/production/currencies/32/usdc.png",
+    "png64": "https://lcw.nyc3.cdn.digitaloceanspaces.com/production/currencies/64/usdc.png",
+    "webp32": "https://lcw.nyc3.cdn.digitaloceanspaces.com/production/currencies/32/usdc.webp",
+    "webp64": "https://lcw.nyc3.cdn.digitaloceanspaces.com/production/currencies/64/usdc.webp",
+    "exchanges": 243,
+    "markets": 3338,
+    "pairs": 1635,
+    "categories": ["stablecoins", "asset_backed_tokens"],
+    "allTimeHighUSD": 1.087,
+    "circulatingSupply": 73559681253,
+    "totalSupply": 73559681253,
+    "maxSupply": null,
+    "links": {
+      "website": "https://www.circle.com/en/usdc",
+      "whitepaper": "https://www.circle.com/en/legal/mica-usdc-whitepaper",
+      "twitter": "https://x.com/circle",
+      "reddit": null,
+      "telegram": null,
+      "discord": "https://discord.com/invite/buildoncircle",
+      "medium": null,
+      "instagram": "https://www.instagram.com/teamcircle/",
+      "tiktok": null,
+      "youtube": "https://www.youtube.com/@BuildOnCircle",
+      "linkedin": "https://www.linkedin.com/company/circle-internet-financial/",
+      "twitch": null,
+      "spotify": null,
+      "naver": null,
+      "wechat": null,
+      "soundcloud": null
+    },
+    "code": "USDC",
+    "rate": 1.0010679797886661,
+    "volume": 3093261736,
+    "cap": 73638241505,
     "delta": {
-      "hour": 1.004,
-      "day": 1.0465,
-      "week": 0.9183,
-      "month": 0.5022,
-      "quarter": 0.3509,
-      "year": 0.3806
+      "hour": 0.9999,
+      "day": 1.0014,
+      "week": 0.9996,
+      "month": 0.9989,
+      "quarter": 1.0012,
+      "year": 1.0026
     }
   },
   {
-    "code": "____SPX",
-    "rate": 0.3014347318592277,
-    "volume": 9195056,
-    "cap": 280617831,
+    "name": "Solana",
+    "rank": 7,
+    "age": 2134,
+    "color": "#7370e8",
+    "png32": "https://lcw.nyc3.cdn.digitaloceanspaces.com/production/currencies/32/sol.png",
+    "png64": "https://lcw.nyc3.cdn.digitaloceanspaces.com/production/currencies/64/sol.png",
+    "webp32": "https://lcw.nyc3.cdn.digitaloceanspaces.com/production/currencies/32/sol.webp",
+    "webp64": "https://lcw.nyc3.cdn.digitaloceanspaces.com/production/currencies/64/sol.webp",
+    "exchanges": 85,
+    "markets": 3322,
+    "pairs": 2810,
+    "categories": ["smart_contract_platforms"],
+    "allTimeHighUSD": 293.15104968171573,
+    "circulatingSupply": 567958191,
+    "totalSupply": 620391758,
+    "maxSupply": null,
+    "links": {
+      "website": "https://solana.com/",
+      "whitepaper": "https://solana.com/docs",
+      "twitter": "https://x.com/solana",
+      "reddit": "https://reddit.com/r/solana",
+      "telegram": "https://t.me/solana",
+      "discord": "https://discord.com/invite/kBbATFA7PW",
+      "medium": "https://medium.com/solana-labs",
+      "instagram": "https://www.instagram.com/solana_updates",
+      "tiktok": null,
+      "youtube": "https://youtube.com/@SolanaFndn",
+      "linkedin": null,
+      "twitch": null,
+      "spotify": null,
+      "naver": null,
+      "wechat": null,
+      "soundcloud": null
+    },
+    "code": "SOL",
+    "rate": 87.83456086481942,
+    "volume": 2459187204,
+    "cap": 49886358296,
     "delta": {
-      "hour": 0.9962,
-      "day": 1.1066,
-      "week": 0.9864,
-      "month": 0.4879,
-      "quarter": 0.5872,
-      "year": 0.4104
+      "hour": 0.9986,
+      "day": 1.0295,
+      "week": 0.9896,
+      "month": 0.6197,
+      "quarter": 0.6464,
+      "year": 0.4333
     }
   },
   {
-    "code": "MATIC",
-    "rate": 0.10055548086223474,
-    "volume": 54053,
-    "cap": 270871499,
+    "name": "TRON",
+    "rank": 8,
+    "age": 3076,
+    "color": "#c43429",
+    "png32": "https://lcw.nyc3.cdn.digitaloceanspaces.com/production/currencies/32/trx.png",
+    "png64": "https://lcw.nyc3.cdn.digitaloceanspaces.com/production/currencies/64/trx.png",
+    "webp32": "https://lcw.nyc3.cdn.digitaloceanspaces.com/production/currencies/32/trx.webp",
+    "webp64": "https://lcw.nyc3.cdn.digitaloceanspaces.com/production/currencies/64/trx.webp",
+    "exchanges": 84,
+    "markets": 169,
+    "pairs": 40,
+    "categories": ["storage", "smart_contract_platforms"],
+    "allTimeHighUSD": 0.43911345907206795,
+    "circulatingSupply": 86364305772.35286,
+    "totalSupply": 94723219698,
+    "maxSupply": null,
+    "links": {
+      "website": "https://tron.network/",
+      "whitepaper": "https://o836fhe91.qnssl.com/tron/whitebook/TronWhitepaper_en.pdf",
+      "twitter": "https://twitter.com/trondao",
+      "reddit": "https://reddit.com/r/Tronix",
+      "telegram": "https://t.me/tronnetworkEN",
+      "discord": "https://discord.com/invite/ezNzd9W",
+      "medium": "https://tronfoundation.medium.com/",
+      "instagram": "https://instagram.com/tronfoundation",
+      "tiktok": null,
+      "youtube": null,
+      "linkedin": null,
+      "twitch": null,
+      "spotify": null,
+      "naver": null,
+      "wechat": null,
+      "soundcloud": null
+    },
+    "code": "TRX",
+    "rate": 0.2823910420138987,
+    "volume": 500318403,
+    "cap": 24388506299,
     "delta": {
-      "hour": 1.0098,
-      "day": 1.0725,
-      "week": 1.0241,
-      "month": 0.6444,
-      "quarter": 0.645,
-      "year": 0.317
+      "hour": 0.9979,
+      "day": 1.0058,
+      "week": 1.0114,
+      "month": 0.9168,
+      "quarter": 0.9593,
+      "year": 1.2063
     }
   },
   {
-    "code": "AXS",
-    "rate": 1.3883137751540298,
-    "volume": 42669443,
-    "cap": 250420007,
+    "name": "Dogecoin",
+    "symbol": "Ɖ",
+    "rank": 9,
+    "age": 4443,
+    "color": "#eee0b6",
+    "png32": "https://lcw.nyc3.cdn.digitaloceanspaces.com/production/currencies/32/doge.png",
+    "png64": "https://lcw.nyc3.cdn.digitaloceanspaces.com/production/currencies/64/doge.png",
+    "webp32": "https://lcw.nyc3.cdn.digitaloceanspaces.com/production/currencies/32/doge.webp",
+    "webp64": "https://lcw.nyc3.cdn.digitaloceanspaces.com/production/currencies/64/doge.webp",
+    "exchanges": 90,
+    "markets": 202,
+    "pairs": 86,
+    "categories": ["meme", "wallets", "charity"],
+    "allTimeHighUSD": 0.7371712183910056,
+    "circulatingSupply": 132670764299,
+    "totalSupply": 132670764299,
+    "maxSupply": null,
+    "links": {
+      "website": "https://dogecoin.com/",
+      "whitepaper": "https://dogecoin.com/dogepedia/",
+      "twitter": "https://x.com/dogecoin",
+      "reddit": "https://reddit.com/r/dogecoin",
+      "telegram": null,
+      "discord": "https://discord.com/invite/dogecoin",
+      "medium": null,
+      "instagram": null,
+      "tiktok": null,
+      "youtube": null,
+      "linkedin": null,
+      "twitch": null,
+      "spotify": null,
+      "naver": null,
+      "wechat": null,
+      "soundcloud": null
+    },
+    "code": "DOGE",
+    "rate": 0.1071272260608069,
+    "volume": 975248847,
+    "cap": 14212650958,
     "delta": {
-      "hour": 0.9982,
-      "day": 0.9806,
-      "week": 0.9851,
-      "month": 1.1269,
-      "quarter": 1.0841,
-      "year": 0.3167
+      "hour": 1.0136,
+      "day": 1.1094,
+      "week": 1.0825,
+      "month": 0.7651,
+      "quarter": 0.69,
+      "year": 0.3852
     }
   },
   {
-    "code": "GRT",
-    "rate": 0.02772286911424636,
-    "volume": 8403158,
-    "cap": 245018043,
+    "name": "Bitcoin Cash",
+    "rank": 10,
+    "age": 3127,
+    "color": "#f1f9f7",
+    "png32": "https://lcw.nyc3.cdn.digitaloceanspaces.com/production/currencies/32/bch.png",
+    "png64": "https://lcw.nyc3.cdn.digitaloceanspaces.com/production/currencies/64/bch.png",
+    "webp32": "https://lcw.nyc3.cdn.digitaloceanspaces.com/production/currencies/32/bch.webp",
+    "webp64": "https://lcw.nyc3.cdn.digitaloceanspaces.com/production/currencies/64/bch.webp",
+    "exchanges": 75,
+    "markets": 125,
+    "pairs": 28,
+    "categories": ["smart_contract_platforms"],
+    "allTimeHighUSD": 4355.62,
+    "circulatingSupply": 19995043,
+    "totalSupply": 19995043,
+    "maxSupply": 21000000,
+    "links": {
+      "website": "https://bitcoincash.org/",
+      "whitepaper": "https://www.bitcoincash.org/bitcoin.pdf",
+      "twitter": null,
+      "reddit": "https://reddit.com/r/Bitcoincash",
+      "telegram": null,
+      "discord": null,
+      "medium": null,
+      "instagram": null,
+      "tiktok": null,
+      "youtube": null,
+      "linkedin": null,
+      "twitch": null,
+      "spotify": null,
+      "naver": null,
+      "wechat": null,
+      "soundcloud": null
+    },
+    "code": "BCH",
+    "rate": 565.6625736158071,
+    "volume": 256840788,
+    "cap": 11310447482,
     "delta": {
-      "hour": 0.9993,
-      "day": 1.0503,
-      "week": 0.9687,
-      "month": 0.6553,
-      "quarter": 0.4853,
-      "year": 0.1971
-    }
-  },
-  {
-    "code": "SAND",
-    "rate": 0.08950328744023528,
-    "volume": 20022292,
-    "cap": 233897973,
-    "delta": {
-      "hour": 1.0014,
-      "day": 1.0836,
-      "week": 1.0376,
-      "month": 0.7042,
-      "quarter": 0.4896,
-      "year": 0.2272
-    }
-  },
-  {
-    "code": "MANA",
-    "rate": 0.1022169289075578,
-    "volume": 15147105,
-    "cap": 224180055,
-    "delta": {
-      "hour": 0.999,
-      "day": 1.0274,
-      "week": 1.0051,
-      "month": 0.6782,
-      "quarter": 0.4961,
-      "year": 0.31
-    }
-  },
-  {
-    "code": "WIF",
-    "rate": 0.22250356418759948,
-    "volume": 35436550,
-    "cap": 222263090,
-    "delta": {
-      "hour": 0.9975,
-      "day": 1.0511,
-      "week": 0.9489,
-      "month": 0.5378,
-      "quarter": 0.5238,
-      "year": 0.3792
-    }
-  },
-  {
-    "code": "FRAX",
-    "rate": 0.7930781799907719,
-    "volume": 1451789,
-    "cap": 218653360,
-    "delta": {
-      "hour": 1.008,
-      "day": 1.0303,
-      "week": 0.8539,
-      "month": 0.8937,
-      "quarter": 0.7975,
-      "year": 0.7991
-    }
-  },
-  {
-    "code": "THETA",
-    "rate": 0.21842069772488207,
-    "volume": 5817455,
-    "cap": 218420697,
-    "delta": {
-      "hour": 0.999,
-      "day": 1.0558,
-      "week": 1.0712,
-      "month": 0.694,
-      "quarter": 0.5177,
-      "year": 0.1582
-    }
-  },
-  {
-    "code": "_JUP",
-    "rate": 0.1543141811453515,
-    "volume": 41499952,
-    "cap": 208324144,
-    "delta": {
-      "hour": 0.9989,
-      "day": 1.1317,
-      "week": 0.908,
-      "month": 0.6605,
-      "quarter": 0.5414,
-      "year": 0.183
-    }
-  },
-  {
-    "code": "TRIBE",
-    "rate": 0.440873914288983,
-    "volume": 66464,
-    "cap": 206119144,
-    "delta": {
-      "hour": 1.0008,
-      "day": 1.0033,
-      "week": 0.9644,
-      "month": 0.8824,
-      "quarter": 0.7803,
-      "year": 0.8572
-    }
-  },
-  {
-    "code": "COMP",
-    "rate": 21.043972244238322,
-    "volume": 153265511,
-    "cap": 199255377,
-    "delta": {
-      "hour": 0.9404,
-      "day": 1.3411,
-      "week": 1.1965,
-      "month": 0.7688,
-      "quarter": 0.6405,
-      "year": 0.3751
+      "hour": 1.0052,
+      "day": 1.0169,
+      "week": 1.0582,
+      "month": 0.9769,
+      "quarter": 1.1838,
+      "year": 1.6434
     }
   }
 ]

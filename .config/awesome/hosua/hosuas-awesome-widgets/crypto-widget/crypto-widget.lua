@@ -26,6 +26,8 @@ local shared_state = {
 	widget_dir = nil,
 	json = nil,
 	refresh_rate = nil,
+	main_coin = nil,
+	currency = nil,
 }
 
 -- Global function to fetch crypto data (runs once for all instances)
@@ -34,6 +36,8 @@ local function fetch_crypto_data()
 		return
 	end
 
+	-- use get-list.sh if you just want to list top 10 ranked coins.
+	-- use get-map.sh if you want to get specific coins defined in CODES in the get-map.sh script
 	local cmd = string.format("cd %s && ./get-map.sh", shared_state.widget_dir)
 
 	spawn.easy_async_with_shell(cmd, function(stdout, stderr, exitreason, exitcode)
@@ -80,6 +84,25 @@ local function worker(input)
 		-- Load JSON library from awesome config
 		shared_state.json = require("json")
 		shared_state.refresh_rate = _config.refresh_rate
+
+		-- Read MAIN_COIN and CURRENCY from .env file
+		local env_file = io.open(shared_state.widget_dir .. ".env", "r")
+		if env_file then
+			for line in env_file:lines() do
+				local main_coin = line:match('^export%s+MAIN_COIN="([^"]+)"')
+				if main_coin then
+					shared_state.main_coin = main_coin
+				end
+				local currency = line:match('^export%s+CURRENCY="([^"]+)"')
+				if currency then
+					shared_state.currency = currency
+				end
+			end
+			env_file:close()
+		end
+		-- Default to BTC and USD if not found
+		shared_state.main_coin = shared_state.main_coin or "BTC"
+		shared_state.currency = shared_state.currency or "USD"
 	end
 
 	-- Main widget text
@@ -165,21 +188,6 @@ local function worker(input)
 			return widgets
 		end
 
-		-- Header
-		local header = wibox.widget.textbox("<b>Cryptocurrency Prices (USD)</b>")
-		header.font = "Terminus Bold 11"
-		table.insert(widgets, header)
-
-		-- Separator
-		table.insert(
-			widgets,
-			wibox.widget({
-				wibox.widget.textbox(""),
-				forced_height = 8,
-				widget = wibox.container.constraint,
-			})
-		)
-
 		-- Table header
 		local header_row = wibox.widget({
 			{
@@ -190,7 +198,7 @@ local function worker(input)
 				widget = wibox.container.place,
 			},
 			{
-				wibox.widget.textbox("<b>Price</b>"),
+				wibox.widget.textbox(string.format("<b>Price (%s)</b>", shared_state.currency or "USD")),
 				font = "Terminus 10",
 				forced_width = 90,
 				halign = "right",
@@ -243,8 +251,9 @@ local function worker(input)
 		})
 		table.insert(widgets, header_row)
 
-		-- Crypto rows
-		for _, coin in ipairs(shared_state.crypto_data) do
+		-- Crypto rows (only show top 10)
+		for i = 1, math.min(10, #shared_state.crypto_data) do
+			local coin = shared_state.crypto_data[i]
 			-- Get all delta periods
 			local hour_change, hour_color = format_delta(coin.delta and coin.delta.hour)
 			local day_change, day_color = format_delta(coin.delta and coin.delta.day)
@@ -253,8 +262,15 @@ local function worker(input)
 			local quarter_change, quarter_color = format_delta(coin.delta and coin.delta.quarter)
 			local year_change, year_color = format_delta(coin.delta and coin.delta.year)
 
-			-- Display coin as "Name (CODE)" or just "CODE" if name not available
-			local coin_display = coin.name and string.format("%s (%s)", coin.name, coin.code) or coin.code
+			-- Display coin as "CODE (symbol)" if symbol exists, otherwise "CODE (name)" if name differs from code
+			local coin_display
+			if coin.symbol then
+				coin_display = string.format("%s (%s)", coin.code, coin.symbol)
+			elseif coin.name and coin.name ~= coin.code then
+				coin_display = string.format("%s (%s)", coin.code, coin.name)
+			else
+				coin_display = coin.code
+			end
 			local name_widget = wibox.widget.textbox(coin_display)
 			name_widget.font = "Terminus Bold 10"
 
@@ -371,11 +387,34 @@ local function worker(input)
 			return
 		end
 
-		-- Build compact display text showing first crypto (usually BTC)
+		-- Build compact display text showing MAIN_COIN
 		if data and #data > 0 then
-			local btc = data[1]
-			local price_text = format_number(btc.rate)
-			local day_change, day_color = format_delta(btc.delta and btc.delta.day)
+			-- Get MAIN_COIN from shared state (read from .env file)
+			local main_coin_code = shared_state.main_coin
+
+			-- Find the main coin in the data
+			local main_coin = nil
+			for _, coin in ipairs(data) do
+				if coin.code == main_coin_code then
+					main_coin = coin
+					break
+				end
+			end
+
+			-- Fall back to first coin if MAIN_COIN not found
+			if not main_coin then
+				main_coin = data[1]
+			end
+
+			-- Update icon based on main coin's symbol or code
+			if main_coin.symbol then
+				crypto_icon:set_text(main_coin.symbol .. " ")
+			else
+				crypto_icon:set_text(main_coin.code .. " ")
+			end
+
+			local price_text = format_number(main_coin.rate)
+			local day_change, day_color = format_delta(main_coin.delta and main_coin.delta.day)
 
 			crypto_text_widget.markup = string.format(
 				'<span foreground="#FFFFFF">$%s</span> <span foreground="%s">%s</span>',
