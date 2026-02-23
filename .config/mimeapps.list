@@ -1,7 +1,7 @@
 [Added Associations]
 application/java-archive=org.kde.ark.desktop;
 application/octet-stream=vlc-plugin-bittorrent.desktop;
-application/pdf=org.gnome.Evince.desktop;brave-browser.desktop;
+application/pdf=evince.desktop;org.gnome.Evince.desktop;brave-browser.desktop;
 application/sql=neovide-2.desktop;
 application/vnd.efi.iso=org.kde.k3b.desktop;brasero.desktop;imagewriter.desktop;
 application/vnd.ms-publisher=vim.desktop;
@@ -47,7 +47,7 @@ x-scheme-handler/postman=Postman.desktop;
 x-scheme-handler/tel=org.kde.kdeconnect.handler.desktop;
 
 [Default Applications]
-application/pdf=org.gnome.Evince.desktop
+application/pdf=evince.desktop;
 application/sql=neovide-2.desktop;
 application/vnd.ms-publisher=vim.desktop
 application/vnd.oasis.opendocument.text=libreoffice-writer.desktop

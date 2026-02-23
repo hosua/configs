@@ -18,6 +18,7 @@ local config = {
 	refresh_rate = 1,
 	popup_bg = "#2E3440",
 	popup_border_color = "#4C566A",
+	cores_per_row = 3,  -- 3-column layout for compact display
 }
 
 local function worker(input)
@@ -85,8 +86,8 @@ local function worker(input)
 	})
 
 	local core_widgets = {}
-	local columns_layout = wibox.layout.fixed.horizontal()
-	columns_layout.spacing = 16
+	local rows_container = wibox.layout.fixed.vertical()
+	rows_container.spacing = 4  -- Spacing between rows
 
 	local cpu_name_text = wibox.widget.textbox()
 	cpu_name_text.font = beautiful.font or "Terminus 10"
@@ -176,55 +177,55 @@ local function worker(input)
 		end
 		table.sort(sorted_cores)
 
-		local cores_per_column = 6
-		local num_columns = math.max(1, math.ceil(#sorted_cores / cores_per_column))
+		local num_cores = #sorted_cores
+		local num_rows = math.ceil(num_cores / _config.cores_per_row)
 
+		-- Update overall CPU usage
 		local usage_value = overall_usage or 0
 		all_text:set_markup(string.format("CPU: %.2f%%", usage_value))
 		all_progress.value = usage_value
+		all_progress.forced_width = 280  -- Fixed width for 3 columns
 
-		local column_width = 80 + 18
-		local total_width = (column_width * num_columns) + (columns_layout.spacing * (num_columns - 1))
-		all_progress.forced_width = total_width - 80
+		-- Clear and rebuild rows
+		rows_container:reset()
 
-		columns_layout:reset()
+		-- Create rows (each row has 3 cores)
+		for row_idx = 0, num_rows - 1 do
+			local row_layout = wibox.layout.fixed.horizontal()
+			row_layout.spacing = 8
 
-		for col = 1, num_columns do
-			local column_layout = wibox.layout.fixed.vertical()
+			for col_idx = 0, _config.cores_per_row - 1 do
+				local core_idx = row_idx * _config.cores_per_row + col_idx + 1
+				if core_idx <= num_cores then
+					local core_id = sorted_cores[core_idx]
 
-			if #sorted_cores > 0 then
-				local start_idx = (col - 1) * cores_per_column + 1
-				local end_idx = math.min(col * cores_per_column, #sorted_cores)
-
-				for i = start_idx, end_idx do
-					local core_id = sorted_cores[i]
+					-- Create or get cached core widget
 					if not core_widgets[core_id] then
 						core_widgets[core_id] = create_core_widget(core_id)
 					end
 
-					local usage_value = core_usages[core_id] or 0
-					core_widgets[core_id].text:set_markup(string.format("C%d: %.2f%%", core_id, usage_value))
-					core_widgets[core_id].arc.value = usage_value
+					-- Update core usage
+					local usage = core_usages[core_id] or 0
+					core_widgets[core_id].text:set_markup(
+						string.format("C%d: %.2f%%", core_id, usage)
+					)
+					core_widgets[core_id].arc.value = usage
 
-					column_layout:add(core_widgets[core_id].row)
+					row_layout:add(core_widgets[core_id].row)
 				end
 			end
 
-			columns_layout:add(column_layout)
+			rows_container:add(row_layout)
 		end
 
+		-- Build main layout
 		local main_layout = wibox.layout.fixed.vertical()
 		main_layout:add(cpu_name_text)
 		main_layout:add(all_row)
-		main_layout:add(columns_layout)
-
-		local constrained_layout = wibox.widget({
-			main_layout,
-			widget = wibox.container.constraint,
-		})
+		main_layout:add(rows_container)
 
 		popup:setup({
-			constrained_layout,
+			main_layout,
 			margins = 8,
 			widget = wibox.container.margin,
 		})
@@ -240,6 +241,7 @@ local function worker(input)
 		end
 	end
 
+	-- Toggle popup on click
 	widget:buttons(awful.util.table.join(awful.button({}, 1, function()
 		if popup.visible then
 			popup.visible = false
