@@ -12,10 +12,68 @@ local storage_bar_widget = {}
 ---  - popup - configuration of the popup
 local config = {}
 
+local FILE_MANAGERS = {
+	thunar = { cmd = "thunar", class = "Thunar" },
+	dolphin = { cmd = "dolphin", class = "dolphin" },
+	nautilus = { cmd = "nautilus", class = "Nautilus" },
+	pcmanfm = { cmd = "pcmanfm", class = "Pcmanfm" },
+	nemo = { cmd = "nemo", class = "nemo" },
+}
+
+local FALLBACK_ORDER = { "thunar", "dolphin", "nautilus", "pcmanfm", "nemo" }
+
+local DESKTOP_TO_NAME = {
+	["thunar.desktop"] = "thunar",
+	["org.gnome.Nautilus.desktop"] = "nautilus",
+	["nautilus.desktop"] = "nautilus",
+	["dolphin.desktop"] = "dolphin",
+	["pcmanfm.desktop"] = "pcmanfm",
+	["nemo.desktop"] = "nemo",
+}
+
+local function which(cmd)
+	local f = io.popen("which " .. cmd .. " 2>/dev/null")
+	if not f then return nil end
+	local path = f:read("*l")
+	f:close()
+	return (path and path ~= "") and path or nil
+end
+
+local function resolve_filemanager(explicit)
+	if explicit then
+		if FILE_MANAGERS[explicit] then
+			return FILE_MANAGERS[explicit]
+		end
+		if which(explicit) then
+			return { cmd = explicit, class = explicit }
+		end
+		return nil
+	end
+	local f = io.popen("xdg-mime query default inode/directory 2>/dev/null")
+	if f then
+		local desktop = f:read("*l")
+		f:close()
+		if desktop and desktop ~= "" then
+			local name = DESKTOP_TO_NAME[desktop] or desktop:gsub("%.desktop$", ""):gsub("^.*%.", "")
+			if name and FILE_MANAGERS[name] and which(FILE_MANAGERS[name].cmd) then
+				return FILE_MANAGERS[name]
+			end
+		end
+	end
+	for _, name in ipairs(FALLBACK_ORDER) do
+		local fm = FILE_MANAGERS[name]
+		if fm and which(fm.cmd) then
+			return fm
+		end
+	end
+	return nil
+end
+
 -- general
 config.mounts = { "/" }
 config.refresh_rate = 60
 config.show_storage_bar = true
+config.filemanager = nil
 
 -- wibar widget
 config.widget_width = 40
@@ -145,15 +203,59 @@ local function worker(user_args)
 		widget = {},
 	})
 
-	storage_bar_widget:buttons(awful.util.table.join(awful.button({}, 1, function()
-		if popup.visible then
-			popup.visible = not popup.visible
-			storage_bar_widget:set_bg("#00000000")
-		else
-			storage_bar_widget:set_bg(_config.widget_background_color)
-			popup:move_next_to(mouse.current_widget_geometry)
-		end
-	end)))
+	local fm = resolve_filemanager(_config.filemanager)
+
+	storage_bar_widget:buttons(awful.util.table.join(
+		awful.button({}, 1, function()
+			if not fm then return end
+			local filemanager_client = nil
+			for _, c in ipairs(client.get()) do
+				if c.class and c.class:lower():match(fm.class:lower()) then
+					filemanager_client = c
+					break
+				end
+			end
+
+			if filemanager_client then
+				filemanager_client:kill()
+			else
+				local target_screen = mouse.screen
+				awful.spawn(fm.cmd, {
+					floating = true,
+					screen = target_screen,
+					callback = function(c)
+						c.floating = true
+						c.ontop = true
+						c.screen = target_screen
+
+						local screen_geo = target_screen.geometry
+						local width = screen_geo.width * 0.6
+						local height = screen_geo.height * 0.6
+
+						c:geometry({
+							width = width,
+							height = height,
+							x = screen_geo.x + (screen_geo.width - width) / 2,
+							y = screen_geo.y + (screen_geo.height - height) / 2,
+						})
+
+						c:raise()
+						client.focus = c
+					end,
+				})
+			end
+		end),
+		awful.button({}, 3, function()
+			if popup.visible then
+				popup.visible = false
+				storage_bar_widget:set_bg("#00000000")
+			else
+				storage_bar_widget:set_bg(_config.widget_background_color)
+				popup:move_next_to(mouse.current_widget_geometry)
+				popup.visible = true
+			end
+		end)
+	))
 
 	local disks = {}
 	watch([[bash -c "df | tail -n +2"]], _config.refresh_rate, function(widget, stdout)

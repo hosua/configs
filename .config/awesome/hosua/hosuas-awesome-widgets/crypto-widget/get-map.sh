@@ -4,6 +4,8 @@
 
 CODES="${CODES:-[\"BTC\",\"XMR\",\"ETH\",\"LTC\",\"PAXG\"]}"
 FIAT="${FIAT:-USD}"
+SORT="${SORT:-rank}"
+ORDER="${ORDER:-ascending}"
 
 curl -X POST 'https://api.livecoinwatch.com/coins/map' \
   -H 'content-type: application/json' \
@@ -11,4 +13,6 @@ curl -X POST 'https://api.livecoinwatch.com/coins/map' \
   -d "$(jq -n \
     --argjson codes "$CODES" \
     --arg currency "$FIAT" \
-    '{codes: $codes, currency: $currency, sort: "rank", order: "ascending", offset: 0, meta: true}')"
+    --arg sort "$SORT" \
+    --arg order "$ORDER" \
+    '{codes: $codes, currency: $currency, sort: $sort, order: $order, offset: 0, meta: true}')"

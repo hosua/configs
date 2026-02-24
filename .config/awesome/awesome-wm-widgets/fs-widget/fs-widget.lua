@@ -104,6 +104,9 @@ local function worker(user_args)
     storage_bar_widget:buttons(
             awful.util.table.join(
                     awful.button({}, 1, function()
+                        awful.spawn 
+                    end,
+                    awful.button({}, 2, function()
                         if popup.visible then
                             popup.visible = not popup.visible
                             storage_bar_widget:set_bg('#00000000')

@@ -254,7 +254,7 @@ local function worker(user_args)
 				},
 				{
 					id = "feels_like_temp",
-					align = "center",
+					align = "left",
 					font = font_name .. " 9",
 					widget = wibox.widget.textbox,
 				},

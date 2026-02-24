@@ -17,6 +17,8 @@ rsync -a --exclude='.git' \
   "$CONF/mimeapps.list" \
   "$CONF/lazydocker" \
   "$CONF/lazygit" \
+  "$CONF/kdeglobals" \
+  "$CONF/kdedefaults" \
   "$DEST_CONF"
 
 rsync -a --exclude='.git' \

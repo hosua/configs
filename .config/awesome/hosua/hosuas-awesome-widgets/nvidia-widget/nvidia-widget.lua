@@ -11,7 +11,6 @@ local wibox = require("wibox")
 local beautiful = require("beautiful")
 local gears = require("gears")
 local spawn = require("awful.spawn")
-
 local nvidia_widget = {}
 
 local config = {
@@ -60,6 +59,7 @@ local function worker(input)
 	gpu_icon.resize = true
 	gpu_icon.forced_width = 18
 	gpu_icon.forced_height = 18
+	gpu_icon.spacing = 2
 
 	local gpu_icon_container = wibox.widget({
 		gpu_icon,
@@ -93,63 +93,81 @@ local function worker(input)
 		widget = wibox.container.arcchart,
 	})
 
-	local separator = wibox.widget.textbox(" |")
-
 	local function build_widget_layout()
-		local layout_items = {}
+		local left_items = {}
 		local has_data_segment = false
 
 		if _config.show_icon then
-			table.insert(layout_items, gpu_icon_container)
+			table.insert(left_items, gpu_icon_container)
 		end
 
 		if _config.show_temp then
 			if has_data_segment then
-				table.insert(layout_items, wibox.widget.textbox(" |"))
+				table.insert(left_items, wibox.widget.textbox(" |"))
 			end
-			table.insert(layout_items, temp_text_widget)
+			table.insert(left_items, temp_text_widget)
 			has_data_segment = true
 		end
 
 		if _config.show_power then
 			if has_data_segment then
-				table.insert(layout_items, wibox.widget.textbox(" |"))
+				table.insert(left_items, wibox.widget.textbox(" |"))
 			end
 			if _config.show_arc then
-				table.insert(layout_items, {
+				table.insert(left_items, {
 					power_arc_widget,
 					power_text_widget,
 					spacing = 4,
 					layout = wibox.layout.fixed.horizontal,
 				})
 			else
-				table.insert(layout_items, power_text_widget)
+				table.insert(left_items, power_text_widget)
 			end
 			has_data_segment = true
 		end
 
-		if _config.show_vram then
-			if has_data_segment then
-				table.insert(layout_items, wibox.widget.textbox(" |"))
+		local left_layout = nil
+		if #left_items > 0 then
+			local t = {}
+			for _, item in ipairs(left_items) do
+				table.insert(t, item)
 			end
+			t.spacing = 8
+			t.layout = wibox.layout.fixed.horizontal
+			left_layout = wibox.widget(t)
+		end
+
+		local right_layout = nil
+		if _config.show_vram then
 			if _config.show_arc then
-				table.insert(layout_items, {
-					mem_arc_widget,
-					mem_text_widget,
-					spacing = 4,
-					layout = wibox.layout.fixed.horizontal,
+				right_layout = wibox.widget({
+					{
+						mem_arc_widget,
+						mem_text_widget,
+						spacing = 4,
+						layout = wibox.layout.fixed.horizontal,
+					},
+					left = 8,
+					widget = wibox.container.margin,
 				})
 			else
-				table.insert(layout_items, mem_text_widget)
+				right_layout = wibox.widget({
+					mem_text_widget,
+					left = 8,
+					widget = wibox.container.margin,
+				})
 			end
-			has_data_segment = true
 		end
 
-		layout_items.spacing = 8
-		layout_items.layout = wibox.layout.fixed.horizontal
+		local align_layout = wibox.widget({
+			left_layout,
+			nil,
+			right_layout,
+			layout = wibox.layout.align.horizontal,
+		})
 
 		return wibox.widget({
-			layout_items,
+			align_layout,
 			layout = wibox.container.margin,
 			left = 4,
 			right = 4,
@@ -179,72 +197,166 @@ local function worker(input)
 		return string.format("%.0f°C (%.0f°F)", celsius, fahrenheit)
 	end
 
-	local function create_popup_info_widgets()
-		local widgets = {}
-
+	local function create_popup_content()
 		local gpu_name_text = stats.gpu_name or "N/A"
 		local driver_version_text = stats.driver_version or "N/A"
 
-		local gpu_info_widget = wibox.widget.textbox()
-		gpu_info_widget:set_markup(
-			string.format("<b>GPU:</b> %s    <b>Driver:</b> %s", gpu_name_text, driver_version_text)
-		)
-		gpu_info_widget.font = "Terminus 10"
-		table.insert(widgets, gpu_info_widget)
-
 		local power = "N/A"
-		if stats.power and stats.power_limit then
+		local power_percent = 0
+		if stats.power and stats.power_limit and stats.power_limit > 0 then
 			power = string.format("%.0f/%.0fW", stats.power, stats.power_limit)
+			power_percent = (stats.power / stats.power_limit) * 100
 		end
 
 		local mem_display = "N/A"
-		if stats.used and stats.total then
+		local mem_percent = 0
+		if stats.used and stats.total and stats.total > 0 then
 			mem_display = string.format("%.0f/%.0fMiB", stats.used, stats.total)
+			mem_percent = (stats.used / stats.total) * 100
 		end
 
 		local temp_text = format_temp(stats.temp_raw)
 
-		local info_widget = wibox.widget.textbox()
-		info_widget:set_markup(
-			string.format("<b>Temp:</b> %s    <b>Power:</b> %s    <b>Memory:</b> %s", temp_text, power, mem_display)
-		)
-		info_widget.font = "Terminus 10"
-		table.insert(widgets, info_widget)
+		local temp_line = wibox.widget.textbox()
+		temp_line:set_markup(string.format("<b>Temp</b> %s", temp_text))
+		temp_line.font = "Terminus 10"
 
-		return widgets
+		local popup_power_arc = wibox.widget({
+			max_value = 100,
+			thickness = 2,
+			start_angle = 4.71238898,
+			forced_height = 14,
+			forced_width = 14,
+			rounded_edge = true,
+			bg = "#ffffff11",
+			paddings = 0,
+			colors = { beautiful.fg_normal or "#FEFEFE" },
+			widget = wibox.container.arcchart,
+		})
+		popup_power_arc.value = power_percent
+		local power_value_text = wibox.widget.textbox(power)
+		power_value_text.font = "Terminus 10"
+		local power_label = wibox.widget.textbox()
+		power_label:set_markup("<b>Power</b>")
+		power_label.font = "Terminus 10"
+		local power_line = wibox.widget({
+			power_label,
+			popup_power_arc,
+			power_value_text,
+			spacing = 4,
+			layout = wibox.layout.fixed.horizontal,
+		})
+
+		local gpu_line = wibox.widget.textbox()
+		gpu_line:set_markup(gpu_name_text)
+		gpu_line.font = "Terminus 10"
+
+		local driver_line = wibox.widget.textbox()
+		driver_line:set_markup(string.format("<b>Driver</b> %s", driver_version_text))
+		driver_line.font = "Terminus 10"
+		local driver_line_placed = wibox.widget({
+			driver_line,
+			halign = "right",
+			widget = wibox.container.place,
+		})
+
+		local gpu_line_placed = wibox.widget({
+			gpu_line,
+			halign = "center",
+			widget = wibox.container.place,
+		})
+
+		local first_row = wibox.widget({
+			driver_line_placed,
+			gpu_line_placed,
+			temp_line,
+			layout = wibox.layout.align.horizontal,
+		})
+
+		local popup_mem_arc = wibox.widget({
+			max_value = 100,
+			thickness = 2,
+			start_angle = 4.71238898,
+			forced_height = 14,
+			forced_width = 14,
+			rounded_edge = true,
+			bg = "#ffffff11",
+			paddings = 0,
+			colors = { beautiful.fg_normal or "#FEFEFE" },
+			widget = wibox.container.arcchart,
+		})
+		popup_mem_arc.value = mem_percent
+		local memory_label = wibox.widget.textbox()
+		memory_label:set_markup("<b>VRAM</b>")
+		memory_label.font = "Terminus 10"
+		local memory_value_text = wibox.widget.textbox(mem_display)
+		memory_value_text.font = "Terminus 10"
+		local memory_line = wibox.widget({
+			memory_label,
+			popup_mem_arc,
+			memory_value_text,
+			spacing = 4,
+			layout = wibox.layout.fixed.horizontal,
+		})
+
+		local second_row = wibox.widget({
+			memory_line,
+			nil,
+			power_line,
+			layout = wibox.layout.align.horizontal,
+		})
+
+		return wibox.widget({
+			first_row,
+			second_row,
+			spacing = 6,
+			layout = wibox.layout.fixed.vertical,
+		})
+	end
+
+	local COL_PID = 72
+	local COL_VRAM = 100
+	local ROW_SPACING = 2
+	local COL_NAME = 306
+	local POPUP_CONTENT_WIDTH = COL_PID + COL_NAME + COL_VRAM + (2 * ROW_SPACING)
+
+	local function make_table_row(pid_widget, name_widget, mem_widget)
+		return wibox.widget({
+			{
+				pid_widget,
+				forced_width = COL_PID,
+				halign = "left",
+				widget = wibox.container.place,
+			},
+			{
+				name_widget,
+				forced_width = COL_NAME,
+				halign = "left",
+				widget = wibox.container.place,
+			},
+			{
+				mem_widget,
+				forced_width = COL_VRAM,
+				halign = "right",
+				widget = wibox.container.place,
+			},
+			spacing = ROW_SPACING,
+			layout = wibox.layout.fixed.horizontal,
+		})
 	end
 
 	local function create_process_table(processes)
 		local header_pid = wibox.widget.textbox("<b>PID</b>")
 		header_pid.font = "Terminus 10"
+		header_pid.wrap = "off"
 		local header_name = wibox.widget.textbox("<b>Process Name</b>")
 		header_name.font = "Terminus 10"
+		header_name.wrap = "off"
 		local header_mem = wibox.widget.textbox("<b>VRAM Used</b>")
 		header_mem.font = "Terminus 10"
+		header_mem.wrap = "off"
 
-		local header_row = wibox.widget({
-			{
-				header_pid,
-				forced_width = 80,
-				halign = "left",
-				widget = wibox.container.place,
-			},
-			{
-				header_name,
-				forced_width = 125,
-				halign = "left",
-				widget = wibox.container.place,
-			},
-			{
-				header_mem,
-				forced_width = 100,
-				halign = "right",
-				widget = wibox.container.place,
-			},
-			spacing = 2,
-			layout = wibox.layout.fixed.horizontal,
-		})
-
+		local header_row = make_table_row(header_pid, header_name, header_mem)
 		local process_rows = { header_row }
 
 		for _, process in ipairs(processes) do
@@ -262,26 +374,28 @@ local function worker(input)
 
 				local full_name = name
 				local is_truncated = false
-				if #name > 20 then
-					local end_part = name:sub(-(20 - 3))
-					name = "..." .. end_part
+				if #name > 64 then
+					name = name:sub(1, 61) .. "..."
 					is_truncated = true
 				end
 
 				local pid_widget = wibox.widget.textbox(pid)
 				pid_widget.font = "Terminus 9"
+				pid_widget.wrap = "off"
 
 				local name_widget = wibox.widget.textbox(name)
 				name_widget.font = "Terminus 9"
+				name_widget.wrap = "off"
+				name_widget.ellipsize = "end"
 
-				local mem_padded = string.format("%12s", mem)
-				local mem_widget = wibox.widget.textbox(mem_padded)
+				local mem_widget = wibox.widget.textbox(mem)
 				mem_widget.font = "Terminus 9"
+				mem_widget.wrap = "off"
 
 				local name_container = wibox.widget({
 					{
 						name_widget,
-						forced_width = 125,
+						forced_width = COL_NAME,
 						halign = "left",
 						widget = wibox.container.place,
 					},
@@ -289,23 +403,7 @@ local function worker(input)
 					widget = wibox.container.background,
 				})
 
-				local row = wibox.widget({
-					{
-						pid_widget,
-						forced_width = 80,
-						halign = "left",
-						widget = wibox.container.place,
-					},
-					name_container,
-					{
-						mem_widget,
-						forced_width = 100,
-						halign = "right",
-						widget = wibox.container.place,
-					},
-					spacing = 2,
-					layout = wibox.layout.fixed.horizontal,
-				})
+				local row = make_table_row(pid_widget, name_container, mem_widget)
 
 				if is_truncated then
 					local tooltip_textbox = wibox.widget.textbox(full_name)
@@ -354,19 +452,17 @@ local function worker(input)
 	end
 
 	local function update_popup()
-		local widgets = create_popup_info_widgets()
 		local layout_table = {}
 		layout_table.layout = wibox.layout.fixed.vertical
-		for _, widget_item in ipairs(widgets) do
-			table.insert(layout_table, widget_item)
-		end
-
-		local separator = wibox.widget({
-			wibox.widget.textbox(""),
-			forced_height = 10,
-			widget = wibox.container.constraint,
-		})
-		table.insert(layout_table, separator)
+		table.insert(layout_table, create_popup_content())
+		table.insert(
+			layout_table,
+			wibox.widget({
+				wibox.widget.textbox(""),
+				forced_height = 10,
+				widget = wibox.container.constraint,
+			})
+		)
 
 		local process_cmd = [[
 			nvidia-smi -q | awk '
@@ -397,9 +493,20 @@ local function worker(input)
 
 					if #processes > 0 then
 						local process_rows = create_process_table(processes)
+						local table_container = wibox.widget({
+							spacing = 2,
+							layout = wibox.layout.fixed.vertical,
+						})
 						for _, row in ipairs(process_rows) do
-							table.insert(layout_table, row)
+							table_container:add(row)
 						end
+						local full_width_table = wibox.widget({
+							table_container,
+							forced_width = POPUP_CONTENT_WIDTH,
+							halign = "left",
+							widget = wibox.container.place,
+						})
+						table.insert(layout_table, full_width_table)
 					end
 				end
 
