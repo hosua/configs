@@ -22,11 +22,12 @@ local config = {
 	show_temp = true,
 	show_power = true,
 	show_vram = true,
+	show_arc = true,
 }
 
 local function worker(input)
 	local args = input or {}
-	
+
 	local _config = {}
 	for prop, value in pairs(config) do
 		if args[prop] ~= nil then
@@ -114,12 +115,16 @@ local function worker(input)
 			if has_data_segment then
 				table.insert(layout_items, wibox.widget.textbox(" |"))
 			end
-			table.insert(layout_items, {
-				power_arc_widget,
-				power_text_widget,
-				spacing = 4,
-				layout = wibox.layout.fixed.horizontal,
-			})
+			if _config.show_arc then
+				table.insert(layout_items, {
+					power_arc_widget,
+					power_text_widget,
+					spacing = 4,
+					layout = wibox.layout.fixed.horizontal,
+				})
+			else
+				table.insert(layout_items, power_text_widget)
+			end
 			has_data_segment = true
 		end
 
@@ -127,12 +132,16 @@ local function worker(input)
 			if has_data_segment then
 				table.insert(layout_items, wibox.widget.textbox(" |"))
 			end
-			table.insert(layout_items, {
-				mem_arc_widget,
-				mem_text_widget,
-				spacing = 4,
-				layout = wibox.layout.fixed.horizontal,
-			})
+			if _config.show_arc then
+				table.insert(layout_items, {
+					mem_arc_widget,
+					mem_text_widget,
+					spacing = 4,
+					layout = wibox.layout.fixed.horizontal,
+				})
+			else
+				table.insert(layout_items, mem_text_widget)
+			end
 			has_data_segment = true
 		end
 
@@ -210,7 +219,7 @@ local function worker(input)
 		header_pid.font = "Terminus 10"
 		local header_name = wibox.widget.textbox("<b>Process Name</b>")
 		header_name.font = "Terminus 10"
-		local header_mem = wibox.widget.textbox("<b>Mem Used</b>")
+		local header_mem = wibox.widget.textbox("<b>VRAM Used</b>")
 		header_mem.font = "Terminus 10"
 
 		local header_row = wibox.widget({
@@ -304,7 +313,7 @@ local function worker(input)
 					tooltip_textbox.wrap = "char"
 
 					local tooltip_width = 400
-					
+
 					local tooltip_widget = wibox.widget({
 						{
 							tooltip_textbox,
@@ -432,7 +441,7 @@ local function worker(input)
 			local used_mb = stats.used
 			local total_mb = stats.total
 			mem_percent = (used_mb / total_mb) * 100
-			mem_text = string.format("%.0f/%.0f MiB", used_mb, total_mb)
+			mem_text = string.format("%.0f/%.0fMiB", used_mb, total_mb)
 		end
 
 		if _config.show_temp then

@@ -258,7 +258,12 @@ function theme.at_screen_connect(s)
 		{ -- Right widgets
 			layout = wibox.layout.fixed.horizontal,
 			wibox.container.background(
-				nvidia_widget({ popup_bg = color.popup .. opacity.hi, show_power = false, show_temp = false }),
+				nvidia_widget({
+					popup_bg = color.popup .. opacity.hi,
+					show_power = false,
+					show_temp = false,
+					show_arc = false,
+				}),
 				color_wibox.primary
 			),
 			arrow(color_wibox.primary, color_wibox.secondary),
