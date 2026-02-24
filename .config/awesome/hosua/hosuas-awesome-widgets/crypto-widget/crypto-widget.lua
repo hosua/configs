@@ -18,7 +18,7 @@ local function code_display(code)
 end
 
 local config = {
-	refresh_rate = 20, -- ensure that API is called < 10,000 times per day to remain within API daily limit
+	refresh_rate = 20, -- ensure that API is called < 10,000 times per day to remain within API daily limit. 20 works perfectly.
 	popup_bg = "#2E3440",
 	popup_border_color = "#4C566A",
 	main_coin = "BTC", -- The coin shown on the widget itself
@@ -40,6 +40,9 @@ local shared_state = {
 	refresh_rate = nil,
 	main_coin = nil,
 	fiat = nil,
+	coins_to_display = nil,
+	sort_by = nil,
+	sort_order = nil,
 }
 
 local function fetch_crypto_data()
@@ -49,13 +52,7 @@ local function fetch_crypto_data()
 
 	local cmd
 	if shared_state.mode == "list" then
-		cmd = string.format(
-			"cd %s && FIAT=%s LIMIT=100 SORT=%s ORDER=%s ./get-list.sh",
-			shared_state.widget_dir,
-			shared_state.fiat,
-			shared_state.sort_by,
-			shared_state.sort_order
-		)
+		cmd = string.format("cd %s && FIAT=%s LIMIT=100 ./get-list.sh", shared_state.widget_dir, shared_state.fiat)
 	else
 		local cap = math.min(shared_state.coins_to_display or 10, 100)
 		local codes_slice = {}
@@ -64,12 +61,10 @@ local function fetch_crypto_data()
 		end
 		local codes_json = shared_state.json.encode(codes_slice)
 		cmd = string.format(
-			"cd %s && CODES='%s' FIAT=%s SORT=%s ORDER=%s ./get-map.sh",
+			"cd %s && CODES='%s' FIAT=%s ./get-map.sh",
 			shared_state.widget_dir,
 			codes_json,
-			shared_state.fiat,
-			shared_state.sort_by,
-			shared_state.sort_order
+			shared_state.fiat
 		)
 	end
 
@@ -134,8 +129,6 @@ local function worker(input)
 		shared_state.codes = _config.codes
 		shared_state.mode = _config.mode
 		shared_state.coins_to_display = math.min(_config.coins_to_display or 10, 100)
-		shared_state.sort_by = _config.sort_by or "rank"
-		shared_state.sort_order = _config.sort_order or "ascending"
 	end
 
 	-- Main widget text
@@ -215,8 +208,8 @@ local function worker(input)
 		return string.format("%+.2f%%", percent), color
 	end
 
-	local popup_header_height = 24
-	local popup_row_height = 18
+	local popup_header_height = 28
+	local popup_row_height = 20
 	local visible_row_count = 10
 	local scroll_ptr = 0
 
@@ -296,12 +289,7 @@ local function worker(input)
 		})
 
 		local rows = wibox.layout.fixed.vertical()
-		local num_coins
-		if shared_state.mode == "map" then
-			num_coins = math.min(#shared_state.codes, #shared_state.crypto_data)
-		else
-			num_coins = math.min(shared_state.coins_to_display or 10, #shared_state.crypto_data)
-		end
+		local num_coins = math.min(shared_state.coins_to_display or 10, #shared_state.crypto_data)
 		for i = 1, num_coins do
 			local coin = shared_state.crypto_data[i]
 			-- Get all delta periods
@@ -438,51 +426,27 @@ local function worker(input)
 			end
 		end)
 
-		return header_row, rows, num_coins
+		local content_height = popup_header_height + math.min(num_coins, visible_row_count) * popup_row_height
+		return wibox.widget({
+			{
+				header_row,
+				rows,
+				forced_height = content_height,
+				forced_width = popup_content_width,
+				layout = wibox.layout.fixed.vertical,
+			},
+			halign = "left",
+			layout = wibox.container.place,
+		})
 	end
 
 	local function update_popup()
 		scroll_ptr = 0
-		local header_row, rows, num_coins = create_popup_content()
-
-		if not num_coins then
-			popup.minimum_height = nil
-			popup.maximum_height = 500
-			popup:setup({
-				{
-					header_row,
-					margins = 12,
-					widget = wibox.container.margin,
-				},
-				forced_width = popup_content_width + 24,
-				layout = wibox.layout.fixed.horizontal,
-			})
-			return
-		end
-
-		local needs_scroll = num_coins > visible_row_count
-		if needs_scroll then
-			rows.forced_height = visible_row_count * popup_row_height
-			local total_h = popup_header_height + visible_row_count * popup_row_height + 24
-			popup.minimum_height = total_h
-			popup.maximum_height = total_h
-		else
-			popup.minimum_height = nil
-			popup.maximum_height = nil
-		end
-
+		local content = create_popup_content()
 		popup:setup({
-			{
-				{
-					header_row,
-					rows,
-					layout = wibox.layout.fixed.vertical,
-				},
-				margins = 12,
-				widget = wibox.container.margin,
-			},
-			forced_width = popup_content_width + 24,
-			layout = wibox.layout.fixed.horizontal,
+			content,
+			margins = 12,
+			widget = wibox.container.margin,
 		})
 	end
 

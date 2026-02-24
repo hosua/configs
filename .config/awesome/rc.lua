@@ -29,6 +29,7 @@ local mytable = awful.util.table or gears.table -- 4.{0,1} compatibility
 -- {{{ Error handling
 
 naughty.config.defaults.screen = 2
+naughty.config.defaults.timeout = 5
 
 -- Check if awesome encountered an error during startup and fell back to
 -- another config (This code will only ever execute for the fallback config)
