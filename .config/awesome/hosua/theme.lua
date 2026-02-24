@@ -350,13 +350,12 @@ function theme.at_screen_connect(s)
 				weather_widget({
 					coordinates = { 40.8579, -74.426 },
 					units = "imperial",
-					both_units_shown = true,
+					both_units_widget = true,
 					font_name = "Terminus",
-					icons = "VitalyGorbachev",
-					icons_extension = ".svg",
+					-- icons = "VitalyGorbachev",
 					show_hourly_forecast = true,
 					show_daily_forecast = true,
-					popup_bg = color.primary .. opacity.very_hi,
+					popup_bg = color.popup .. opacity.hi,
 				}),
 				color_wibox.secondary
 			),

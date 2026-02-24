@@ -14,7 +14,7 @@ local gears = require("gears")
 local beautiful = require("beautiful")
 
 local HOME_DIR = os.getenv("HOME")
-local WIDGET_DIR = HOME_DIR .. "/.config/awesome/awesome-wm-widgets/weather-widget"
+local WIDGET_DIR = HOME_DIR .. "/.config/awesome/hosua/hosuas-awesome-widgets/weather-widget"
 local GET_FORECAST_CMD = [[bash -c "curl -s --show-error -X GET '%s'"]]
 
 local SYS_LANG = os.getenv("LANG"):sub(1, 2)
@@ -155,7 +155,7 @@ local function worker(user_args)
 	local icon_pack_name = args.icons or "weather-underground-icons"
 	local icons_extension = args.icons_extension or ".png"
 	local timeout = args.timeout or 120
-	local popup_bg = args.popup_bg or "#000000"
+	local popup_bg = args.popup_bg or "#2e2e2e"
 
 	local ICONS_DIR = WIDGET_DIR .. "/icons/" .. icon_pack_name .. "/"
 
@@ -197,8 +197,6 @@ local function worker(user_args)
 				},
 				layout = wibox.layout.fixed.horizontal,
 			},
-			left = 4,
-			right = 4,
 			layout = wibox.container.margin,
 		},
 		shape = function(cr, width, height)
