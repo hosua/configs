@@ -10,7 +10,7 @@ local wibox = require("wibox")
 local dpi = require("beautiful.xresources").apply_dpi
 local calendar_widget = require("awesome-wm-widgets.calendar-widget.calendar")
 local fs_widget = require("awesome-wm-widgets.fs-widget.fs-widget")
-local volume_widget = require("awesome-wm-widgets.volume-widget.volume")
+local volume_widget = require("hosua.hosuas-awesome-widgets.volume-widget.volume")
 local pacman_widget = require("awesome-wm-widgets.pacman-widget.pacman")
 local ram_widget = require("hosua.hosuas-awesome-widgets.ram-widget.ram-widget")
 
@@ -280,7 +280,62 @@ function theme.at_screen_connect(s)
 			arrow(color_wibox.secondary, color_wibox.primary),
 			wibox.container.background(
 				wibox.container.margin(
-					volume_widget({ widget_type = "icon_and_text", use_pactl = true }),
+					(function()
+						local vol_widget = volume_widget({ widget_type = "icon_and_text", use_pactl = true })
+						local mixer_icon = wibox.widget({
+							image = theme.dir .. "/hosuas-awesome-widgets/volume-widget/sound-mixer.svg",
+							widget = wibox.widget.imagebox,
+						})
+
+						mixer_icon:buttons(awful.util.table.join(awful.button({}, 1, function()
+							-- Check if pavucontrol is already open
+							local pavucontrol_client = nil
+							for _, c in ipairs(client.get()) do
+								if c.class and c.class:lower():match("pavucontrol") then
+									pavucontrol_client = c
+									break
+								end
+							end
+
+							if pavucontrol_client then
+								-- Close it if it's open
+								pavucontrol_client:kill()
+							else
+								-- Open it if it's not running
+								local target_screen = mouse.screen
+								awful.spawn("pavucontrol", {
+									floating = true,
+									screen = target_screen,
+									callback = function(c)
+										c.floating = true
+										c.ontop = true
+										c.screen = target_screen
+
+										local screen_geo = target_screen.geometry
+										local width = screen_geo.width * 0.6
+										local height = screen_geo.height * 0.6
+
+										c:geometry({
+											width = width,
+											height = height,
+											x = screen_geo.x + (screen_geo.width - width) / 2,
+											y = screen_geo.y + (screen_geo.height - height) / 2,
+										})
+
+										c:raise()
+										client.focus = c
+									end,
+								})
+							end
+						end)))
+
+						return wibox.widget({
+							mixer_icon,
+							wibox.widget.textbox(" "),
+							vol_widget,
+							layout = wibox.layout.fixed.horizontal,
+						})
+					end)(),
 					dpi(3),
 					dpi(3)
 				),
