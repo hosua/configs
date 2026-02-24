@@ -301,6 +301,7 @@ function theme.at_screen_connect(s)
 							image = theme.dir .. "/hosuas-awesome-widgets/volume-widget/sound-mixer.svg",
 							widget = wibox.widget.imagebox,
 						})
+						mixer_icon = wibox.container.margin(mixer_icon, 0, 0, dpi(2), dpi(2))
 
 						mixer_icon:buttons(awful.util.table.join(awful.button({}, 1, function()
 							-- Check if pavucontrol is already open
