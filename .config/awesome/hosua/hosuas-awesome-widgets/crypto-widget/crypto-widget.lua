@@ -9,13 +9,25 @@ local wibox = require("wibox")
 local beautiful = require("beautiful")
 local gears = require("gears")
 local spawn = require("awful.spawn")
+local gfs = require("gears.filesystem")
 
 local crypto_widget = {}
 
+local function code_display(code)
+	return (code or ""):gsub("_", "")
+end
+
 local config = {
-	refresh_rate = 20,
+	refresh_rate = 20, -- ensure that API is called < 10,000 times per day to remain within API daily limit
 	popup_bg = "#2E3440",
 	popup_border_color = "#4C566A",
+	main_coin = "BTC", -- The coin shown on the widget itself
+	fiat = "USD", -- Your preferred currency
+	codes = { "BTC", "XMR", "ETH", "LTC", "PAXG" }, -- Your curated list to show when in mode = "map"
+	mode = "list", -- list or map
+	coins_to_display = 100, -- how many cryptocurrencies to show in list mode, max = 100
+	sort_by = "rank", -- rank, price, volume, code, name, age
+	sort_order = "ascending", -- sort_by ascending or descending
 }
 
 -- Global shared state (singleton pattern)
@@ -27,18 +39,39 @@ local shared_state = {
 	json = nil,
 	refresh_rate = nil,
 	main_coin = nil,
-	currency = nil,
+	fiat = nil,
 }
 
--- Global function to fetch crypto data (runs once for all instances)
 local function fetch_crypto_data()
 	if not shared_state.widget_dir or not shared_state.json then
 		return
 	end
 
-	-- use get-list.sh if you just want to list top 10 ranked coins.
-	-- use get-map.sh if you want to get specific coins defined in CODES in the get-map.sh script
-	local cmd = string.format("cd %s && ./get-map.sh", shared_state.widget_dir)
+	local cmd
+	if shared_state.mode == "list" then
+		cmd = string.format(
+			"cd %s && FIAT=%s LIMIT=100 SORT=%s ORDER=%s ./get-list.sh",
+			shared_state.widget_dir,
+			shared_state.fiat,
+			shared_state.sort_by,
+			shared_state.sort_order
+		)
+	else
+		local cap = math.min(shared_state.coins_to_display or 10, 100)
+		local codes_slice = {}
+		for i = 1, math.min(cap, #shared_state.codes) do
+			codes_slice[i] = shared_state.codes[i]
+		end
+		local codes_json = shared_state.json.encode(codes_slice)
+		cmd = string.format(
+			"cd %s && CODES='%s' FIAT=%s SORT=%s ORDER=%s ./get-map.sh",
+			shared_state.widget_dir,
+			codes_json,
+			shared_state.fiat,
+			shared_state.sort_by,
+			shared_state.sort_order
+		)
+	end
 
 	spawn.easy_async_with_shell(cmd, function(stdout, stderr, exitreason, exitcode)
 		if exitcode ~= 0 or not stdout or stdout == "" then
@@ -59,10 +92,25 @@ local function fetch_crypto_data()
 			return
 		end
 
-		-- Update shared data
 		shared_state.crypto_data = data
 
-		-- Notify all registered widget instances
+		for _, coin in ipairs(data) do
+			if coin.png32 and shared_state.widget_dir then
+				local cache_dir = shared_state.widget_dir .. "cache"
+				local cache_path = cache_dir .. "/" .. coin.code .. ".png"
+				if not gfs.file_readable(cache_path) then
+					gfs.make_directories(cache_dir)
+					local function shell_escape(s)
+						return "'" .. (s:gsub("'", "'\\''")) .. "'"
+					end
+					spawn.easy_async_with_shell(
+						"curl -s -o " .. shell_escape(cache_path) .. " " .. shell_escape(coin.png32),
+						function() end
+					)
+				end
+			end
+		end
+
 		for _, callback in ipairs(shared_state.update_callbacks) do
 			callback(shared_state.crypto_data, nil)
 		end
@@ -77,44 +125,32 @@ local function worker(input)
 		_config[prop] = args[prop] or beautiful[prop] or value
 	end
 
-	-- Initialize shared state on first widget creation
 	if not shared_state.timer_started then
-		-- Get the widget directory path
 		shared_state.widget_dir = debug.getinfo(1, "S").source:match("^@(.+/)[^/]+$")
-		-- Load JSON library from awesome config
 		shared_state.json = require("json")
 		shared_state.refresh_rate = _config.refresh_rate
-
-		-- Read MAIN_COIN and CURRENCY from .env file
-		local env_file = io.open(shared_state.widget_dir .. ".env", "r")
-		if env_file then
-			for line in env_file:lines() do
-				local main_coin = line:match('^export%s+MAIN_COIN="([^"]+)"')
-				if main_coin then
-					shared_state.main_coin = main_coin
-				end
-				local currency = line:match('^export%s+CURRENCY="([^"]+)"')
-				if currency then
-					shared_state.currency = currency
-				end
-			end
-			env_file:close()
-		end
-		-- Default to BTC and USD if not found
-		shared_state.main_coin = shared_state.main_coin or "BTC"
-		shared_state.currency = shared_state.currency or "USD"
+		shared_state.main_coin = _config.main_coin
+		shared_state.fiat = _config.fiat
+		shared_state.codes = _config.codes
+		shared_state.mode = _config.mode
+		shared_state.coins_to_display = math.min(_config.coins_to_display or 10, 100)
+		shared_state.sort_by = _config.sort_by or "rank"
+		shared_state.sort_order = _config.sort_order or "ascending"
 	end
 
 	-- Main widget text
 	local crypto_text_widget = wibox.widget.textbox()
 
-	-- Icon widget
-	local crypto_icon = wibox.widget.textbox("₿ ")
-	crypto_icon.font = "Terminus Bold 10"
+	local coin_imagebox = wibox.widget.imagebox()
+	coin_imagebox.resize = true
+	coin_imagebox.forced_width = 16
+	coin_imagebox.forced_height = 16
+	local coin_icon_centered = wibox.container.place(coin_imagebox)
+	coin_icon_centered.valign = "center"
 
 	local widget = wibox.widget({
 		{
-			crypto_icon,
+			coin_icon_centered,
 			crypto_text_widget,
 			spacing = 4,
 			layout = wibox.layout.fixed.horizontal,
@@ -124,6 +160,8 @@ local function worker(input)
 		right = 4,
 	})
 
+	local coin_col_width = 60
+	local popup_content_width = coin_col_width + 90 + (55 * 6) + (2 * 7)
 	local popup = awful.popup({
 		ontop = true,
 		visible = false,
@@ -131,7 +169,7 @@ local function worker(input)
 		border_width = 1,
 		border_color = _config.popup_border_color,
 		bg = _config.popup_bg,
-		maximum_width = 700,
+		maximum_width = popup_content_width + 24,
 		maximum_height = 500,
 		offset = { y = 5 },
 		widget = {},
@@ -177,28 +215,35 @@ local function worker(input)
 		return string.format("%+.2f%%", percent), color
 	end
 
-	local function create_popup_content()
-		local widgets = {}
+	local popup_header_height = 28
+	local popup_row_height = 20
+	local visible_row_count = 10
+	local scroll_ptr = 0
 
+	local function create_popup_content()
 		if not shared_state.crypto_data or #shared_state.crypto_data == 0 then
 			local error_text = wibox.widget.textbox("No crypto data available")
 			error_text.font = "Terminus 10"
-			table.insert(widgets, error_text)
-			widgets.layout = wibox.layout.fixed.vertical
-			return widgets
+			return wibox.widget({
+				error_text,
+				layout = wibox.layout.fixed.vertical,
+			})
 		end
 
-		-- Table header
+		local header_spacer = wibox.container.constraint(wibox.widget.textbox(""), "exact", 14, 10)
 		local header_row = wibox.widget({
 			{
-				wibox.widget.textbox("<b>Coin</b>"),
-				font = "Terminus 10",
-				forced_width = 120,
+				{
+					header_spacer,
+					wibox.widget.textbox("<b>Coin</b>"),
+					layout = wibox.layout.fixed.horizontal,
+				},
+				forced_width = coin_col_width,
 				halign = "left",
 				widget = wibox.container.place,
 			},
 			{
-				wibox.widget.textbox(string.format("<b>Price (%s)</b>", shared_state.currency or "USD")),
+				wibox.widget.textbox(string.format("<b>Price (%s)</b>", shared_state.fiat or "USD")),
 				font = "Terminus 10",
 				forced_width = 90,
 				halign = "right",
@@ -246,13 +291,13 @@ local function worker(input)
 				halign = "right",
 				widget = wibox.container.place,
 			},
-			spacing = 6,
+			spacing = 2,
 			layout = wibox.layout.fixed.horizontal,
 		})
-		table.insert(widgets, header_row)
 
-		-- Crypto rows (only show top 10)
-		for i = 1, math.min(10, #shared_state.crypto_data) do
+		local rows = wibox.layout.fixed.vertical()
+		local num_coins = math.min(shared_state.coins_to_display or 10, #shared_state.crypto_data)
+		for i = 1, num_coins do
 			local coin = shared_state.crypto_data[i]
 			-- Get all delta periods
 			local hour_change, hour_color = format_delta(coin.delta and coin.delta.hour)
@@ -262,16 +307,28 @@ local function worker(input)
 			local quarter_change, quarter_color = format_delta(coin.delta and coin.delta.quarter)
 			local year_change, year_color = format_delta(coin.delta and coin.delta.year)
 
-			-- Display coin as "CODE (symbol)" if symbol exists, otherwise "CODE (name)" if name differs from code
-			local coin_display
-			if coin.symbol then
-				coin_display = string.format("%s (%s)", coin.code, coin.symbol)
-			elseif coin.name and coin.name ~= coin.code then
-				coin_display = string.format("%s (%s)", coin.code, coin.name)
+			local code_show = code_display(coin.code)
+			local coin_color = coin.color or "#888888"
+			local color_square = wibox.container.background(
+				wibox.container.constraint(wibox.widget.textbox(""), "exact", 10, 10),
+				coin_color
+			)
+			local icon_cell
+			if shared_state.widget_dir then
+				local cache_path = shared_state.widget_dir .. "cache/" .. coin.code .. ".png"
+				if gfs.file_readable(cache_path) then
+					local row_icon = wibox.widget.imagebox(cache_path)
+					row_icon.resize = true
+					row_icon.forced_width = 10
+					row_icon.forced_height = 10
+					icon_cell = row_icon
+				else
+					icon_cell = color_square
+				end
 			else
-				coin_display = coin.code
+				icon_cell = color_square
 			end
-			local name_widget = wibox.widget.textbox(coin_display)
+			local name_widget = wibox.widget.textbox(code_show)
 			name_widget.font = "Terminus Bold 10"
 
 			local price_widget = wibox.widget.textbox("$" .. format_number(coin.rate))
@@ -304,8 +361,13 @@ local function worker(input)
 
 			local row = wibox.widget({
 				{
-					name_widget,
-					forced_width = 120,
+					{
+						icon_cell,
+						name_widget,
+						spacing = 4,
+						layout = wibox.layout.fixed.horizontal,
+					},
+					forced_width = coin_col_width,
 					halign = "left",
 					widget = wibox.container.place,
 				},
@@ -351,17 +413,42 @@ local function worker(input)
 					halign = "right",
 					widget = wibox.container.place,
 				},
-				spacing = 6,
+				spacing = 2,
 				layout = wibox.layout.fixed.horizontal,
 			})
-			table.insert(widgets, row)
+			rows:add(row)
 		end
 
-		widgets.layout = wibox.layout.fixed.vertical
-		return widgets
+		rows:connect_signal("button::press", function(_, _, _, button)
+			if button == 4 then
+				if scroll_ptr > 0 then
+					rows.children[scroll_ptr].visible = true
+					scroll_ptr = scroll_ptr - 1
+				end
+			elseif button == 5 then
+				if scroll_ptr < #rows.children and (#rows.children - scroll_ptr) > visible_row_count then
+					scroll_ptr = scroll_ptr + 1
+					rows.children[scroll_ptr].visible = false
+				end
+			end
+		end)
+
+		local content_height = popup_header_height + math.min(num_coins, visible_row_count) * popup_row_height
+		return wibox.widget({
+			{
+				header_row,
+				rows,
+				forced_height = content_height,
+				forced_width = popup_content_width,
+				layout = wibox.layout.fixed.vertical,
+			},
+			halign = "left",
+			layout = wibox.container.place,
+		})
 	end
 
 	local function update_popup()
+		scroll_ptr = 0
 		local content = create_popup_content()
 		popup:setup({
 			content,
@@ -384,12 +471,11 @@ local function worker(input)
 	local function update_widget_display(data, error_msg)
 		if error_msg then
 			crypto_text_widget:set_text(error_msg)
+			coin_imagebox:set_image(nil)
 			return
 		end
 
-		-- Build compact display text showing MAIN_COIN
 		if data and #data > 0 then
-			-- Get MAIN_COIN from shared state (read from .env file)
 			local main_coin_code = shared_state.main_coin
 
 			-- Find the main coin in the data
@@ -406,11 +492,27 @@ local function worker(input)
 				main_coin = data[1]
 			end
 
-			-- Update icon based on main coin's symbol or code
-			if main_coin.symbol then
-				crypto_icon:set_text(main_coin.symbol .. " ")
+			if main_coin.png32 and shared_state.widget_dir then
+				local cache_dir = shared_state.widget_dir .. "cache"
+				local cache_path = cache_dir .. "/" .. main_coin.code .. ".png"
+				if gfs.file_readable(cache_path) then
+					coin_imagebox:set_image(cache_path)
+				else
+					gfs.make_directories(cache_dir)
+					local function shell_escape(s)
+						return "'" .. (s:gsub("'", "'\\''")) .. "'"
+					end
+					spawn.easy_async_with_shell(
+						"curl -s -o " .. shell_escape(cache_path) .. " " .. shell_escape(main_coin.png32),
+						function(_, __, ___, exitcode)
+							if exitcode == 0 and gfs.file_readable(cache_path) then
+								coin_imagebox:set_image(cache_path)
+							end
+						end
+					)
+				end
 			else
-				crypto_icon:set_text(main_coin.code .. " ")
+				coin_imagebox:set_image(nil)
 			end
 
 			local price_text = format_number(main_coin.rate)
@@ -423,7 +525,8 @@ local function worker(input)
 				day_change
 			)
 		else
-			crypto_text_widget:set_text("No data")
+			crypto_text_widget:set_text("---")
+			coin_imagebox:set_image(nil)
 		end
 
 		-- Update popup if it's visible

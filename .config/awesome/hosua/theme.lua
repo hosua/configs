@@ -267,7 +267,15 @@ function theme.at_screen_connect(s)
 				color_wibox.primary
 			),
 			arrow(color_wibox.primary, color_wibox.secondary),
-			wibox.container.background(crypto_widget({ popup_bg = color.popup .. opacity.hi }), color_wibox.secondary),
+			wibox.container.background(
+				crypto_widget({
+					main_coin = "XMR",
+					mode = "map",
+					codes = { "BTC", "XMR", "ETH", "LTC", "PAXG", "SOL" },
+					popup_bg = color.popup .. opacity.hi,
+				}),
+				color_wibox.secondary
+			),
 			arrow(color_wibox.secondary, color_wibox.primary),
 			wibox.container.background(ram_widget.widget, color_wibox.primary),
 			arrow(color_wibox.primary, color_wibox.secondary),
