@@ -255,7 +255,10 @@ function theme.at_screen_connect(s)
 		wibox.container.background(s.mytasklist, theme.bg_normal), -- Middle widget
 		{ -- Right widgets
 			layout = wibox.layout.fixed.horizontal,
-			wibox.container.background(nvidia_widget({ popup_bg = color.popup .. opacity.hi }), color_wibox.primary),
+			wibox.container.background(
+				nvidia_widget({ popup_bg = color.popup .. opacity.hi, show_power = false, show_temp = false }),
+				color_wibox.primary
+			),
 			arrow(color_wibox.primary, color_wibox.secondary),
 			wibox.container.background(crypto_widget({ popup_bg = color.popup .. opacity.hi }), color_wibox.secondary),
 			arrow(color_wibox.secondary, color_wibox.primary),

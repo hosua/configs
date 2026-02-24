@@ -18,6 +18,10 @@ local config = {
 	refresh_rate = 1,
 	popup_bg = "#2E3440",
 	popup_border_color = "#4C566A",
+	show_icon = true,
+	show_temp = true,
+	show_power = true,
+	show_vram = true,
 }
 
 local function worker(input)
@@ -25,7 +29,13 @@ local function worker(input)
 	
 	local _config = {}
 	for prop, value in pairs(config) do
-		_config[prop] = args[prop] or beautiful[prop] or value
+		if args[prop] ~= nil then
+			_config[prop] = args[prop]
+		elseif beautiful[prop] ~= nil then
+			_config[prop] = beautiful[prop]
+		else
+			_config[prop] = value
+		end
 	end
 
 	local stats = {
@@ -82,30 +92,62 @@ local function worker(input)
 		widget = wibox.container.arcchart,
 	})
 
-	local widget = wibox.widget({
-		{
-			gpu_icon_container,
-			temp_text_widget,
-			{
+	local separator = wibox.widget.textbox(" |")
+
+	local function build_widget_layout()
+		local layout_items = {}
+		local has_data_segment = false
+
+		if _config.show_icon then
+			table.insert(layout_items, gpu_icon_container)
+		end
+
+		if _config.show_temp then
+			if has_data_segment then
+				table.insert(layout_items, wibox.widget.textbox(" |"))
+			end
+			table.insert(layout_items, temp_text_widget)
+			has_data_segment = true
+		end
+
+		if _config.show_power then
+			if has_data_segment then
+				table.insert(layout_items, wibox.widget.textbox(" |"))
+			end
+			table.insert(layout_items, {
 				power_arc_widget,
 				power_text_widget,
-				wibox.widget.textbox(" |"),
 				spacing = 4,
 				layout = wibox.layout.fixed.horizontal,
-			},
-			{
+			})
+			has_data_segment = true
+		end
+
+		if _config.show_vram then
+			if has_data_segment then
+				table.insert(layout_items, wibox.widget.textbox(" |"))
+			end
+			table.insert(layout_items, {
 				mem_arc_widget,
 				mem_text_widget,
 				spacing = 4,
 				layout = wibox.layout.fixed.horizontal,
-			},
-			spacing = 8,
-			layout = wibox.layout.fixed.horizontal,
-		},
-		layout = wibox.container.margin,
-		left = 4,
-		right = 4,
-	})
+			})
+			has_data_segment = true
+		end
+
+		layout_items.spacing = 8
+		layout_items.layout = wibox.layout.fixed.horizontal
+
+		return wibox.widget({
+			layout_items,
+			layout = wibox.container.margin,
+			left = 4,
+			right = 4,
+		})
+	end
+
+	local widget = build_widget_layout()
 
 	local popup = awful.popup({
 		ontop = true,
@@ -393,11 +435,17 @@ local function worker(input)
 			mem_text = string.format("%.0f/%.0f MiB", used_mb, total_mb)
 		end
 
-		temp_text_widget:set_markup(string.format("%s |", temp_text))
-		power_text_widget:set_text(power_text)
-		mem_text_widget:set_text(mem_text)
-		mem_arc_widget.value = mem_percent
-		power_arc_widget.value = power_percent
+		if _config.show_temp then
+			temp_text_widget:set_markup(temp_text)
+		end
+		if _config.show_power then
+			power_text_widget:set_text(power_text)
+			power_arc_widget.value = power_percent
+		end
+		if _config.show_vram then
+			mem_text_widget:set_text(mem_text)
+			mem_arc_widget.value = mem_percent
+		end
 	end
 
 	watch(
