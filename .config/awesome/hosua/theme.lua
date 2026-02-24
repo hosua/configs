@@ -11,6 +11,7 @@ local dpi = require("beautiful.xresources").apply_dpi
 local calendar_widget = require("awesome-wm-widgets.calendar-widget.calendar")
 local fs_widget = require("awesome-wm-widgets.fs-widget.fs-widget")
 local volume_widget = require("hosua.hosuas-awesome-widgets.volume-widget.volume")
+local weather_widget = require("hosua.hosuas-awesome-widgets.weather-widget.weather")
 local pacman_widget = require("awesome-wm-widgets.pacman-widget.pacman")
 local ram_widget = require("hosua.hosuas-awesome-widgets.ram-widget.ram-widget")
 
@@ -345,7 +346,22 @@ function theme.at_screen_connect(s)
 				color_wibox.primary
 			),
 			arrow(color_wibox.primary, color_wibox.secondary),
-			wibox.container.background(wibox.container.margin(textclock, dpi(4), dpi(8)), color_wibox.secondary),
+			wibox.container.background(
+				weather_widget({
+					coordinates = { 40.8579, -74.426 },
+					units = "imperial",
+					both_units_shown = true,
+					font_name = "Terminus",
+					icons = "VitalyGorbachev",
+					icons_extension = ".svg",
+					show_hourly_forecast = true,
+					show_daily_forecast = true,
+					popup_bg = color.primary .. opacity.very_hi,
+				}),
+				color_wibox.secondary
+			),
+			arrow(color_wibox.secondary, color_wibox.primary),
+			wibox.container.background(wibox.container.margin(textclock, dpi(4), dpi(8)), color_wibox.primary),
 			s.mylayoutbox,
 		},
 	})
