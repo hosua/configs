@@ -9,11 +9,11 @@ local awful = require("awful")
 local wibox = require("wibox")
 local dpi = require("beautiful.xresources").apply_dpi
 local calendar_widget = require("awesome-wm-widgets.calendar-widget.calendar")
-local fs_widget = require("awesome-wm-widgets.fs-widget.fs-widget")
 local pacman_widget = require("awesome-wm-widgets.pacman-widget.pacman")
 
 local cpu_widget = require("hosua.hosuas-awesome-widgets.cpu-widget.cpu-widget")
 local crypto_widget = require("hosua.hosuas-awesome-widgets.crypto-widget.crypto-widget")
+local fs_widget = require("hosua.hosuas-awesome-widgets.fs-widget.fs-widget")
 local nvidia_widget = require("hosua.hosuas-awesome-widgets.nvidia-widget.nvidia-widget")
 local ram_widget = require("hosua.hosuas-awesome-widgets.ram-widget.ram-widget")
 local volume_widget = require("hosua.hosuas-awesome-widgets.volume-widget.volume")
@@ -269,14 +269,11 @@ function theme.at_screen_connect(s)
 			wibox.container.background(cpu_widget({ popup_bg = color.popup .. opacity.hi }), color_wibox.secondary),
 			arrow(color_wibox.secondary, color_wibox.primary),
 			wibox.container.background(
-				wibox.widget({
-					wibox.widget.textbox("FS: "),
-					fs_widget({
-						mounts = fs_mounts,
-						popup_bg = color.popup .. opacity.hi,
-						popup_border_color = "#4C566A",
-					}),
-					layout = wibox.layout.fixed.horizontal,
+				fs_widget({
+					mounts = fs_mounts,
+					popup_bg = color.popup .. opacity.hi,
+					popup_border_color = "#4C566A",
+					show_storage_bar = false,
 				}),
 				color_wibox.primary
 			),
