@@ -18,7 +18,7 @@ local config = {
 	refresh_rate = 1,
 	popup_bg = "#2E3440",
 	popup_border_color = "#4C566A",
-	cores_per_row = 3,  -- 3-column layout for compact display
+	cores_per_row = 3, -- 3-column layout for compact display
 }
 
 local function worker(input)
@@ -62,9 +62,9 @@ local function worker(input)
 	local widget = wibox.widget({
 		{
 			cpu_icon_container,
-			cpu_arc,
-			cpu_text,
+			-- cpu_arc,
 			spacing = 2,
+			cpu_text,
 			layout = wibox.layout.fixed.horizontal,
 		},
 		layout = wibox.container.margin,
@@ -87,7 +87,7 @@ local function worker(input)
 
 	local core_widgets = {}
 	local rows_container = wibox.layout.fixed.vertical()
-	rows_container.spacing = 4  -- Spacing between rows
+	rows_container.spacing = 4 -- Spacing between rows
 
 	local cpu_name_text = wibox.widget.textbox()
 	cpu_name_text.font = beautiful.font or "Terminus 10"
@@ -184,7 +184,7 @@ local function worker(input)
 		local usage_value = overall_usage or 0
 		all_text:set_markup(string.format("CPU: %.2f%%", usage_value))
 		all_progress.value = usage_value
-		all_progress.forced_width = 280  -- Fixed width for 3 columns
+		all_progress.forced_width = 280 -- Fixed width for 3 columns
 
 		-- Clear and rebuild rows
 		rows_container:reset()
@@ -206,9 +206,7 @@ local function worker(input)
 
 					-- Update core usage
 					local usage = core_usages[core_id] or 0
-					core_widgets[core_id].text:set_markup(
-						string.format("C%d: %.2f%%", core_id, usage)
-					)
+					core_widgets[core_id].text:set_markup(string.format("C%d: %.2f%%", core_id, usage))
 					core_widgets[core_id].arc.value = usage
 
 					row_layout:add(core_widgets[core_id].row)
@@ -233,7 +231,7 @@ local function worker(input)
 
 	local function update_widget(overall_usage, core_usages)
 		local usage = overall_usage or 0
-		cpu_text:set_markup(string.format("%.2f%%", usage))
+		cpu_text:set_markup(string.format(" %.2f%%", usage))
 		cpu_arc.value = usage
 
 		if popup.visible then

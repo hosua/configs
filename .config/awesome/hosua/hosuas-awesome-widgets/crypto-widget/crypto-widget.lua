@@ -215,8 +215,8 @@ local function worker(input)
 		return string.format("%+.2f%%", percent), color
 	end
 
-	local popup_header_height = 28
-	local popup_row_height = 20
+	local popup_header_height = 24
+	local popup_row_height = 18
 	local visible_row_count = 10
 	local scroll_ptr = 0
 
@@ -296,7 +296,12 @@ local function worker(input)
 		})
 
 		local rows = wibox.layout.fixed.vertical()
-		local num_coins = math.min(shared_state.coins_to_display or 10, #shared_state.crypto_data)
+		local num_coins
+		if shared_state.mode == "map" then
+			num_coins = math.min(#shared_state.codes, #shared_state.crypto_data)
+		else
+			num_coins = math.min(shared_state.coins_to_display or 10, #shared_state.crypto_data)
+		end
 		for i = 1, num_coins do
 			local coin = shared_state.crypto_data[i]
 			-- Get all delta periods
@@ -433,27 +438,51 @@ local function worker(input)
 			end
 		end)
 
-		local content_height = popup_header_height + math.min(num_coins, visible_row_count) * popup_row_height
-		return wibox.widget({
-			{
-				header_row,
-				rows,
-				forced_height = content_height,
-				forced_width = popup_content_width,
-				layout = wibox.layout.fixed.vertical,
-			},
-			halign = "left",
-			layout = wibox.container.place,
-		})
+		return header_row, rows, num_coins
 	end
 
 	local function update_popup()
 		scroll_ptr = 0
-		local content = create_popup_content()
+		local header_row, rows, num_coins = create_popup_content()
+
+		if not num_coins then
+			popup.minimum_height = nil
+			popup.maximum_height = 500
+			popup:setup({
+				{
+					header_row,
+					margins = 12,
+					widget = wibox.container.margin,
+				},
+				forced_width = popup_content_width + 24,
+				layout = wibox.layout.fixed.horizontal,
+			})
+			return
+		end
+
+		local needs_scroll = num_coins > visible_row_count
+		if needs_scroll then
+			rows.forced_height = visible_row_count * popup_row_height
+			local total_h = popup_header_height + visible_row_count * popup_row_height + 24
+			popup.minimum_height = total_h
+			popup.maximum_height = total_h
+		else
+			popup.minimum_height = nil
+			popup.maximum_height = nil
+		end
+
 		popup:setup({
-			content,
-			margins = 12,
-			widget = wibox.container.margin,
+			{
+				{
+					header_row,
+					rows,
+					layout = wibox.layout.fixed.vertical,
+				},
+				margins = 12,
+				widget = wibox.container.margin,
+			},
+			forced_width = popup_content_width + 24,
+			layout = wibox.layout.fixed.horizontal,
 		})
 	end
 
