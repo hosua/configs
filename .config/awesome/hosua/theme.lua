@@ -10,14 +10,14 @@ local wibox = require("wibox")
 local dpi = require("beautiful.xresources").apply_dpi
 local calendar_widget = require("awesome-wm-widgets.calendar-widget.calendar")
 local fs_widget = require("awesome-wm-widgets.fs-widget.fs-widget")
-local volume_widget = require("hosua.hosuas-awesome-widgets.volume-widget.volume")
-local weather_widget = require("hosua.hosuas-awesome-widgets.weather-widget.weather")
 local pacman_widget = require("awesome-wm-widgets.pacman-widget.pacman")
-local ram_widget = require("hosua.hosuas-awesome-widgets.ram-widget.ram-widget")
 
-local nvidia_widget = require("hosua.hosuas-awesome-widgets.nvidia-widget.nvidia-widget")
 local cpu_widget = require("hosua.hosuas-awesome-widgets.cpu-widget.cpu-widget")
 local crypto_widget = require("hosua.hosuas-awesome-widgets.crypto-widget.crypto-widget")
+local nvidia_widget = require("hosua.hosuas-awesome-widgets.nvidia-widget.nvidia-widget")
+local ram_widget = require("hosua.hosuas-awesome-widgets.ram-widget.ram-widget")
+local volume_widget = require("hosua.hosuas-awesome-widgets.volume-widget.volume")
+local weather_widget = require("hosua.hosuas-awesome-widgets.weather-widget.weather")
 
 local mysystray = wibox.widget.systray({ opacity = 0 }) -- why the fuck doesn't opacity work?
 _G.mysystray = mysystray
@@ -358,6 +358,7 @@ function theme.at_screen_connect(s)
 					show_daily_forecast = true,
 					time_format_12h = true,
 					popup_bg = color.popup .. opacity.hi,
+					widget_bg = color_wibox.secondary,
 				}),
 				color_wibox.secondary
 			),

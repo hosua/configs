@@ -45,18 +45,6 @@ local tooltip = awful.tooltip({
 	preferred_positions = { "bottom" },
 })
 
-local weather_popup = awful.popup({
-	ontop = true,
-	visible = false,
-	shape = gears.shape.rounded_rect,
-	border_width = 1,
-	border_color = beautiful.bg_focus,
-	maximum_width = 400,
-	offset = { y = 5 },
-	hide_on_right_click = true,
-	widget = {},
-})
-
 --- Maps openWeatherMap icon name to file name w/o extension
 local icon_map = {
 	["01d"] = "clear-sky",
@@ -156,6 +144,21 @@ local function worker(user_args)
 	local icons_extension = args.icons_extension or ".png"
 	local timeout = args.timeout or 120
 	local popup_bg = args.popup_bg or "#2e2e2e"
+	local popup_border_color = args.popup_border_color or beautiful.bg_focus
+	local widget_bg = args.widget_bg
+
+	local weather_popup = awful.popup({
+		ontop = true,
+		visible = false,
+		shape = gears.shape.rounded_rect,
+		border_width = 1,
+		border_color = popup_border_color,
+		bg = popup_bg,
+		maximum_width = 400,
+		offset = { y = 5 },
+		hide_on_right_click = true,
+		widget = {},
+	})
 
 	local ICONS_DIR = WIDGET_DIR .. "/icons/" .. icon_pack_name .. "/"
 
@@ -787,22 +790,21 @@ local function worker(user_args)
 		end
 
 		weather_popup:setup({
-			{
-				final_widget,
-				margins = 10,
-				widget = wibox.container.margin,
-			},
-			bg = popup_bg,
-			widget = wibox.container.background,
+			final_widget,
+			margins = 10,
+			widget = wibox.container.margin,
 		})
 	end
 
+	if widget_bg then
+		weather_widget:set_bg(widget_bg)
+	end
 	weather_widget:buttons(gears.table.join(awful.button({}, 1, function()
 		if weather_popup.visible then
-			weather_widget:set_bg(popup_bg)
+			weather_widget:set_bg(widget_bg or popup_bg)
 			weather_popup.visible = not weather_popup.visible
 		else
-			weather_widget:set_bg(beautiful.bg_focus)
+			weather_widget:set_bg(widget_bg or beautiful.bg_focus)
 			weather_popup:move_next_to(mouse.current_widget_geometry)
 		end
 	end)))
