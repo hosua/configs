@@ -149,7 +149,7 @@ local cw = calendar_widget({
 	placement = "top_right",
 	start_sunday = true,
 	auto_hide = true,
-	timeout = 3,
+	timeout = 2,
 })
 textclock:connect_signal("button::press", function(_, _, _, button)
 	if button == 1 then

@@ -363,7 +363,7 @@ local function worker(user_args)
 	local hourly_forecast_graph = wibox.widget({
 		step_width = 12,
 		color = "#EBCB8B",
-		background_color = beautiful.bg_normal,
+		background_color = popup_bg,
 		forced_height = 100,
 		forced_width = 300,
 		widget = wibox.widget.graph,
@@ -377,7 +377,7 @@ local function worker(user_args)
 	local hourly_forecast_negative_graph = wibox.widget({
 		step_width = 12,
 		color = "#5E81AC",
-		background_color = beautiful.bg_normal,
+		background_color = popup_bg,
 		forced_height = 100,
 		forced_width = 300,
 		widget = wibox.widget.graph,

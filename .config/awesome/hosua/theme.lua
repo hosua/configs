@@ -146,7 +146,8 @@ local separators = lain.util.separators
 -- Clock
 local textclock = wibox.widget.textclock()
 textclock.font = theme.font
-textclock.format = "%B %d - %I:%M %p"
+textclock.format = "%a %m/%d/%Y %I:%M:%S%p"
+textclock.refresh = 1
 
 -- Calendar widget
 local cw = calendar_widget({
@@ -355,6 +356,7 @@ function theme.at_screen_connect(s)
 					-- icons = "VitalyGorbachev",
 					show_hourly_forecast = true,
 					show_daily_forecast = true,
+					time_format_12h = true,
 					popup_bg = color.popup .. opacity.hi,
 				}),
 				color_wibox.secondary
