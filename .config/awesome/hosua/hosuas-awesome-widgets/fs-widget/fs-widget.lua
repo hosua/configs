@@ -33,7 +33,9 @@ local DESKTOP_TO_NAME = {
 
 local function which(cmd)
 	local f = io.popen("which " .. cmd .. " 2>/dev/null")
-	if not f then return nil end
+	if not f then
+		return nil
+	end
 	local path = f:read("*l")
 	f:close()
 	return (path and path ~= "") and path or nil
@@ -207,7 +209,9 @@ local function worker(user_args)
 
 	storage_bar_widget:buttons(awful.util.table.join(
 		awful.button({}, 1, function()
-			if not fm then return end
+			if not fm then
+				return
+			end
 			local filemanager_client = nil
 			for _, c in ipairs(client.get()) do
 				if c.class and c.class:lower():match(fm.class:lower()) then

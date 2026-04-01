@@ -28,7 +28,7 @@ local mytable = awful.util.table or gears.table -- 4.{0,1} compatibility
 
 -- {{{ Error handling
 
-naughty.config.defaults.screen = 2
+naughty.config.defaults.screen = 1
 naughty.config.defaults.timeout = 5
 
 -- Check if awesome encountered an error during startup and fell back to
@@ -71,37 +71,17 @@ local function run_once(cmd_arr)
 	for _, cmd in ipairs(cmd_arr) do
 		awful.spawn.with_shell(string.format("pgrep -u $USER -fx '%s' > /dev/null || (%s)", cmd, cmd))
 	end
-	-- awful.spawn.with_shell("xrandr --output DP-4 --mode 1920x1080 --rate 165 --output DP-0 --mode 1920x1080 --rate 165 --right-of DP-2 --output DP-2 --mode 1920x1080 --rate 165 --right-of DP-4 &")
 end
--- awful.spawn.with_shell("xrandr --output DP-0 --mode 1920x1080 --rate 165 --output DP-4 --mode 1920x1080 --rate 165 --right-of DP-0 --output DP-2 --mode 1920x1080 --rate 165 --right-of DP-4 &")
 
 awful.spawn.with_shell(
 	"xrandr --output DP-4 --mode 1920x1080 --rate 144 --output DP-2 --mode 1920x1080 --rate 144 --right-of DP-4 --output DP-0 --mode 1920x1080 --rate 144 --right-of DP-2 &"
 )
--- awful.spawn.with_shell(
--- 	"xrandr --output DP-4 --mode 1920x1080 --rate 144 --output DP-0 --mode 1920x1080 --rate 144 --right-of DP-4 --output DP-2 --mode 1920x1080 --rate 144 --right-of DP-0 &"
--- )
 
 -- awful.spawn.with_shell("picom") -- "launch compositor"
-awful.spawn.with_shell("picom --backend glx --vsync")
 -- awful.spawn.with_shell("picom --backend glx --glx-no-stencil --vsync-use-glfinish --xrender-sync-fence --use-damage")
+awful.spawn.with_shell("picom --backend glx --vsync")
 
-run_once({ "urxvtd", "unclutter -root" }) -- comma-separated entries
-
--- This function implements the XDG autostart specification
---[[
-awful.spawn.with_shell(
-    'if (xrdb -query | grep -q "^awesome\\.started:\\s*true$"); then exit; fi;' ..
-    'xrdb -merge <<< "awesome.started:true";' ..
-    -- list each of your autostart commands, followed by ; inside single quotes, followed by ..
-    'dex --environment Awesome --autostart --search-paths ' ..
-    '"${XDG_CONFIG_HOME:-$HOME/.config}/autostart:${XDG_CONFIG_DIRS:-/etc/xdg}/autostart";' -- https://github.com/jceb/dex
-)
---]]
-
--- }}}
-
--- {{{ Variable definitions
+run_once({ "urxvtd", "unclutter -root" })
 
 local modkey = "Mod4"
 local altkey = "Mod1"
@@ -362,7 +342,10 @@ globalkeys = mytable.join(
 	end, { description = "Steam" }),
 	awful.key({ altkey, "Control" }, "f", function()
 		awful.spawn("thunar")
-	end, { description = "Steam" }),
+	end, { description = "File Manager" }),
+	awful.key({ altkey, "Control" }, "v", function()
+		awful.spawn("virt-manager")
+	end, { description = "Launch VM Manager" }),
 	awful.key({}, "Print", function()
 		awful.spawn.with_shell("flameshot gui")
 	end, { description = "Screenshot with flameshot" }),

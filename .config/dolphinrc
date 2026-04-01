@@ -1,0 +1,62 @@
+[$Version]
+update_info=dolphin_detailsmodesettings.upd:move-content-display,dolphin_directorysizemode.upd:convert-directorysizecount-to-directorysizemode
+
+[CompactMode]
+PreviewSize=32
+
+[General]
+DoubleClickViewAction=open_terminal
+LockPanels=false
+OpenExternallyCalledFolderInNewTab=true
+ShowFullPathInTitlebar=true
+Version=202
+ViewPropsTimestamp=2021,7,31,20,16,37.397
+
+[IconsMode]
+PreviewSize=32
+
+[KFileDialog Settings]
+Places Icons Auto-resize=false
+Places Icons Static Size=22
+
+[KPropertiesDialog]
+DP-0 DP-2 DP-4 Height 1920x1080=442
+DP-0 DP-2 DP-4 Width 1920x1080=458
+DP-2 DP-0 DP-4 Height 1920x1080=622
+DP-2 DP-0 DP-4 Width 1920x1080=499
+DP-2 DP-0 HDMI-0 DP-4 Height 1920x1080=554
+DP-2 DP-0 HDMI-0 DP-4 Width 1920x1080=481
+
+[MainWindow]
+DP-0 DP-2 DP-4 Height 1920x1080=1053
+DP-0 DP-2 DP-4 Width 1920x1080=854
+DP-0 DP-2 DP-4 XPosition 1920x1080=2980
+DP-0 DP-2 DP-4 YPosition 1920x1080=21
+DP-0 DP-4 DP-2 Height 1920x1080=527
+DP-0 DP-4 DP-2 Width 1920x1080=861
+DP-0 DP-4 DP-2 XPosition 1920x1080=5
+DP-0 DP-4 DP-2 YPosition 1920x1080=22
+DP-1 HDMI-1 DP-2 DP-3 Height 1920x1080=670
+DP-1 HDMI-1 DP-2 DP-3 Width 1920x1080=750
+DP-1 HDMI-1 DP-2 DP-3 Window-Maximized 1920x1080=true
+DP-1 HDMI-1 DP-2 DP-3 XPosition 1920x1080=4841
+DP-1 HDMI-1 DP-2 DP-3 YPosition 1920x1080=398
+DP-2 DP-0 DP-4 Height 1920x1080=704
+DP-2 DP-0 DP-4 Width 1920x1080=983
+DP-2 DP-0 DP-4 XPosition 1920x1080=4068
+DP-2 DP-0 DP-4 YPosition 1920x1080=283
+DP-2 DP-0 HDMI-0 DP-4 Height 1920x1080=1051
+DP-2 DP-0 HDMI-0 DP-4 Width 1920x1080=960
+DP-2 DP-0 HDMI-0 DP-4 XPosition 1920x1080=960
+DP-2 DP-0 HDMI-0 DP-4 YPosition 1920x1080=29
+MenuBar=Disabled
+
+[PreviewSettings]
+Plugins=appimagethumbnail,audiothumbnail,blenderthumbnail,comicbookthumbnail,cursorthumbnail,djvuthumbnail,ebookthumbnail,exrthumbnail,directorythumbnail,fontthumbnail,pothumbnail,imagethumbnail,jpegthumbnail,kraorathumbnail,windowsexethumbnail,windowsimagethumbnail,mltpreview,mobithumbnail,opendocumentthumbnail,palathumbcreator,gsthumbnail,rawthumbnail,svgthumbnail,ffmpegthumbs,webarchivethumbnail
+
+[SettingsDialog]
+DP-0 DP-2 DP-4 Height 1920x1080=428
+DP-0 DP-2 DP-4 Width 1920x1080=599
+
+[UiSettings]
+ColorScheme=BreezeDark

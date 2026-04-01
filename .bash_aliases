@@ -1,14 +1,15 @@
 export VISUAL="nvim"
 export EDITOR="nvim"
-export PAGER="nvim -R"
 export MANPAGER="nvim +Man!"
+# Requires yay -S nvimpager
+export PAGER="nvimpager"
 
 # Easy clipboard
 alias c="xclip"
 alias v="xclip -o"
 # Copy output from a command (pipe with another command using |)
 alias ls="ls --color=auto"
-alias ll="ls -la"
+alias la="ls -lah"
 alias tmux="tmux -2"
 alias untar="tar -zxvf"
 alias rm="rm -v"
@@ -24,6 +25,37 @@ alias vim="nvim -p"
 alias nvim="nvim -p"
 alias py="python"
 alias neofetch="fastfetch"
+alias monerod="monerod --detach"
+
+alias lsblk='lsblk -o +MODEL'
+
+###A ARCHLINUX SPECFIC
+alias pac-clearcache="sudo pacman -Scc"
+alias pac-killorphans="sudo pacman -Qtdq | sudo pacman -Rns -" # remove orphans
+alias pac-listofficial='pacman -Qe'
+alias pac-listaur='pacman -Qm'
+
+alias pac-mirror-clearcache='sudo paccache -rk5; yay -Sc --aur --noconfirm'
+
+# broken
+pac-mirror-updateall() {
+    sudo true
+    MAX_MIRROR_DELAY=21600
+    TMPFILE="$(mktemp)"
+    rate-mirrors --save="$TMPFILE" arch --max-delay=$MAX_MIRROR_DELAY
+    sudo sh -c "mv /etc/pacman.d/mirrorlist /etc/pacman.d/mirrorlist-backup"
+    sudo sh -c "cp $TMPFILE /etc/pacman.d/mirrorlist && chmod 644 /etc/pacman.d/mirrorlist"
+    yay -Syyu --noconfirm
+}
+
+alias rustdocs="rustup docs --book"
+alias wr="~/.cargo/bin/wr"
+alias krestart="kquitapp5 plasmashell && kstart plasmashell"
+alias aws-venv="source ~//python-venvs/aws/bin/activate"
+
+# vpn (surfshark sucks, we kill this soon) mullvad all the way
+# alias surf-vpnup="sudo surfshark-vpn attack"
+# alias surf-vpndown="sudo surfshark-vpn down"
 
 kill-port() {
     if [ -z "$1" ]; then
@@ -38,33 +70,3 @@ kill-port() {
     echo "Killing process $pid on port $1"
     kill "$pid"
 }
-
-# Start commands, because I don't want these always enabled
-
-# Pacman aliases
-alias upac="sudo pacman -Syu"                              # sys update, can also pass an argument to get a package instead
-alias clearpac="sudo pacman -Sc"                           # clear cache
-alias killorphans="sudo pacman -Qtdq | sudo pacman -Rns -" # remove orphans
-alias listpac='pacman -Qe'
-alias listaur='pacman -Qm'
-
-# Mirror rater
-alias ua-drop-caches='sudo paccache -rk3; yay -Sc --aur --noconfirm'
-alias ua-update-all='export TMPFILE="$(mktemp)"; \
-    sudo true; \
-    rate-mirrors --save=$TMPFILE arch --max-delay=21600 \
-      && sudo mv /etc/pacman.d/mirrorlist /etc/pacman.d/mirrorlist-backup \
-      && sudo mv $TMPFILE /etc/pacman.d/mirrorlist \
-      && ua-drop-caches \
-      && yay -Syyu --noconfirm'
-
-alias rustdocs="rustup docs --book"
-alias wr="~/.cargo/bin/wr"
-alias krestart="kquitapp5 plasmashell && kstart plasmashell"
-alias aws-venv="source $HOME/python-venvs/aws/bin/activate"
-
-# vpn
-alias vpnup="sudo surfshark-vpn attack"
-alias vpndown="sudo surfshark-vpn down"
-
-alias claude-docker='/home/hoswoo/dev/claude-docker/src/claude-docker.sh'

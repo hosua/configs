@@ -26,7 +26,8 @@ local math, string, os = math, string, os
 local my_table = awful.util.table or gears.table -- 4.{0,1} compatibility
 
 -- the mounts to show in the fs widget
-local fs_mounts = { "/", "/mnt/DISK1", "/mnt/DISK2", "/mnt/DISK3", "/mnt/DISK4" }
+-- local fs_mounts = { "/", "/mnt/HDD1", "/mnt/HDD2", "/mnt/DISK3", "/mnt/DISK4" }
+local fs_mounts = { "/", "/mnt/SSD1", "/mnt/HDD1", "/mnt/HDD2" }
 
 local opacity = {
 	lo = "10",
@@ -360,9 +361,9 @@ function theme.at_screen_connect(s)
 			arrow(color_wibox.primary, color_wibox.secondary),
 			wibox.container.background(
 				weather_widget({
-					coordinates = { 40.8579, -74.426 },
+					coordinates = { 40.866959, -74.417374 },
 					units = "imperial",
-					both_units_widget = true,
+					-- both_units_widget = true,
 					font_name = "Terminus",
 					-- icons = "VitalyGorbachev",
 					show_hourly_forecast = true,

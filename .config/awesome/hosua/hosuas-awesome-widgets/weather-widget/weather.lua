@@ -333,7 +333,7 @@ local function worker(user_args)
 						},
 						{
 							text = day.weather[1].description,
-							font = font_name .. " 8",
+							font = font_name .. " 9",
 							align = "center",
 							forced_height = 50,
 							widget = wibox.widget.textbox,
