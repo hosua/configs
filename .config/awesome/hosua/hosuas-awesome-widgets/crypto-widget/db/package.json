@@ -1,0 +1,23 @@
+{
+  "name": "awesome-crypto-db",
+  "version": "0.0.1",
+  "description": "awesome-wm-crypto-db",
+  "license": "MIT",
+  "author": "hosua",
+  "type": "commonjs",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "getCoinList": "ts-node cli.ts getCoinList",
+    "getCoinMap": "ts-node cli.ts getCoinMap",
+    "getFiats": "ts-node cli.ts getFiats"
+  },
+  "dependencies": {
+    "axios": "^1.16.0"
+  },
+  "devDependencies": {
+    "@types/node": "^25.7.0",
+    "ts-node": "^10.9.2",
+    "typescript": "^5.8.3"
+  }
+}
