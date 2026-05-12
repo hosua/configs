@@ -32,5 +32,7 @@ rsync -a --exclude='.git' \
 
 rsync -a --exclude='.git' \
   "$HOME/.bash_aliases" \
+  "$HOME/.bash_functions" \
+  "$HOME/.claude_aliases" \
   "$HOME/.xinitrc" \
   .

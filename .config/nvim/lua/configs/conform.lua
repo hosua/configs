@@ -12,6 +12,7 @@ local options = {
     bash = { "shfmt" },
     c = { "clang-fmt" },
     cpp = { "clang-fmt" },
+    java = { "checkstyle" },
   },
 
   format_on_save = {

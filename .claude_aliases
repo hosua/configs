@@ -1,0 +1,7 @@
+#!/bin/bash
+
+alias claude="claude --model opusplan"
+alias claude-yolo="claude --dangerously-skip-permissions"
+alias claude-tutor="claude /config output-style learning"
+alias claude-explainer="claude /config output-style explanatory"
+export ANTHROPIC_DEFAULT_OPUS_MODEL="claude-opus-4-6"

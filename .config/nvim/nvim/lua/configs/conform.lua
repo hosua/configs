@@ -7,6 +7,7 @@ local options = {
     typescript = { "prettierd" },
     javascriptreact = { "prettierd" },
     typescriptreact = { "prettierd" },
+    sql = { "prettierd" },
     json = { "prettierd" },
     sh = { "shfmt" },
     bash = { "shfmt" },

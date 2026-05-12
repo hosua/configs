@@ -1,7 +1,7 @@
 [Added Associations]
 application/java-archive=org.kde.ark.desktop;
 application/octet-stream=vlc-plugin-bittorrent.desktop;neovide.desktop;
-application/pdf=zathura.desktop;evince.desktop;org.gnome.Evince.desktop;brave-browser.desktop;
+application/pdf=qpdfview.desktop;brave-browser.desktop;org.gnome.Evince.desktop;zathura.desktop;evince.desktop;
 application/pgp-encrypted=neovide-3.desktop;
 application/sql=neovide-2.desktop;
 application/vnd.efi.iso=brasero.desktop;org.kde.k3b.desktop;imagewriter.desktop;
@@ -32,7 +32,7 @@ text/plain=neovide.desktop;libreoffice-writer.desktop;org.kde.kate.desktop;
 text/vnd.trolltech.linguist=neovide.desktop;
 text/x-c++src=neovide.desktop;
 text/x-tex=neovide.desktop;
-video/mp4=org.kde.dragonplayer.desktop;vlc.desktop;mpv.desktop;org.avidemux.Avidemux.desktop;mplayer.desktop;
+video/mp4=mpv.desktop;org.kde.dragonplayer.desktop;vlc.desktop;org.avidemux.Avidemux.desktop;mplayer.desktop;
 video/webm=mpv.desktop;org.avidemux.Avidemux.desktop;
 video/x-matroska=vlc.desktop;mpv.desktop;mplayer.desktop;org.kde.dragonplayer.desktop;
 video/x-ms-wmv=mpv.desktop;
@@ -51,9 +51,10 @@ x-scheme-handler/tel=org.kde.kdeconnect.handler.desktop;
 application/pgp-signature=neovide.desktop;
 application/x-subrip=nvim.desktop;neovide.desktop;
 text/csv=libreoffice-calc.desktop;neovide.desktop;
+application/json=neovide.desktop;
 
 [Default Applications]
-application/pdf=zathura.desktop;evince.desktop;
+application/pdf=qpdfview.desktop
 application/pgp-encrypted=neovide-3.desktop;
 application/sql=neovide.desktop;
 application/vnd.ms-publisher=neovide.desktop
@@ -95,3 +96,4 @@ x-scheme-handler/webcal=brave-browser.desktop
 application/x-subrip=neovide.desktop
 application/octet-stream=neovide.desktop
 x-scheme-handler/claude-cli=claude-code-url-handler.desktop
+x-scheme-handler/claude=com.anthropic.claude-desktop.desktop

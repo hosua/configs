@@ -26,6 +26,7 @@ local servers = {
   "ruff",
   "basedpyright",
   "docker_language_server",
+  "jdtls",
 }
 
 local lsp = vim.lsp
@@ -76,6 +77,25 @@ lsp.config("docker_language_server", {
     "docker-bake.hcl",
     "docker-bake.override.json",
     "docker-bake.override.hcl",
+  },
+})
+
+lsp.config("jdtls", {
+  cmd = { vim.fn.stdpath "data" .. "/mason/bin/jdtls" },
+  filetypes = { "java" },
+  root_markers = {
+    { "mvnw", "gradlew", "settings.gradle", "settings.gradle.kts", ".git" },
+    { "build.xml", "pom.xml", "build.gradle", "build.gradle.kts" },
+  },
+  settings = {
+    java = {
+      import = {
+        gradle = {
+          -- skip checksum validation
+          wrapper = { checksums = {} },
+        },
+      },
+    },
   },
 })
 

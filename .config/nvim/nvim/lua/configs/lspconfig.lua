@@ -103,6 +103,7 @@ lsp.config("ruff", {
 })
 
 lsp.config("gopls", {
+  { "gopls" },
   settings = {},
   filetypes = { "go", "gomod", "gowork", "gotmpl" },
 })

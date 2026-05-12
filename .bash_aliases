@@ -7,9 +7,10 @@ export PAGER="nvimpager"
 # Easy clipboard
 alias c="xclip"
 alias v="xclip -o"
-# Copy output from a command (pipe with another command using |)
+# Copy ohttps://linear.app/wellstat/issue/PMH-34utput rom a command (pipe with another command using |)
 alias ls="ls --color=auto"
-alias la="ls -lah"
+alias ll="ls -lh"
+alias la="ls -lAh"
 alias tmux="tmux -2"
 alias untar="tar -zxvf"
 alias rm="rm -v"
@@ -26,6 +27,7 @@ alias nvim="nvim -p"
 alias py="python"
 alias neofetch="fastfetch"
 alias monerod="monerod --detach"
+alias rsync="rsync --stats --progress"
 
 alias lsblk='lsblk -o +MODEL'
 
@@ -37,36 +39,7 @@ alias pac-listaur='pacman -Qm'
 
 alias pac-mirror-clearcache='sudo paccache -rk5; yay -Sc --aur --noconfirm'
 
-# broken
-pac-mirror-updateall() {
-    sudo true
-    MAX_MIRROR_DELAY=21600
-    TMPFILE="$(mktemp)"
-    rate-mirrors --save="$TMPFILE" arch --max-delay=$MAX_MIRROR_DELAY
-    sudo sh -c "mv /etc/pacman.d/mirrorlist /etc/pacman.d/mirrorlist-backup"
-    sudo sh -c "cp $TMPFILE /etc/pacman.d/mirrorlist && chmod 644 /etc/pacman.d/mirrorlist"
-    yay -Syyu --noconfirm
-}
-
 alias rustdocs="rustup docs --book"
 alias wr="~/.cargo/bin/wr"
 alias krestart="kquitapp5 plasmashell && kstart plasmashell"
-alias aws-venv="source ~//python-venvs/aws/bin/activate"
-
-# vpn (surfshark sucks, we kill this soon) mullvad all the way
-# alias surf-vpnup="sudo surfshark-vpn attack"
-# alias surf-vpndown="sudo surfshark-vpn down"
-
-kill-port() {
-    if [ -z "$1" ]; then
-        echo "Usage: kill-port <port>"
-        return 1
-    fi
-    pid=$(lsof -t -i:"$1")
-    if [ -z "$pid" ]; then
-        echo "No process found on port $1"
-        return 1
-    fi
-    echo "Killing process $pid on port $1"
-    kill "$pid"
-}
+alias aws-venv="source ~/python-venvs/aws/bin/activate"
