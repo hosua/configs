@@ -29,7 +29,7 @@ alias neofetch="fastfetch"
 alias monerod="monerod --detach"
 alias rsync="rsync --stats --progress"
 
-alias lsblk='lsblk -o +MODEL'
+alias lsblk='lsblk -o +MODEL,name,rota'
 
 ###A ARCHLINUX SPECFIC
 alias pac-clearcache="sudo pacman -Scc"

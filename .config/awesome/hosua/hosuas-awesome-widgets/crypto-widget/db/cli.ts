@@ -36,7 +36,9 @@ async function main() {
 
     case "getCoinMap": {
       if (!opts.codes) {
-        throw new Error("--codes is required (comma-separated, e.g. BTC,ETH,XMR)");
+        throw new Error(
+          "--codes is required (comma-separated, e.g. BTC,ETH,XMR)",
+        );
       }
       const data = await getCoinMap({
         codes: opts.codes.split(","),
@@ -59,10 +61,16 @@ async function main() {
 
     default:
       console.error(`Unknown command: ${command ?? "(none)"}`);
-      console.error("Usage: npm run <getCoinList|getCoinMap|getFiats> [-- --option value ...]");
+      console.error(
+        "Usage: npm run <getCoinList|getCoinMap|getFiats> [-- --option value ...]",
+      );
       console.error("");
-      console.error("  getCoinList  [--currency USD] [--sort rank] [--order ascending] [--offset 0] [--limit 100]");
-      console.error("  getCoinMap   --codes BTC,ETH,XMR [--currency USD] [--sort rank] [--order ascending] [--offset 0]");
+      console.error(
+        "  getCoinList  [--currency USD] [--sort rank] [--order ascending] [--offset 0] [--limit 100]",
+      );
+      console.error(
+        "  getCoinMap   --codes BTC,ETH,XMR [--currency USD] [--sort rank] [--order ascending] [--offset 0]",
+      );
       console.error("  getFiats");
       process.exit(1);
   }

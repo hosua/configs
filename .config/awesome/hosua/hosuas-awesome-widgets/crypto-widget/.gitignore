@@ -1,0 +1,19 @@
+# Secrets
+.env
+
+# Dependencies
+node_modules/
+
+# SQLite database (generated, can be large)
+*.db
+*.db-wal
+*.db-shm
+
+# Generated API data files
+data/
+coin-list.json
+coin-map.json
+fiats.json
+
+# Logs
+*.log

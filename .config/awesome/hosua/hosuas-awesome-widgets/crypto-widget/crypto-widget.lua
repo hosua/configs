@@ -97,6 +97,21 @@ local function fetch_crypto_data()
 
 		shared_state.crypto_data = data
 
+		-- Write raw API response to file and trigger DB ingester (fire-and-forget)
+		if shared_state.widget_dir then
+			local data_dir = shared_state.widget_dir .. "data/"
+			gfs.make_directories(data_dir)
+			local f = io.open(data_dir .. "latest.json", "w")
+			if f then
+				f:write(stdout)
+				f:close()
+				spawn.easy_async_with_shell(
+					"cd " .. shared_state.widget_dir .. "db && npx ts-node ingest.ts",
+					function() end
+				)
+			end
+		end
+
 		for _, coin in ipairs(data) do
 			if coin.png32 and shared_state.widget_dir then
 				local cache_dir = shared_state.widget_dir .. "cache"
