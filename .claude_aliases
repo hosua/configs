@@ -5,3 +5,72 @@ alias claude-yolo="claude --dangerously-skip-permissions"
 alias claude-tutor="claude /config output-style learning"
 alias claude-explainer="claude /config output-style explanatory"
 export ANTHROPIC_DEFAULT_OPUS_MODEL="claude-opus-4-6"
+
+alias skillkit="npx skillkit"
+alias mcpick="npx mcpick"
+alias mcpick-backup="mcpick backup"
+mcpick-restore() {
+  mcpick restore "$@"
+}
+
+alias mcpick-list-rollbacks="mcpick --rollback list"[
+mcpick-rollback() {
+  mcpick rollback restore "$@"
+}
+
+alias claude-config="mcpick"
+alias claude-restore-config="mcpick-restore"
+alias claude-backup-configs="mcpick-backup"
+
+claude-list-plugins() {
+  mcpick plugins list
+}
+
+claude-list-skills() {
+  echoo "Listing installed claude skills"
+  mcpick skills list --agent claude-code
+}
+
+claude-profile-help() {
+  mcpick profile help
+}
+
+claude-list-profiles() {
+  mcpick profile list
+}
+
+claude-load-profile() {
+  mcpick profile load "$@"
+}
+
+claude-save-profile() {
+  # Extract profile name (last non-flag arg) to locate the saved file afterward
+  local name=""
+  for arg in "$@"; do
+    [[ "$arg" != --* ]] && name="$arg"
+  done
+
+  # Walk up from cwd to find the project root that has local MCP servers in ~/.claude.json.
+  # Falls back to the project with the most MCP servers if cwd doesn't match any project.
+  local project_dir
+  project_dir=$(python3 ~/.claude/scripts/find_project_dir.py)
+
+  (cd "$project_dir" && npx mcpick profile save --client claude-code --scope=local "$@") || return 1
+
+  if [[ -z "$name" ]]; then
+    echo "claude-profile-save: could not determine profile name, skipping plugin merge" >&2
+    return 0
+  fi
+
+  local profile_path="$HOME/.claude/mcpick/profiles/${name}.json"
+  if [[ ! -f "$profile_path" ]]; then
+    echo "claude-profile-save: profile file not found at $profile_path" >&2
+    return 1
+  fi
+
+  # Merge project-level enabledPlugins into the saved profile if .claude/settings.json exists
+  local project_settings="${project_dir}/.claude/settings.json"
+  if [[ -f "$project_settings" ]]; then
+    python3 ~/.claude/scripts/merge_profile_plugins.py "$profile_path" "$project_settings"
+  fi
+}

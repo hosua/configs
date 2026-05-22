@@ -4,6 +4,7 @@ export MANPAGER="nvim +Man!"
 # Requires yay -S nvimpager
 export PAGER="nvimpager"
 
+alias ...=". $HOME/.bashrc"
 # Easy clipboard
 alias c="xclip"
 alias v="xclip -o"
@@ -23,7 +24,6 @@ alias zzz="systemctl suspend" # sleep
 alias nano="nvim -p"          # nano not allowed on my system
 alias vi="nvim -p"
 alias vim="nvim -p"
-alias nvim="nvim -p"
 alias py="python"
 alias neofetch="fastfetch"
 alias monerod="monerod --detach"
@@ -40,6 +40,7 @@ alias pac-listaur='pacman -Qm'
 alias pac-mirror-clearcache='sudo paccache -rk5; yay -Sc --aur --noconfirm'
 
 alias rustdocs="rustup docs --book"
+alias tf="terraform"
 alias wr="~/.cargo/bin/wr"
 alias krestart="kquitapp5 plasmashell && kstart plasmashell"
 alias aws-venv="source ~/python-venvs/aws/bin/activate"
