@@ -272,7 +272,7 @@ function theme.at_screen_connect(s)
 				crypto_widget({
 					main_coin = "XMR",
 					mode = "map",
-					codes = { "BTC", "XMR", "ETH", "LTC", "PAXG", "SOL" },
+					codes = { "BTC", "XMR", "XRP", "LTC", "ETH", "SOL" },
 					popup_bg = color.popup .. opacity.hi,
 				}),
 				color_wibox.secondary

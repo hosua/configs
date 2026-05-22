@@ -37,6 +37,9 @@ lsp.config("bashls", {
   settings = {
     bashIde = {
       globPattern = "*@(.sh|.inc|.bash|.command)",
+      enableSourceErrorDiagnostics = false,
+      includeAllWorkspaceSymbols = false,
+      backgroundAnalysisMaxFiles = 100,
     },
   },
 })
@@ -100,26 +103,10 @@ lsp.config("jdtls", {
 })
 
 lsp.config("ruff", {
-  cmd = { "basedpyright-langserver", "--stdio" },
-  settings = {
-    basedpyright = {
-      analysis = {
-        autoSearchPaths = true,
-        diagnosticMode = "openFilesOnly",
-        useLibraryCodeForTypes = true,
-      },
-    },
-  },
-  root_markers = {
-    "pyrightconfig.json",
-    "pyproject.toml",
-    "setup.py",
-    "setup.cfg",
-    "requirements.txt",
-    "Pipfile",
-    ".git",
-  },
+  cmd = { "ruff", "server" },
   filetypes = { "python" },
+  root_markers = { "pyproject.toml", "ruff.toml", ".ruff.toml", ".git" },
+  settings = {},
 })
 
 lsp.config("gopls", {
