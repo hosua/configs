@@ -21,9 +21,6 @@ local config = {
     popup_bg = "#2E3440",
     popup_border_color = "#4C566A",
     popup_auto_close = 5,
-    arc_color_ok   = "#A3BE8C",   -- green  (>= 30% remaining)
-    arc_color_warn = "#EBCB8B",   -- yellow (10-30% remaining)
-    arc_color_crit = "#BF616A",   -- red    (< 10% remaining)
 }
 
 local function worker(input)
@@ -57,16 +54,9 @@ local function worker(input)
         return math.max(0, math.min(100, (1 - utilization) * 100))
     end
 
-    local function arc_color(rem_pct)
-        if rem_pct >= 30 then return _config.arc_color_ok
-        elseif rem_pct >= 10 then return _config.arc_color_warn
-        else return _config.arc_color_crit
-        end
-    end
-
-    local function pct_color(rem_pct)
-        if rem_pct > 66 then return "#A3BE8C"
-        elseif rem_pct >= 33 then return "#FEFEFE"
+    local function usage_color(rem_pct)
+        if rem_pct > 66 then return "#FEFEFE"
+        elseif rem_pct > 33 then return "#EBCB8B"
         else return "#BF616A"
         end
     end
@@ -108,7 +98,7 @@ local function worker(input)
             rounded_edge = true,
             bg           = "#ffffff11",
             paddings     = 0,
-            colors       = { _config.arc_color_ok },
+            colors       = { "#FEFEFE" },
             widget       = wibox.container.arcchart,
         })
     end
@@ -172,7 +162,7 @@ local function worker(input)
             background_color = beautiful.bg_normal or "#2E3440",
             bar_border_width = 1,
             bar_border_color = _config.popup_border_color,
-            color            = _config.arc_color_ok,
+            color            = "#FEFEFE",
             widget           = wibox.widget.progressbar,
         })
     end
@@ -215,10 +205,10 @@ local function worker(input)
             beautiful.fg_focus or "#00CCFF", fmt_countdown(stats.h5_reset)
         ))
         bar_5h.value = used5
-        bar_5h.color = arc_color(rem5)
+        bar_5h.color = usage_color(rem5)
         label_5h_text:set_markup(string.format(
             "%d%% used  <span foreground='%s'>(%d%% remaining)</span>",
-            used5, pct_color(rem5), math.floor(rem5)
+            used5, usage_color(rem5), math.floor(rem5)
         ))
 
         -- 7d section
@@ -227,10 +217,10 @@ local function worker(input)
             beautiful.fg_focus or "#00CCFF", fmt_datetime(stats.d7_reset)
         ))
         bar_7d.value = used7
-        bar_7d.color = arc_color(rem7)
+        bar_7d.color = usage_color(rem7)
         label_7d_text:set_markup(string.format(
             "%d%% used  <span foreground='%s'>(%d%% remaining)</span>",
-            used7, pct_color(rem7), math.floor(rem7)
+            used7, usage_color(rem7), math.floor(rem7)
         ))
 
         popup:setup({
@@ -276,12 +266,12 @@ local function worker(input)
         local rem7 = remaining_pct(stats.d7_utilization)
 
         arc_5h.value  = rem5
-        arc_5h.colors = { arc_color(rem5) }
-        text_5h:set_markup(string.format(" <span foreground='%s'>%d%%</span>", pct_color(rem5), math.floor(rem5)))
+        arc_5h.colors = { usage_color(rem5) }
+        text_5h:set_markup(string.format(" <span foreground='%s'>%d%%</span>", usage_color(rem5), math.floor(rem5)))
 
         arc_7d.value  = rem7
-        arc_7d.colors = { arc_color(rem7) }
-        text_7d:set_markup(string.format(" <span foreground='%s'>%d%%</span>", pct_color(rem7), math.floor(rem7)))
+        arc_7d.colors = { usage_color(rem7) }
+        text_7d:set_markup(string.format(" <span foreground='%s'>%d%%</span>", usage_color(rem7), math.floor(rem7)))
     end
 
     -- ─── Parse fetch output ───────────────────────────────────────────────────
