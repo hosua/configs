@@ -1,0 +1,64 @@
+{
+  "name": "crypto-widget-dashboard",
+  "version": "1.0.0",
+  "description": "AwesomeWM crypto widget dashboard — SQLite backend, React frontend, Dockerized.",
+  "author": "hosua",
+  "license": "MIT",
+  "packageManager": "pnpm@10.31.0",
+  "os": ["linux"],
+  "engines": {
+    "node": ">=20",
+    "pnpm": ">=10"
+  },
+  "bin": {
+    "crypto-widget-install": "./install.sh",
+    "crypto-widget-uninstall": "./uninstall.sh"
+  },
+  "scripts": {
+    "install:all": "pnpm install -r",
+    "build:all": "pnpm -r run build",
+    "dev": "pnpm --filter web run dev",
+    "dev:server": "pnpm --filter web run dev:server",
+    "dev:all": "pnpm --filter web run dev:all",
+    "db:init": "pnpm --filter awesome-crypto-db run initDb",
+    "db:ingest": "pnpm --filter awesome-crypto-db run ingest",
+    "db:seed": "bash seed.sh",
+    "db:query": "pnpm --filter awesome-crypto-db run query --",
+    "install:service": "sudo bash install.sh",
+    "uninstall:service": "sudo bash uninstall.sh",
+    "docker:build": "docker compose build",
+    "docker:up": "docker compose up -d",
+    "docker:down": "docker compose down",
+    "docker:logs": "docker compose logs -f"
+  },
+  "files": [
+    "web/src",
+    "web/server",
+    "web/public",
+    "web/index.html",
+    "web/package.json",
+    "web/pnpm-lock.yaml",
+    "web/vite.config.ts",
+    "web/tsconfig*.json",
+    "web/components.json",
+    "web/eslint.config.js",
+    "db",
+    "pnpm-workspace.yaml",
+    "get-list.sh",
+    "get-map.sh",
+    "get-fiats.sh",
+    "env.default",
+    "Dockerfile",
+    "docker-compose.yml",
+    "docker-entrypoint.sh",
+    "nginx.conf",
+    ".dockerignore",
+    "install.sh",
+    "uninstall.sh",
+    "seed.sh"
+  ],
+  "keywords": ["crypto", "dashboard", "awesomewm", "livecoinwatch", "sqlite"],
+  "pnpm": {
+    "onlyBuiltDependencies": ["better-sqlite3", "esbuild"]
+  }
+}

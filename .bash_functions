@@ -14,8 +14,14 @@ kill-port() {
     kill "$pid"
 }
 
-git-open-diffs() {
+git-open-branch-wdiffs() {
     origin_main_branch="$(git symbolic-ref refs/remotes/origin/HEAD)"
-    echo "Opening all files in this branch with diffs from $origin_main_branch..."
+    echo "Opening all files with diffs against $origin_main_branch..."
     $EDITOR $(git diff --name-only $origin_main_branch...)
+}
+
+git-list-branch-diffs() {
+    origin_main_branch="$(git symbolic-ref refs/remotes/origin/HEAD)"
+    echo "Listing all files with diffs against $origin_main_branch..."
+    echo "$(git diff --name-only $origin_main_branch...)"
 }

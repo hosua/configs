@@ -52,6 +52,7 @@ application/pgp-signature=neovide.desktop;
 application/x-subrip=nvim.desktop;neovide.desktop;
 text/csv=libreoffice-calc.desktop;neovide.desktop;
 application/json=neovide.desktop;
+application/x-x509-ca-cert=neovide.desktop;
 
 [Default Applications]
 application/pdf=qpdfview.desktop

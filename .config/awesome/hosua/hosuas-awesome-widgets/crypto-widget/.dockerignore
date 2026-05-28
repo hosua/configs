@@ -1,0 +1,13 @@
+web/node_modules
+web/dist
+web/.server-port
+node_modules
+cache/
+data/
+*.db
+*.db-shm
+*.db-wal
+.env
+.git
+.gitignore
+*.log

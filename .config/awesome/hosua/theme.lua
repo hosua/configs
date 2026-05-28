@@ -11,6 +11,7 @@ local dpi = require("beautiful.xresources").apply_dpi
 local calendar_widget = require("awesome-wm-widgets.calendar-widget.calendar")
 local pacman_widget = require("awesome-wm-widgets.pacman-widget.pacman")
 
+local claude_usage_widget = require("hosua.hosuas-awesome-widgets.claude-usage-widget.claude-usage-widget")
 local cpu_widget = require("hosua.hosuas-awesome-widgets.cpu-widget.cpu-widget")
 local crypto_widget = require("hosua.hosuas-awesome-widgets.crypto-widget.crypto-widget")
 local fs_widget = require("hosua.hosuas-awesome-widgets.fs-widget.fs-widget")
@@ -258,6 +259,14 @@ function theme.at_screen_connect(s)
 		wibox.container.background(s.mytasklist, theme.bg_normal), -- Middle widget
 		{ -- Right widgets
 			layout = wibox.layout.fixed.horizontal,
+			arrow(theme.bg_normal, color_wibox.secondary),
+			wibox.container.background(
+				claude_usage_widget({
+					popup_bg = color.popup .. opacity.hi,
+				}),
+				color_wibox.secondary
+			),
+			arrow(color_wibox.secondary, color_wibox.primary),
 			wibox.container.background(
 				nvidia_widget({
 					popup_bg = color.popup .. opacity.hi,

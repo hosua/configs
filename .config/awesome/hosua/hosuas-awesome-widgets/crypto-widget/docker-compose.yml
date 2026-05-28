@@ -1,0 +1,24 @@
+services:
+  crypto-widget:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    image: crypto-widget:latest
+    container_name: crypto-widget
+    ports:
+      - "42069:8080"   # frontend
+      - "42070:8081"   # API (direct access)
+    volumes:
+      - ./crypto.db:/data/crypto.db:ro
+      - ./data:/data/live:ro
+    environment:
+      - DB_PATH=/data/crypto.db
+      - DATA_PATH=/data/live/latest.json
+      - PORT=8081
+    restart: unless-stopped
+    healthcheck:
+      test: ["CMD", "wget", "-qO-", "http://localhost:8081/api/coins?limit=1"]
+      interval: 30s
+      timeout: 5s
+      retries: 3
+      start_period: 10s

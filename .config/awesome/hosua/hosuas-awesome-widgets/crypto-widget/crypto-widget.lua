@@ -23,8 +23,8 @@ local config = {
 	popup_border_color = "#4C566A",
 	main_coin = "BTC", -- The coin shown on the widget itself
 	fiat = "USD", -- Your preferred currency
-	codes = { "BTC", "XMR", "ETH", "LTC", "PAXG" }, -- Your curated list to show when in mode = "map"
-	mode = "list", -- list or map
+	codes = { "BTC", "XMR", "XRP", "ETH", "LTC" }, -- Your curated list to show when in mode = "map"
+	mode = "map", -- list or map
 	coins_to_display = 100, -- how many cryptocurrencies to show in list mode, max = 100
 	sort_by = "rank", -- rank, price, volume, code, name, age
 	sort_order = "ascending", -- sort_by ascending or descending
@@ -96,6 +96,18 @@ local function fetch_crypto_data()
 		end
 
 		shared_state.crypto_data = data
+
+		-- Write raw API response to file and trigger DB ingester (fire-and-forget)
+		if shared_state.widget_dir then
+			local data_dir = shared_state.widget_dir .. "data/"
+			gfs.make_directories(data_dir)
+			local f = io.open(data_dir .. "latest.json", "w")
+			if f then
+				f:write(stdout)
+				f:close()
+				spawn.easy_async_with_shell("cd " .. shared_state.widget_dir .. "db && pnpm run ingest", function() end)
+			end
+		end
 
 		for _, coin in ipairs(data) do
 			if coin.png32 and shared_state.widget_dir then

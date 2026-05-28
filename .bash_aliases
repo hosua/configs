@@ -44,3 +44,5 @@ alias tf="terraform"
 alias wr="~/.cargo/bin/wr"
 alias krestart="kquitapp5 plasmashell && kstart plasmashell"
 alias aws-venv="source ~/python-venvs/aws/bin/activate"
+
+alias brightness-ctl="~/scripts/brightnessmonctl"

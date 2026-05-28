@@ -1,1 +1,39 @@
+# Secrets
 .env
+
+# Dependencies
+node_modules/
+# pnpm lockfile is committed; individual sub-package lockfiles are not needed
+# Uncomment to ignore if you prefer not to commit it:
+# pnpm-lock.yaml
+
+# SQLite database
+*.db
+*.db-wal
+*.db-shm
+
+# Build output
+web/dist/
+web/dist-ssr/
+
+# Generated at runtime
+data/
+web/.server-port
+
+# Generated API output files
+coin-list.json
+coin-map.json
+fiats.json
+
+# Logs
+*.log
+logs/
+npm-debug.log*
+
+# Editor
+.vscode/*
+!.vscode/extensions.json
+.idea/
+.DS_Store
+*.suo
+*.sw?
