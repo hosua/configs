@@ -997,3 +997,43 @@ client.connect_signal("unmanage", backham)
 tag.connect_signal("property::selected", backham)
 
 -- }}}
+
+-- Preserve tag names and selected tags across restarts
+local PERSIST_FILE = '/tmp/awesomewm-tag-state'
+
+awesome.connect_signal('startup', function()
+	local file = io.open(PERSIST_FILE, 'r')
+	if not file then return end
+	for line in file:lines() do
+		local kind, si, ti, val = line:match('^(%a+)\t(%d+)\t(%d+)\t?(.*)')
+		si, ti = tonumber(si), tonumber(ti)
+		if kind and si and ti then
+			local s = screen[si]
+			if s then
+				local t = s.tags[ti]
+				if t then
+					if kind == 'name' and val ~= '' then
+						t.name = val
+					elseif kind == 'selected' then
+						t:view_only()
+					end
+				end
+			end
+		end
+	end
+	file:close()
+end)
+
+awesome.connect_signal('exit', function(reason_restart)
+	if not reason_restart then return end
+	local file = io.open(PERSIST_FILE, 'w+')
+	for s in screen do
+		for i, t in ipairs(s.tags) do
+			file:write(string.format('name\t%d\t%d\t%s\n', s.index, i, t.name))
+			if t.selected then
+				file:write(string.format('selected\t%d\t%d\t\n', s.index, i))
+			end
+		end
+	end
+	file:close()
+end)
