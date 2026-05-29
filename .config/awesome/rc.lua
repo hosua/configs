@@ -902,6 +902,22 @@ awful.rules.rules = {
 	-- Set Firefox to always map on the tag named "2" on screen 1.
 	-- { rule = { class = "Firefox" },
 	--   properties = { screen = 1, tag = "2" } },
+
+	{
+		rule = { class = "Claude" },
+		properties = { floating = true, sticky = true, ontop = true },
+		callback = function(c)
+			local sg = c.screen.geometry
+			local w  = sg.width  * 0.8
+			local h  = sg.height * 0.8
+			c:geometry({
+				width  = w,
+				height = h,
+				x      = sg.x + (sg.width  - w) / 2,
+				y      = sg.y + (sg.height - h) / 2,
+			})
+		end,
+	},
 }
 
 -- }}}

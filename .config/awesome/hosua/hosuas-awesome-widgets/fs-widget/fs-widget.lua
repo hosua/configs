@@ -172,14 +172,16 @@ local function worker(user_args)
 		local cmd = awful.util.terminal .. ' -o confirm_os_window_close=0 -e sh -c "ncdu \\"' .. path_escaped .. '\\""'
 		awful.spawn(cmd, {
 			floating = true,
+			sticky = true,
 			screen = target_screen,
 			callback = function(c)
 				c.floating = true
+				c.sticky = true
 				c.ontop = true
 				c.screen = target_screen
 				local screen_geo = target_screen.geometry
-				local width = screen_geo.width * 0.6
-				local height = screen_geo.height * 0.6
+				local width = screen_geo.width * 0.8
+				local height = screen_geo.height * 0.8
 				c:geometry({
 					width = width,
 					height = height,
@@ -226,15 +228,17 @@ local function worker(user_args)
 				local target_screen = mouse.screen
 				awful.spawn(fm.cmd, {
 					floating = true,
+					sticky = true,
 					screen = target_screen,
 					callback = function(c)
 						c.floating = true
+						c.sticky = true
 						c.ontop = true
 						c.screen = target_screen
 
 						local screen_geo = target_screen.geometry
-						local width = screen_geo.width * 0.6
-						local height = screen_geo.height * 0.6
+						local width = screen_geo.width * 0.8
+						local height = screen_geo.height * 0.8
 
 						c:geometry({
 							width = width,

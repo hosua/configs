@@ -80,6 +80,30 @@ local function worker(input)
 
     -- ─── Wibar widget ─────────────────────────────────────────────────────────
 
+    local function toggle_claude_desktop()
+        local claude_c = nil
+        for _, c in ipairs(client.get()) do
+            if c.class == "Claude" then claude_c = c; break end
+        end
+        if claude_c then
+            claude_c:kill()
+        else
+            local s = mouse.screen
+            awful.spawn("claude-desktop", {
+                floating = true, sticky = true, ontop = true,
+                callback = function(c)
+                    c.floating = true; c.sticky = true; c.ontop = true
+                    local sg = s.geometry
+                    local w, h = sg.width * 0.8, sg.height * 0.8
+                    c:geometry({ width = w, height = h,
+                        x = sg.x + (sg.width - w) / 2,
+                        y = sg.y + (sg.height - h) / 2 })
+                    c:raise(); client.focus = c
+                end,
+            })
+        end
+    end
+
     local icon = wibox.widget({
         image = widget_dir .. "claude-icon.svg",
         resize = true,
@@ -87,6 +111,21 @@ local function worker(input)
         forced_height = 18,
         widget = wibox.widget.imagebox,
     })
+
+    local icon_tooltip = awful.tooltip({
+        objects             = { icon },
+        bg                  = _config.popup_bg,
+        border_color        = _config.popup_border_color,
+        border_width        = 1,
+        font                = "Terminus 9",
+        mode                = "outside",
+        preferred_positions = { "bottom", "top" },
+        text                = "Open Claude Desktop",
+    })
+
+    icon:buttons(awful.util.table.join(
+        awful.button({}, 1, toggle_claude_desktop)
+    ))
 
     local icon_container = wibox.widget({ icon, top = 1, widget = wibox.container.margin })
 
@@ -127,7 +166,7 @@ local function worker(input)
                 days, days == 1 and "" or "s",
                 os.date("%a, %I:%M %p", reset_ts))
         end
-        return string.format("You have used %d%% of your tokens for this %s, leaving you with %d%% %s.",
+        return string.format("You have used %d%% of your tokens for this %s,\nleaving you with %d%% %s.",
             used_pct, period_label, rem_pct, time_str)
     end
 
@@ -402,8 +441,13 @@ local function worker(input)
             close_popup()
         end)
 
+        local claude_btn = make_btn("Claude Desktop", function()
+            toggle_claude_desktop()
+            close_popup()
+        end)
+
         local settings_row = wibox.widget({
-            nil, nil, settings_btn,
+            claude_btn, nil, settings_btn,
             layout = wibox.layout.align.horizontal,
         })
 
