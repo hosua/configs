@@ -4,7 +4,7 @@ alias claude="claude --model opusplan"
 alias claude-yolo="claude --dangerously-skip-permissions"
 alias claude-tutor="claude /config output-style learning"
 alias claude-explainer="claude /config output-style explanatory"
-export ANTHROPIC_DEFAULT_OPUS_MODEL="claude-opus-4-6"
+# export ANTHROPIC_DEFAULT_OPUS_MODEL="claude-opus-4-6"
 
 alias skillkit="npx skillkit"
 alias mcpick="npx mcpick"
@@ -74,3 +74,5 @@ claude-save-profile() {
     python3 ~/.claude/scripts/merge_profile_plugins.py "$profile_path" "$project_settings"
   fi
 }
+
+alias cloudcli="find-port-and-launch 'npx cloudcli'"

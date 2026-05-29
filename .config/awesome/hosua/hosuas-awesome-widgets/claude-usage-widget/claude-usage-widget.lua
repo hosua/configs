@@ -135,8 +135,8 @@ local function worker(input)
             value        = 100,
             thickness    = 2,
             start_angle  = 4.71238898,
-            forced_height = 18,
-            forced_width  = 18,
+            forced_height = 22,
+            forced_width  = 22,
             rounded_edge = true,
             bg           = "#ffffff11",
             paddings     = 0,
@@ -150,9 +150,10 @@ local function worker(input)
 
     -- ─── Arc tooltips ─────────────────────────────────────────────────────────
 
-    local function arc_tooltip_text(utilization, reset_ts, period_label)
+    local function arc_tooltip_markup(utilization, reset_ts, period_label)
         local used_pct = math.floor(utilization * 100)
         local rem_pct  = math.max(0, 100 - used_pct)
+        local color    = usage_color(rem_pct)
         local diff     = math.max(0, reset_ts - os.time())
         local time_str
         if diff < 86400 then
@@ -166,8 +167,9 @@ local function worker(input)
                 days, days == 1 and "" or "s",
                 os.date("%a, %I:%M %p", reset_ts))
         end
-        return string.format("You have used %d%% of your tokens for this %s,\nleaving you with %d%% %s.",
-            used_pct, period_label, rem_pct, time_str)
+        return string.format(
+            "You have used <span foreground='%s'>%d%%</span> of your tokens for this %s,\nleaving you with <span foreground='%s'>%d%%</span> %s.",
+            color, used_pct, period_label, color, rem_pct, time_str)
     end
 
     local tt_5h = awful.tooltip({
@@ -180,7 +182,7 @@ local function worker(input)
         preferred_positions = { "bottom", "top" },
     })
     arc_5h:connect_signal("mouse::enter", function()
-        tt_5h.text = arc_tooltip_text(stats.h5_utilization, stats.h5_reset, "5 hour period")
+        tt_5h.markup = arc_tooltip_markup(stats.h5_utilization, stats.h5_reset, "5 hour period")
     end)
 
     local tt_7d = awful.tooltip({
@@ -193,28 +195,25 @@ local function worker(input)
         preferred_positions = { "bottom", "top" },
     })
     arc_7d:connect_signal("mouse::enter", function()
-        tt_7d.text = arc_tooltip_text(stats.d7_utilization, stats.d7_reset, "week")
+        tt_7d.markup = arc_tooltip_markup(stats.d7_utilization, stats.d7_reset, "week")
     end)
 
-    local text_5h = wibox.widget.textbox()
-    text_5h.font = "Terminus 9"
-
-    local text_7d = wibox.widget.textbox()
-    text_7d.font = "Terminus 9"
+    local text_5h = wibox.widget({ font = "Terminus Bold 10", widget = wibox.widget.textbox })
+    local text_7d = wibox.widget({ font = "Terminus Bold 10", widget = wibox.widget.textbox })
 
     local text_balance = wibox.widget.textbox()
     text_balance.font = "Terminus 9"
 
     local group_5h = wibox.widget({
-        arc_5h, text_5h,
-        spacing = 2,
-        layout = wibox.layout.fixed.horizontal,
+        arc_5h,
+        { text_5h, halign = "center", valign = "center", widget = wibox.container.place },
+        widget = wibox.layout.stack,
     })
 
     local group_7d = wibox.widget({
-        arc_7d, text_7d,
-        spacing = 2,
-        layout = wibox.layout.fixed.horizontal,
+        arc_7d,
+        { text_7d, halign = "center", valign = "center", widget = wibox.container.place },
+        widget = wibox.layout.stack,
     })
 
     local widget = wibox.widget({
@@ -332,11 +331,11 @@ local function worker(input)
 
         arc_5h.value  = rem5
         arc_5h.colors = { usage_color(rem5) }
-        text_5h:set_markup(string.format(" <span foreground='%s'>%d%%</span>", usage_color(rem5), math.floor(rem5)))
+        text_5h:set_markup(string.format("<span foreground='%s'>%d</span>", usage_color(rem5), math.floor(rem5)))
 
         arc_7d.value  = rem7
         arc_7d.colors = { usage_color(rem7) }
-        text_7d:set_markup(string.format(" <span foreground='%s'>%d%%</span>", usage_color(rem7), math.floor(rem7)))
+        text_7d:set_markup(string.format("<span foreground='%s'>%d</span>", usage_color(rem7), math.floor(rem7)))
 
         if stats.balance ~= "N/A" then
             text_balance:set_markup(string.format(" <span foreground='#A3BE8C'>$%s</span>", stats.balance))
@@ -363,8 +362,8 @@ local function worker(input)
         bar_5h.value = used5
         bar_5h.color = usage_color(rem5)
         label_5h_text:set_markup(string.format(
-            "%d%% used  <span foreground='%s'>(%d%% remaining)</span>",
-            used5, usage_color(rem5), math.floor(rem5)
+            "<span foreground='%s'>%d%%</span> used  <span foreground='%s'>(%d%% remaining)</span>",
+            usage_color(rem5), used5, usage_color(rem5), math.floor(rem5)
         ))
 
         -- 7d section
@@ -375,8 +374,8 @@ local function worker(input)
         bar_7d.value = used7
         bar_7d.color = usage_color(rem7)
         label_7d_text:set_markup(string.format(
-            "%d%% used  <span foreground='%s'>(%d%% remaining)</span>",
-            used7, usage_color(rem7), math.floor(rem7)
+            "<span foreground='%s'>%d%%</span> used  <span foreground='%s'>(%d%% remaining)</span>",
+            usage_color(rem7), used7, usage_color(rem7), math.floor(rem7)
         ))
 
         -- ── Credits / billing section ─────────────────────────────────────────
