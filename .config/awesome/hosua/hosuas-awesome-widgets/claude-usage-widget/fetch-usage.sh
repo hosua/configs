@@ -3,20 +3,62 @@
 # Uses the Claude Code OAuth token to fetch usage data from the Anthropic API.
 # Parses anthropic-ratelimit-unified-* headers for 5h and 7d windows.
 # Outputs key=value pairs for Lua parsing.
+# Auto-refreshes the OAuth token when expired.
 
 CREDS="$HOME/.claude/.credentials.json"
+TOKEN_ENDPOINT="https://platform.claude.com/v1/oauth/token"
+CLIENT_ID="https://claude.ai/oauth/claude-code-client-metadata"
 
 if [ ! -f "$CREDS" ]; then
     echo "error=no_credentials"
     exit 0
 fi
 
+# Refresh token if expired or within 5 minutes of expiry
+python3 - "$CREDS" "$TOKEN_ENDPOINT" "$CLIENT_ID" <<'PYEOF'
+import json, sys, time, urllib.request, urllib.parse
+
+creds_path, token_endpoint, client_id = sys.argv[1], sys.argv[2], sys.argv[3]
+
+try:
+    d = json.load(open(creds_path))
+    oauth = d['claudeAiOauth']
+    expires_at = oauth.get('expiresAt', 0) / 1000  # ms → s
+    now = time.time()
+
+    if expires_at - now < 300:  # expired or expiring in <5 min
+        refresh_token = oauth.get('refreshToken', '')
+        if not refresh_token:
+            sys.exit(0)
+
+        body = urllib.parse.urlencode({
+            'grant_type': 'refresh_token',
+            'refresh_token': refresh_token,
+            'client_id': client_id,
+        }).encode()
+
+        req = urllib.request.Request(token_endpoint, data=body,
+            headers={'Content-Type': 'application/x-www-form-urlencoded'})
+        with urllib.request.urlopen(req, timeout=10) as resp:
+            result = json.load(resp)
+
+        oauth['accessToken']  = result['access_token']
+        oauth['refreshToken'] = result.get('refresh_token', refresh_token)
+        oauth['expiresAt']    = int((now + result.get('expires_in', 28800)) * 1000)
+        d['claudeAiOauth']    = oauth
+
+        with open(creds_path, 'w') as f:
+            json.dump(d, f, indent=2)
+except Exception:
+    pass  # silently skip; next step will catch an invalid token
+PYEOF
+
 TOKEN=$(python3 -c "
 import json, sys
 try:
     d = json.load(open('$CREDS'))
     print(d['claudeAiOauth']['accessToken'])
-except Exception as e:
+except Exception:
     print('', end='')
 " 2>/dev/null)
 
