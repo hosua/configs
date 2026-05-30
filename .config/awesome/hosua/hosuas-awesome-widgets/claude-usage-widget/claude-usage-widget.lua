@@ -326,6 +326,19 @@ local function worker(input)
     -- ─── Update wibar arcs/text ───────────────────────────────────────────────
 
     local function update_widget()
+        local is_err = stats.error ~= "none" and stats.error ~= "loading"
+
+        if is_err then
+            arc_5h.value  = 100
+            arc_5h.colors = { "#616E88" }
+            text_5h:set_markup("<span foreground='#BF616A'>!</span>")
+            arc_7d.value  = 100
+            arc_7d.colors = { "#616E88" }
+            text_7d:set_markup("<span foreground='#BF616A'>!</span>")
+            text_balance:set_markup("")
+            return
+        end
+
         local rem5 = remaining_pct(stats.h5_utilization)
         local rem7 = remaining_pct(stats.d7_utilization)
 
@@ -450,6 +463,7 @@ local function worker(input)
             layout = wibox.layout.align.horizontal,
         })
 
+        local is_err = stats.error ~= "none" and stats.error ~= "loading"
         local show_credits = stats.credits_enabled ~= "unknown" or stats.balance ~= "N/A"
         local show_limit   = stats.monthly_limit ~= "N/A"
 
@@ -469,27 +483,68 @@ local function worker(input)
             layout = wibox.layout.fixed.horizontal,
         }
 
-        local rows = {
-            divider(),
-            bold("5h Budget"),
-            reset_5h_text,
-            { bar_5h, top = 2, bottom = 2, widget = wibox.container.margin },
-            label_5h_text,
-            divider(),
-            bold("7d Budget"),
-            reset_7d_text,
-            { bar_7d, top = 2, bottom = 2, widget = wibox.container.margin },
-            label_7d_text,
-        }
+        local rows = {}
 
-        if show_credits or show_limit then
+        if is_err then
+            local err_messages = {
+                unauthorized  = "Session expired. Claude Code needs to re-authenticate.",
+                no_token      = "No token found in ~/.claude/.credentials.json.",
+                no_credentials = "Credentials file not found. Have you logged in to Claude Code?",
+                network_error = "Could not reach the Anthropic API. Check your connection.",
+            }
+            local msg = err_messages[stats.error] or ("Unknown error: " .. tostring(stats.error))
+
+            local err_label = wibox.widget({
+                markup = "<span foreground='#BF616A'>" .. msg .. "</span>",
+                font   = "Terminus 9",
+                wrap   = "word",
+                widget = wibox.widget.textbox,
+            })
+
+            local login_btn = make_btn("Login", function()
+                awful.spawn("kitty -e bash -c 'claude auth login; echo; echo Done — press Enter to close; read'")
+                close_popup()
+            end)
+
+            local retry_btn = make_btn("Retry", function()
+                awful.spawn.easy_async(widget_dir .. "fetch-usage.sh", function(out)
+                    parse_output(out)
+                    update_widget()
+                    if popup.visible then update_popup() end
+                end)
+            end)
+
+            local err_btns = wibox.widget({
+                login_btn, nil, retry_btn,
+                layout = wibox.layout.align.horizontal,
+            })
+
             table.insert(rows, divider())
-            if show_credits then table.insert(rows, credits_row) end
-            if show_limit   then table.insert(rows, limit_row)   end
-        end
+            table.insert(rows, err_label)
+            table.insert(rows, { err_btns, top = 4, widget = wibox.container.margin })
+            table.insert(rows, divider())
+            table.insert(rows, settings_row)
+        else
+            table.insert(rows, divider())
+            table.insert(rows, bold("5h Budget"))
+            table.insert(rows, reset_5h_text)
+            table.insert(rows, { bar_5h, top = 2, bottom = 2, widget = wibox.container.margin })
+            table.insert(rows, label_5h_text)
+            table.insert(rows, divider())
+            table.insert(rows, bold("7d Budget"))
+            table.insert(rows, reset_7d_text)
+            table.insert(rows, { bar_7d, top = 2, bottom = 2, widget = wibox.container.margin })
+            table.insert(rows, label_7d_text)
 
-        table.insert(rows, divider())
-        table.insert(rows, settings_row)
+            if show_credits or show_limit then
+                table.insert(rows, divider())
+                if show_credits then table.insert(rows, credits_row) end
+                if show_limit   then table.insert(rows, limit_row)   end
+            end
+
+            table.insert(rows, divider())
+            table.insert(rows, settings_row)
+        end
 
         local col = { popup_children }
         for _, r in ipairs(rows) do table.insert(col, r) end

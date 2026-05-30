@@ -36,3 +36,5 @@ rsync -a --exclude='.git' \
   "$HOME/.claude_aliases" \
   "$HOME/.xinitrc" \
   .
+
+git add . && git commit && git push origin HEAD
