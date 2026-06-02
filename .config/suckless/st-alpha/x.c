@@ -4,7 +4,9 @@
 #include <limits.h>
 #include <locale.h>
 #include <signal.h>
+#include <stdio.h>
 #include <sys/select.h>
+#include <sys/stat.h>
 #include <time.h>
 #include <unistd.h>
 #include <libgen.h>
@@ -60,6 +62,7 @@ static void zoom(const Arg *);
 static void zoomabs(const Arg *);
 static void zoomreset(const Arg *);
 static void ttysend(const Arg *);
+static void showkeybindhelp(const Arg *);
 
 /* config.h for applying patches and the configuration. */
 #include "config.h"
@@ -245,6 +248,8 @@ static int frccap = 0;
 static char *usedfont = NULL;
 static double usedfontsize = 0;
 static double defaultfontsize = 0;
+static int help_shown = 0;
+static Pixmap help_pixmap = 0;
 
 static char *opt_alpha = NULL;
 static char *opt_class = NULL;
@@ -296,6 +301,47 @@ numlock(const Arg *dummy)
 	win.mode ^= MODE_NUMLOCK;
 }
 
+static void
+savefontsize(double size)
+{
+	char path[PATH_MAX];
+	const char *home;
+	FILE *f;
+
+	home = getenv("HOME");
+	if (!home || home[0] == '\0')
+		return;
+	snprintf(path, sizeof(path), "%s/.cache", home);
+	mkdir(path, 0755); /* ignore return: EEXIST is fine */
+	snprintf(path, sizeof(path), "%s/.cache/st-fontsize", home);
+	f = fopen(path, "w");
+	if (!f)
+		return;
+	fprintf(f, "%g\n", size);
+	fclose(f);
+}
+
+static double
+loadfontsize(void)
+{
+	char path[PATH_MAX];
+	const char *home;
+	FILE *f;
+	double size = 0;
+
+	home = getenv("HOME");
+	if (!home || home[0] == '\0')
+		return 0;
+	snprintf(path, sizeof(path), "%s/.cache/st-fontsize", home);
+	f = fopen(path, "r");
+	if (!f)
+		return 0;
+	if (fscanf(f, "%lf", &size) != 1)
+		size = 0;
+	fclose(f);
+	return size > 1 ? size : 0;
+}
+
 void
 zoom(const Arg *arg)
 {
@@ -310,6 +356,7 @@ zoomabs(const Arg *arg)
 {
 	xunloadfonts();
 	xloadfonts(usedfont, arg->f);
+	savefontsize(usedfontsize);
 	cresize(0, 0);
 	redraw();
 	xhints();
@@ -330,6 +377,146 @@ void
 ttysend(const Arg *arg)
 {
 	ttywrite(arg->s, strlen(arg->s), 1);
+}
+
+static void
+showkeybindhelp(const Arg *arg)
+{
+	static const struct { const char *key; const char *desc; } rows[] = {
+		{ "Ctrl+= / Ctrl+-",     "Increase / decrease font size (persisted)" },
+		{ "Ctrl+Shift+PageUp",   "Increase font size by 1"                   },
+		{ "Ctrl+Shift+PageDown", "Decrease font size by 1"                   },
+		{ "Ctrl+Shift+Home",     "Reset font to compiled default"             },
+		{ "Ctrl+Shift+C",        "Copy selection to clipboard"                },
+		{ "Ctrl+Shift+V",        "Paste from clipboard"                       },
+		{ "Ctrl+Shift+Y",        "Paste from primary selection"               },
+		{ "Shift+Insert",        "Paste from primary selection"               },
+		{ "Mouse wheel up/down", "Scroll through history"                     },
+		{ "Middle click",        "Paste from primary selection"               },
+		{ "Ctrl+Shift+Alt+/",    "Show this help"                             },
+	};
+	int nrows = LEN(rows);
+	int cw = win.cw, ch = win.ch, asc = dc.font.ascent;
+	int hpad = cw / 2 + 2;
+	int rpad = 2;          /* top margin inside each data/header row */
+	int th = ch + 6;
+	int vpad = 3;
+
+	/* if already shown, dismiss instead of re-opening */
+	if (help_shown) {
+		help_shown = 0;
+		XFreePixmap(xw.dpy, help_pixmap);
+		help_pixmap = 0;
+		redraw();
+		XFlush(xw.dpy);
+		return;
+	}
+
+	int w1 = 0, w2 = 0;
+	for (int i = 0; i < nrows; i++) {
+		int l1 = strlen(rows[i].key), l2 = strlen(rows[i].desc);
+		if (l1 > w1) w1 = l1;
+		if (l2 > w2) w2 = l2;
+	}
+
+	int col1_px = w1 * cw + 2 * hpad;
+	int w2_max = (win.w - 4 * cw - 3 - col1_px - 2 * hpad) / cw;
+	if (w2_max < 8) w2_max = 8;
+	if (w2 > w2_max) w2 = w2_max;
+	int col2_px = w2 * cw + 2 * hpad;
+
+	int popup_w = 1 + col1_px + 1 + col2_px + 1;
+	int popup_h = 4 + 2 * th + (ch + rpad) * (nrows + 1) + nrows;
+
+	XftColor *fg = &dc.col[defaultfg];
+	XftColor *bg = &dc.col[defaultbg];
+
+	/* create a full-window pixmap: snapshot xw.buf, then draw popup on top */
+	help_pixmap = XCreatePixmap(xw.dpy, xw.win, win.w, win.h, xw.depth);
+	XCopyArea(xw.dpy, xw.buf, help_pixmap, dc.gc, 0, 0, win.w, win.h, 0, 0);
+
+	/* draw into help_pixmap via a temporary XftDraw */
+	XftDraw *hd = XftDrawCreate(xw.dpy, help_pixmap, xw.vis, xw.cmap);
+
+	if (popup_w >= win.w || popup_h >= win.h) {
+		const char *msg = "Screen too small! Make your terminal bigger to see the help menu.";
+		int mlen = strlen(msg);
+		while (mlen > 0 && mlen * cw > win.w - 4) mlen--;
+		XftDrawRect(hd, bg, 0, 0, win.w, win.h);
+		if (mlen > 0)
+			XftDrawStringUtf8(hd, fg, dc.font.match,
+			                  (win.w - mlen * cw) / 2, (win.h - ch) / 2 + asc,
+			                  (FcChar8 *)msg, mlen);
+	} else {
+		int ox = (win.w - popup_w) / 2;
+		int oy = (win.h - popup_h) / 2;
+		int vx = ox + 1 + col1_px;
+
+		XftDrawRect(hd, bg, ox, oy, popup_w, popup_h);
+		XftDrawRect(hd, fg, ox + 1, oy + 1, popup_w - 2, th);
+
+		const char *title = "ST Terminal \xe2\x80\x94 Key Bindings";
+		int tx = ox + 1 + (popup_w - 2 - 26 * cw) / 2;
+		XftDrawStringUtf8(hd, bg, dc.font.match,
+		                  tx, oy + 1 + vpad + asc,
+		                  (FcChar8 *)title, strlen(title));
+
+		int cur_y = oy + 1 + th;
+
+		XftDrawRect(hd, fg, ox, cur_y, popup_w, 1);
+		cur_y++;
+
+		XftDrawStringUtf8(hd, fg, dc.font.match,
+		                  ox + 1 + hpad, cur_y + rpad + asc,
+		                  (FcChar8 *)"Key Binding", 11);
+		XftDrawStringUtf8(hd, fg, dc.font.match,
+		                  vx + 1 + hpad, cur_y + rpad + asc,
+		                  (FcChar8 *)"Action", 6);
+		cur_y += ch + rpad;
+
+		XftDrawRect(hd, fg, ox, cur_y, popup_w, 1);
+		cur_y++;
+
+		for (int i = 0; i < nrows; i++) {
+			int klen = MIN((int)strlen(rows[i].key), w1);
+			int dlen = MIN((int)strlen(rows[i].desc), w2);
+			XftDrawStringUtf8(hd, fg, dc.font.match,
+			                  ox + 1 + hpad, cur_y + rpad + asc,
+			                  (FcChar8 *)rows[i].key, klen);
+			XftDrawStringUtf8(hd, fg, dc.font.match,
+			                  vx + 1 + hpad, cur_y + rpad + asc,
+			                  (FcChar8 *)rows[i].desc, dlen);
+			cur_y += ch + rpad;
+			if (i < nrows - 1) {
+				XftDrawRect(hd, fg, ox + 1, cur_y, popup_w - 2, 1);
+				cur_y++;
+			}
+		}
+
+		int footer_sep_y = cur_y;
+		XftDrawRect(hd, fg, ox, cur_y, popup_w, 1);
+		cur_y++;
+
+		const char *footer = "Press any key to dismiss";
+		int flen = strlen(footer);
+		XftDrawStringUtf8(hd, fg, dc.font.match,
+		                  ox + 1 + (popup_w - 2 - flen * cw) / 2, cur_y + vpad + asc,
+		                  (FcChar8 *)footer, flen);
+
+		XftDrawRect(hd, fg, ox, oy, popup_w, 1);
+		XftDrawRect(hd, fg, ox, oy + popup_h - 1, popup_w, 1);
+		XftDrawRect(hd, fg, ox, oy, 1, popup_h);
+		XftDrawRect(hd, fg, ox + popup_w - 1, oy, 1, popup_h);
+		XftDrawRect(hd, fg, vx, oy + 1 + th, 1,
+		            footer_sep_y - (oy + 1 + th) + 1);
+	}
+
+	XftDrawDestroy(hd);
+	help_shown = 1;
+
+	/* show immediately; subsequent draws will keep re-showing via xfinishdraw */
+	XCopyArea(xw.dpy, help_pixmap, xw.win, dc.gc, 0, 0, win.w, win.h, 0, 0);
+	XFlush(xw.dpy);
 }
 
 int
@@ -715,6 +902,13 @@ void
 cresize(int width, int height)
 {
 	int col, row;
+
+	/* help pixmap is sized for the old dimensions; discard it on resize */
+	if (help_shown) {
+		help_shown = 0;
+		XFreePixmap(xw.dpy, help_pixmap);
+		help_pixmap = 0;
+	}
 
 	if (width != 0)
 		win.w = width;
@@ -1141,7 +1335,14 @@ xinit(int cols, int rows)
 		die("could not init fontconfig.\n");
 
 	usedfont = (opt_font == NULL)? font : opt_font;
-	xloadfonts(usedfont, 0);
+	xloadfonts(usedfont, 0); /* sets defaultfontsize from config */
+	{
+		double pf = loadfontsize();
+		if (pf > 1 && pf != usedfontsize) {
+			xunloadfonts();
+			xloadfonts(usedfont, pf); /* applies persisted size; defaultfontsize stays */
+		}
+	}
 
 	/* colors */
 	xw.cmap = XCreateColormap(xw.dpy, parent, xw.vis, None);
@@ -1655,8 +1856,10 @@ xdrawline(Line line, int x1, int y1, int x2)
 void
 xfinishdraw(void)
 {
-	XCopyArea(xw.dpy, xw.buf, xw.win, dc.gc, 0, 0, win.w,
-			win.h, 0, 0);
+	if (help_shown && help_pixmap)
+		XCopyArea(xw.dpy, help_pixmap, xw.win, dc.gc, 0, 0, win.w, win.h, 0, 0);
+	else
+		XCopyArea(xw.dpy, xw.buf, xw.win, dc.gc, 0, 0, win.w, win.h, 0, 0);
 	XSetForeground(xw.dpy, dc.gc,
 			dc.col[IS_SET(MODE_REVERSE)?
 				defaultfg : defaultbg].pixel);
@@ -1818,6 +2021,15 @@ kpress(XEvent *ev)
 
 	if (IS_SET(MODE_KBDLOCK))
 		return;
+
+	if (help_shown) {
+		help_shown = 0;
+		XFreePixmap(xw.dpy, help_pixmap);
+		help_pixmap = 0;
+		redraw();
+		XFlush(xw.dpy);
+		return;
+	}
 
 	if (xw.ime.xic)
 		len = XmbLookupString(xw.ime.xic, e, buf, sizeof buf, &ksym, &status);
