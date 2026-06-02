@@ -1,0 +1,15 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(nvim --version)",
+      "Bash(nvim:*)",
+      "Read(//home/hoswoo/**)",
+      "Bash(pacman -Q)",
+      "Bash(bash-language-server --version)",
+      "Bash(shfmt --version)",
+      "Read(//usr/lib/nvim/parser/**)",
+      "Read(//usr/share/nvim/runtime/parser/**)",
+      "Bash(/home/hoswoo/.local/share/nvim/mason/bin/bash-language-server --version)"
+    ]
+  }
+}

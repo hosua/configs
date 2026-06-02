@@ -41,14 +41,22 @@ find-port-and-launch() {
     return 1
 }
 
-git-open-branch-wdiffs() {
+git-open-branch-diffs() {
     origin_main_branch="$(git symbolic-ref refs/remotes/origin/HEAD)"
     echo "Opening all files with diffs against $origin_main_branch..."
     $EDITOR $(git diff --name-only $origin_main_branch...)
+}
+
+git-list-branch-file-diffs() {
+    origin_main_branch="$(git symbolic-ref refs/remotes/origin/HEAD)"
+    echo "Listing all files with diffs against $origin_main_branch..."
+    echo "$(git diff --name-only $origin_main_branch...)"
 }
 
 git-list-branch-diffs() {
     origin_main_branch="$(git symbolic-ref refs/remotes/origin/HEAD)"
     echo "Listing all files with diffs against $origin_main_branch..."
     echo "$(git diff --name-only $origin_main_branch...)"
+    echo ""
+    git diff --color "$origin_main_branch"...
 }

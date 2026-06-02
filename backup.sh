@@ -10,6 +10,7 @@ rsync -a --exclude='.git' \
   "$CONF/awesome" \
   "$CONF/btop" \
   "$CONF/dmenu" \
+  "$CONF/dolphinrc" \
   "$CONF/fastfetch" \
   "$CONF/hypr" \
   "$CONF/kdedefaults" \
@@ -21,11 +22,11 @@ rsync -a --exclude='.git' \
   "$CONF/picom" \
   "$CONF/pipewire" \
   "$CONF/ranger" \
+  "$CONF/suckless" \
   "$CONF/tmux" \
   "$CONF/tmux-powerline" \
   "$CONF/vlc" \
   "$CONF/zathura" \
-  "$CONF/dolphinrc" \
   "$DEST_CONF"
 
 # "$CONF/nitrogen" \ # I forget what this is for... something with bgs

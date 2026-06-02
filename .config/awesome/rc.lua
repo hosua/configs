@@ -85,8 +85,8 @@ run_once({ "urxvtd", "unclutter -root" })
 
 local modkey = "Mod4"
 local altkey = "Mod1"
-local terminal = "kitty"
--- local terminal = "st"
+-- local terminal = "kitty"
+local terminal = "st"
 local vi_focus = true -- vi-like client focus https://github.com/lcpz/awesome-copycats/issues/275
 local cycle_prev = true -- cycle with only the previously focused client or all https://github.com/lcpz/awesome-copycats/issues/274
 local editor = os.getenv("EDITOR") or "nvim"
@@ -908,13 +908,13 @@ awful.rules.rules = {
 		properties = { floating = true, sticky = true, ontop = true },
 		callback = function(c)
 			local sg = c.screen.geometry
-			local w  = sg.width  * 0.8
-			local h  = sg.height * 0.8
+			local w = sg.width * 0.8
+			local h = sg.height * 0.8
 			c:geometry({
-				width  = w,
+				width = w,
 				height = h,
-				x      = sg.x + (sg.width  - w) / 2,
-				y      = sg.y + (sg.height - h) / 2,
+				x = sg.x + (sg.width - w) / 2,
+				y = sg.y + (sg.height - h) / 2,
 			})
 		end,
 	},
@@ -1015,22 +1015,24 @@ tag.connect_signal("property::selected", backham)
 -- }}}
 
 -- Preserve tag names and selected tags across restarts
-local PERSIST_FILE = '/tmp/awesomewm-tag-state'
+local PERSIST_FILE = "/tmp/awesomewm-tag-state"
 
-awesome.connect_signal('startup', function()
-	local file = io.open(PERSIST_FILE, 'r')
-	if not file then return end
+awesome.connect_signal("startup", function()
+	local file = io.open(PERSIST_FILE, "r")
+	if not file then
+		return
+	end
 	for line in file:lines() do
-		local kind, si, ti, val = line:match('^(%a+)\t(%d+)\t(%d+)\t?(.*)')
+		local kind, si, ti, val = line:match("^(%a+)\t(%d+)\t(%d+)\t?(.*)")
 		si, ti = tonumber(si), tonumber(ti)
 		if kind and si and ti then
 			local s = screen[si]
 			if s then
 				local t = s.tags[ti]
 				if t then
-					if kind == 'name' and val ~= '' then
+					if kind == "name" and val ~= "" then
 						t.name = val
-					elseif kind == 'selected' then
+					elseif kind == "selected" then
 						t:view_only()
 					end
 				end
@@ -1040,14 +1042,16 @@ awesome.connect_signal('startup', function()
 	file:close()
 end)
 
-awesome.connect_signal('exit', function(reason_restart)
-	if not reason_restart then return end
-	local file = io.open(PERSIST_FILE, 'w+')
+awesome.connect_signal("exit", function(reason_restart)
+	if not reason_restart then
+		return
+	end
+	local file = io.open(PERSIST_FILE, "w+")
 	for s in screen do
 		for i, t in ipairs(s.tags) do
-			file:write(string.format('name\t%d\t%d\t%s\n', s.index, i, t.name))
+			file:write(string.format("name\t%d\t%d\t%s\n", s.index, i, t.name))
 			if t.selected then
-				file:write(string.format('selected\t%d\t%d\t\n', s.index, i))
+				file:write(string.format("selected\t%d\t%d\t\n", s.index, i))
 			end
 		end
 	end
