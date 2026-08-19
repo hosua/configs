@@ -59,4 +59,12 @@ return {
       distance_stop_animating = 0.5,
     },
   },
+  {
+    "xuhdev/vim-latex-live-preview",
+    ft = "tex", -- lazy-load only for .tex files
+    cmd = { "LLPStartPreview" },
+    init = function()
+      vim.g.livepreview_previewer = "zathura"
+    end,
+  },
 }

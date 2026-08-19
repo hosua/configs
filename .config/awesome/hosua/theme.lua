@@ -27,9 +27,8 @@ _G.mysystray = mysystray
 local math, string, os = math, string, os
 local my_table = awful.util.table or gears.table -- 4.{0,1} compatibility
 
--- the mounts to show in the fs widget
--- local fs_mounts = { "/", "/mnt/HDD1", "/mnt/HDD2", "/mnt/DISK3", "/mnt/DISK4" }
-local fs_mounts = { "/", "/mnt/SSD1", "/mnt/HDD1", "/mnt/HDD2" }
+-- the mounts to show in the fs_widget
+local fs_mounts = { "/", "/mnt/SSD1", "/mnt/SSD2", "/mnt/HDD1", "/mnt/HDD2" }
 
 local opacity = {
 	lo = "10",

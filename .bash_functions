@@ -60,3 +60,44 @@ git-list-branch-diffs() {
     echo ""
     git diff --color "$origin_main_branch"...
 }
+
+git-prettier-diffs() {
+
+    git_root=$(git rev-parse --show-toplevel 2>/dev/null) || {
+        echo "Not in a git repo."
+        return 1
+    }
+
+    origin_main_branch="$(git symbolic-ref refs/remotes/origin/HEAD)"
+
+    mapfile -t files < <(
+        git diff --name-only "$origin_main_branch"... |
+            while IFS= read -r f; do
+                [[ -f "$git_root/$f" ]] && echo "$git_root/$f"
+            done
+    )
+
+    if [[ ${#files[@]} -eq 0 ]]; then
+        echo "No changed files to prettify."
+        return 0
+    fi
+
+    files_prettified=0
+    total_files=0
+    for f in "${files[@]}"; do
+        ((total_files++))
+        if [[ "$f" =~ \.(js|jsx|ts|tsx|json)$ ]]; then
+            result="$(cd "$git_root" && npx prettier --write "$f" | grep "unchanged")"
+            if [[ -z $result ]]; then
+                echo "Prettifying $f"
+                echo ""
+                ((files_prettified++))
+            else
+                echo "Skipped $f $files_prettified/$total_files) because it was already formatted"
+            fi
+            echo -n "($files_prettified/$total_files): "
+        fi
+    done
+
+    echo Prettified $files_prettified out of $total_files total files.
+}

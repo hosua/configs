@@ -53,6 +53,9 @@ application/x-subrip=nvim.desktop;neovide.desktop;
 text/csv=libreoffice-calc.desktop;neovide.desktop;
 application/json=neovide.desktop;
 application/x-x509-ca-cert=neovide.desktop;
+application/vnd.microsoft.portable-executable=wine.desktop;
+application/x-wine-extension-ini=neovide.desktop;
+text/x-lua=neovide.desktop;
 
 [Default Applications]
 application/pdf=qpdfview.desktop
@@ -98,3 +101,6 @@ application/x-subrip=neovide.desktop
 application/octet-stream=neovide.desktop
 x-scheme-handler/claude-cli=claude-code-url-handler.desktop
 x-scheme-handler/claude=com.anthropic.claude-desktop.desktop
+x-scheme-handler/discord-1226307413355790416=discord-1226307413355790416.desktop
+x-scheme-handler/discord-1060390251694149703=discord-1060390251694149703.desktop
+text/x-lua=neovide.desktop

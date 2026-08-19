@@ -23,8 +23,8 @@ local config = {
 	popup_border_color = "#4C566A",
 	main_coin = "BTC", -- The coin shown on the widget itself
 	fiat = "USD", -- Your preferred currency
+	mode = "map", -- mode = "map", -- list or map
 	codes = { "BTC", "XMR", "XRP", "ETH", "LTC" }, -- Your curated list to show when in mode = "map"
-	mode = "map", -- list or map
 	coins_to_display = 100, -- how many cryptocurrencies to show in list mode, max = 100
 	sort_by = "rank", -- rank, price, volume, code, name, age
 	sort_order = "ascending", -- sort_by ascending or descending

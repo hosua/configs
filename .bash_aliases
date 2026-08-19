@@ -4,7 +4,7 @@ export MANPAGER="nvim +Man!"
 # Requires yay -S nvimpager
 export PAGER="nvimpager"
 
-alias ...=". $HOME/.bashrc"
+alias ...=". $HOME/.bashrc" # alias for sourcing rc
 # Easy clipboard
 alias c="xclip"
 alias v="xclip -o"

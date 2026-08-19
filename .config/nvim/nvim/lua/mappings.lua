@@ -1,34 +1,18 @@
 require "nvchad.mappings"
 
--- add yours here
-
 local map = vim.keymap.set
 
 map("n", ";", ":", { desc = "CMD enter command mode" })
+
 map("i", "jk", "<ESC>")
-map("n", "<leader>se", vim.diagnostic.open_float, { desc = "Show diagnostics under cursor" })
-map("n", "<leader>sf", vim.lsp.buf.code_action, { desc = "Show/apply code fixes" })
+-- <leader>g prefixes
 map("n", "<leader>gb", "<cmd>Gitsigns blame<CR>", { desc = "blame current line" })
+-- <leader>s prefixes
 map("n", "<leader>sd", function()
   vim.lsp.buf.hover()
 end, { desc = "Show function documentation" })
-
-local format_on_save_enabled = true -- Track state ourselves
-
-map("n", "<leader>tf", function()
-  local conform = require "conform"
-  format_on_save_enabled = not format_on_save_enabled
-
-  if format_on_save_enabled then
-    conform.setup { format_on_save = { timeout_ms = 500, lsp_fallback = true } }
-    vim.notify("Format on save: ENABLED", vim.log.levels.INFO)
-  else
-    conform.setup { format_on_save = false }
-    vim.notify("Format on save: DISABLED", vim.log.levels.INFO)
-  end
-end, { desc = "Toggle format on save" })
-
-
+map("n", "<leader>se", vim.diagnostic.open_float, { desc = "Show diagnostics under cursor" })
+map("n", "<leader>sf", vim.lsp.buf.code_action, { desc = "Show/apply code fixes" })
 map({ "n", "i" }, "<leader>sm", function()
   local MAX_MESSAGES = 50
 
@@ -53,7 +37,25 @@ map({ "n", "i" }, "<leader>sm", function()
   vim.api.nvim_win_set_height(0, 15)
   vim.api.nvim_win_set_cursor(0, { 1, 0 })
 end, { desc = "Show messages in bottom pane" })
+map("n", "<leader>sp", function()
+  vim.notify(vim.fn.expand "%:p", vim.log.levels.INFO, { title = "File path" })
+end, { desc = "Show full path of current file in messages" })
 
+local format_on_save_enabled = true -- Track state ourselves
+-- <leader>t prefixes
 map({ "n", "i" }, "<leader>tt", function()
   require("base46").toggle_transparency()
 end, { desc = "toggle transparency" })
+
+map("n", "<leader>tf", function()
+  local conform = require "conform"
+  format_on_save_enabled = not format_on_save_enabled
+
+  if format_on_save_enabled then
+    conform.setup { format_on_save = { timeout_ms = 500, lsp_fallback = true } }
+    vim.notify("Format on save: ENABLED", vim.log.levels.INFO)
+  else
+    conform.setup { format_on_save = false }
+    vim.notify("Format on save: DISABLED", vim.log.levels.INFO)
+  end
+end, { desc = "Toggle format on save" })

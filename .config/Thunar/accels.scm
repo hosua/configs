@@ -1,10 +1,11 @@
-; Thunar GtkAccelMap rc-file         -*- scheme -*-
+; thunar GtkAccelMap rc-file         -*- scheme -*-
 ; this file is an automated accelerator map dump
 ;
 ; (gtk_accel_path "<Actions>/ThunarDetailsView/expandable-folders" "")
 ; (gtk_accel_path "<Actions>/ThunarStandardView/sort-by-type" "")
 ; (gtk_accel_path "<Actions>/ThunarStatusBar/toggle-last-modified" "")
 ; (gtk_accel_path "<Actions>/Thunarwindow/menu" "")
+; (gtk_accel_path "<Actions>/ThunarBookmarks/39a0a7d54868c67332766f8ef4a3f1e5" "")
 ; (gtk_accel_path "<Actions>/ThunarActionManager/cut" "<Primary>x")
 ; (gtk_accel_path "<Actions>/ThunarBookmarks/4183cf0e898b512744a8253a64617dce" "")
 ; (gtk_accel_path "<Actions>/ThunarStandardView/sort-by-size" "")
@@ -89,8 +90,9 @@
 ; (gtk_accel_path "<Actions>/ThunarActionManager/move-to-trash" "")
 ; (gtk_accel_path "<Actions>/ThunarBookmarks/3e4ac0f80f430291ca9ad3a4c4a49f72" "")
 ; (gtk_accel_path "<Actions>/ThunarActionManager/delete-3" "<Shift>KP_Delete")
-; (gtk_accel_path "<Actions>/ThunarBookmarks/bf96685d9ef0204b72e529602cc36891" "")
 ; (gtk_accel_path "<Actions>/ThunarStandardView/arrange-items-menu" "")
+; (gtk_accel_path "<Actions>/ThunarBookmarks/bf96685d9ef0204b72e529602cc36891" "")
+; (gtk_accel_path "<Actions>/ThunarBookmarks/5947b6af8c0f69f9a933a879e357211b" "")
 ; (gtk_accel_path "<Actions>/ThunarWindow/bookmarks-menu" "")
 ; (gtk_accel_path "<Actions>/ThunarWindow/reload" "<Primary>r")
 ; (gtk_accel_path "<Actions>/ThunarWindow/open-computer" "")
@@ -124,6 +126,8 @@
 ; (gtk_accel_path "<Actions>/ThunarBookmarks/40c73cf56ae4ed6e333ae299d8c3e77c" "")
 ; (gtk_accel_path "<Actions>/ThunarStandardView/create-folder" "<Primary><Shift>n")
 ; (gtk_accel_path "<Actions>/ThunarWindow/open-home" "<Alt>Home")
+; (gtk_accel_path "<Actions>/ThunarBookmarks/fde288fa7e3dab1365e8867193bc5988" "")
+; (gtk_accel_path "<Actions>/ThunarBookmarks/1c382080fb720e4957fcfef1dfb15905" "")
 ; (gtk_accel_path "<Actions>/ThunarWindow/switch-focused-split-view-pane" "")
 ; (gtk_accel_path "<Actions>/ThunarWindow/show-hidden" "<Primary>h")
 ; (gtk_accel_path "<Actions>/ThunarStandardView/set-default-app" "")
